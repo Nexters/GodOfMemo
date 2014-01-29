@@ -3,6 +3,7 @@ package com.nexters.godofmemo;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -135,7 +136,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		System.out.println("onActivityResult");
-
+		
+		//비정상종료면?
+		if(resultCode != Activity.RESULT_OK) return;
+		
 		String txt = data.getStringExtra("txt");
 		try {
 			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.memo01, txt);
