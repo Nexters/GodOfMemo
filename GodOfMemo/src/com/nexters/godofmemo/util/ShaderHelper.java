@@ -41,7 +41,6 @@ public class ShaderHelper {
 	 * Compiles a shader, returning the OpenGL object ID.
 	 */
 	private static int compileShader(int type, String shaderCode) {
-
 		// Create a new shader object.
 		final int shaderObjectId = glCreateShader(type);
 
@@ -104,6 +103,7 @@ public class ShaderHelper {
 
 		// Attach the vertex shader to the program.
 		glAttachShader(programObjectId, vertexShaderId);
+
 		// Attach the fragment shader to the program.
 		glAttachShader(programObjectId, fragmentShaderId);
 
@@ -124,9 +124,11 @@ public class ShaderHelper {
 		if (linkStatus[0] == 0) {
 			// If it failed, delete the program object.
 			glDeleteProgram(programObjectId);
+
 			if (LoggerConfig.ON) {
 				Log.w(TAG, "Linking of program failed.");
 			}
+
 			return 0;
 		}
 
@@ -140,12 +142,33 @@ public class ShaderHelper {
 	 */
 	public static boolean validateProgram(int programObjectId) {
 		glValidateProgram(programObjectId);
-
 		final int[] validateStatus = new int[1];
 		glGetProgramiv(programObjectId, GL_VALIDATE_STATUS, validateStatus, 0);
 		Log.v(TAG, "Results of validating program: " + validateStatus[0]
 				+ "\nLog:" + glGetProgramInfoLog(programObjectId));
 
 		return validateStatus[0] != 0;
+	}
+
+	/**
+	 * Helper function that compiles the shaders, links and validates the
+	 * program, returning the program ID.
+	 */
+	public static int buildProgram(String vertexShaderSource,
+			String fragmentShaderSource) {
+		int program;
+
+		// Compile the shaders.
+		int vertexShader = compileVertexShader(vertexShaderSource);
+		int fragmentShader = compileFragmentShader(fragmentShaderSource);
+
+		// Link them into a shader program.
+		program = linkProgram(vertexShader, fragmentShader);
+
+		if (LoggerConfig.ON) {
+			validateProgram(program);
+		}
+
+		return program;
 	}
 }

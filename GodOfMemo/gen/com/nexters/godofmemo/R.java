@@ -1105,8 +1105,11 @@ containing a value of this type.
         public static final int main=0x7f0d0000;
     }
     public static final class raw {
-        public static final int simple_fragment_shader=0x7f050000;
-        public static final int simple_vertex_shader=0x7f050001;
+        public static final int ic_launcher=0x7f050000;
+        public static final int simple_fragment_shader=0x7f050001;
+        public static final int simple_vertex_shader=0x7f050002;
+        public static final int texture_fragment_shader=0x7f050003;
+        public static final int texture_vertex_shader=0x7f050004;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
