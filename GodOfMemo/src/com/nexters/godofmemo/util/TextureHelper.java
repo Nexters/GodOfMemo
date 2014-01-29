@@ -84,4 +84,57 @@ public class TextureHelper {
 
 		return textureObjectIds[0];
 	}
+	
+	/**
+	 * Bitmap에서 텍스쳐를 가져온다.
+	 * 
+	 * @param bitmap
+	 * @return
+	 */
+	public static int loadTextureBitmp(Bitmap bitmap) {
+		final int[] textureObjectIds = new int[1];
+		glGenTextures(1, textureObjectIds, 0);
+
+		if (textureObjectIds[0] == 0) {
+			if (LoggerConfig.ON) {
+				Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			}
+			return 0;
+		}
+
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inScaled = false;
+
+		// Bind to the texture in OpenGL
+		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
+
+		// Set filtering: a default must be set, or the texture will be
+		// black.
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Load the bitmap into the bound texture.
+		texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+
+		// Note: Following code may cause an error to be reported in the
+		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
+		// Failed to generate texture mipmap levels (error=3)
+		// No OpenGL error will be encountered (glGetError() will return
+		// 0). If this happens, just squash the source image to be
+		// square. It will look the same because of texture coordinates,
+		// and mipmap generation will work.
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// Recycle the bitmap, since its data has been loaded into
+		// OpenGL.
+		
+		//TODO 임시로 지웠는데 이래도 되나??
+		//bitmap.recycle();
+
+		// Unbind from the texture.
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		return textureObjectIds[0];
+	}
 }

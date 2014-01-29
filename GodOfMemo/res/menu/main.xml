@@ -9,8 +9,8 @@
 
     <!-- Settings, should always be in the overflow -->
     <item
-        android:id="@+id/action_settings"
-        android:title="설정"
+        android:id="@+id/action_write"
+        android:title="쓰기"
         app:showAsAction="always"/>
 
 </menu>

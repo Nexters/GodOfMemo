@@ -26,6 +26,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.nexters.godofmemo.MemoActivity"
+            android:label="@string/title_activity_memo" >
+        </activity>
     </application>
 
 </manifest>
