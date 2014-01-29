@@ -5,7 +5,6 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.rotateM;
 import static android.opengl.Matrix.setIdentityM;
 import static android.opengl.Matrix.translateM;
 
@@ -16,7 +15,6 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.nexters.godofmemo.R;
-import com.nexters.godofmemo.object.Mallet;
 import com.nexters.godofmemo.object.Table;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
@@ -30,7 +28,7 @@ public class AirHockeyRenderer implements Renderer {
     private final float[] modelMatrix = new float[16];
 
     private Table table;
-    private Mallet mallet;
+    //private Mallet mallet;
     
     private TextureShaderProgram textureProgram;
     private ColorShaderProgram colorProgram;    
@@ -46,12 +44,12 @@ public class AirHockeyRenderer implements Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         table = new Table();
-        mallet = new Mallet();
+        //mallet = new Mallet();
         
         textureProgram = new TextureShaderProgram(context);
         colorProgram = new ColorShaderProgram(context);        
         
-        texture = TextureHelper.loadTexture(context, R.raw.ic_launcher);
+        texture = TextureHelper.loadTexture(context, R.raw.memo02);
     }
 
     @Override
@@ -59,12 +57,11 @@ public class AirHockeyRenderer implements Renderer {
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
 
-        MatrixHelper.perspectiveM(projectionMatrix, 45, (float) width
-            / (float) height, 1f, 10f);
+        MatrixHelper.perspectiveM(projectionMatrix, 60, (float) width/ (float) height, 1f, 10f);
 
         setIdentityM(modelMatrix, 0);
         translateM(modelMatrix, 0, 0f, 0f, -2.5f);
-        rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
+        //rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
 
         final float[] temp = new float[16];
         multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0);
@@ -83,9 +80,9 @@ public class AirHockeyRenderer implements Renderer {
         table.draw();
 
         // Draw the mallets.
-        colorProgram.useProgram();
+        /*colorProgram.useProgram();
         colorProgram.setUniforms(projectionMatrix);
         mallet.bindData(colorProgram);
-        mallet.draw();
+        mallet.draw();*/
     }
 }

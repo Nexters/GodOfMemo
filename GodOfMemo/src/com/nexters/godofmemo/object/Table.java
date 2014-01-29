@@ -17,8 +17,12 @@ public class Table {
 			// Order of coordinates: X, Y, S, T
 
 			// Triangle Fan
-			0f, 0f, 0.5f, 0.5f, -0.5f, -0.8f, 0f, 0.9f, 0.5f, -0.8f, 1f, 0.9f,
-			0.5f, 0.8f, 1f, 0.1f, -0.5f, 0.8f, 0f, 0.1f, -0.5f, -0.8f, 0f, 0.9f };
+			0f, 0f, 0.5f, 0.5f, 
+			-0.5f, -0.4f, 0f, 0.9f,
+			0.5f, -0.4f, 1f, 0.9f,
+			0.5f, 0.4f, 1f, 0.1f,
+			-0.5f, 0.4f, 0f, 0.1f,
+			-0.5f, -0.4f, 0f, 0.9f };
 
 	private final VertexArray vertexArray;
 
