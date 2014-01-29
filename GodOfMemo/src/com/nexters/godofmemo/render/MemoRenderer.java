@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
 
-public class FirstOpenGLProjectRenderer implements Renderer {
+public class MemoRenderer implements Renderer {
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         // Set the background clear color to red. The first component is

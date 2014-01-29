@@ -12,7 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.nexters.godofmemo.render.FirstOpenGLProjectRenderer;
+import com.nexters.godofmemo.render.MemoRenderer;
+import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity {
 	/**
@@ -26,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		glSurfaceView = new GLSurfaceView(this);
+		glSurfaceView = new MemoGLView(this);
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager =
@@ -34,10 +35,11 @@ public class MainActivity extends ActionBarActivity {
  
         final ConfigurationInfo configurationInfo =
             activityManager.getDeviceConfigurationInfo();
+        
         /*
-		
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
          */
+        
         // Even though the latest emulator supports OpenGL ES 2.0,
         // it has a bug where it doesn't set the reqGlEsVersion so
         // the above check doesn't work. The below will detect if the
@@ -57,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
             glSurfaceView.setEGLContextClientVersion(2);
 
             // Assign our renderer.
-            glSurfaceView.setRenderer(new FirstOpenGLProjectRenderer());
+            glSurfaceView.setRenderer(new MemoRenderer());
             rendererSet = true;
         } else {
             /*
@@ -81,6 +83,24 @@ public class MainActivity extends ActionBarActivity {
         setContentView(glSurfaceView);
 
 	}
+	
+	@Override
+    protected void onPause() {
+        super.onPause();
+        
+        if (rendererSet) {
+            glSurfaceView.onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        if (rendererSet) {
+            glSurfaceView.onResume();
+        }
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
