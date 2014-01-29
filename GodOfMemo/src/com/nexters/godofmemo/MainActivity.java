@@ -1,7 +1,5 @@
 package com.nexters.godofmemo;
 
-
-
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
@@ -14,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.nexters.godofmemo.render.AirHockeyRenderer;
 import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity {
@@ -28,8 +25,6 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-		glSurfaceView = new MemoGLView(this);
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -56,12 +51,7 @@ public class MainActivity extends ActionBarActivity {
 							.contains("Android SDK built for x86")));
 
 		if (supportsEs2) {
-			// Request an OpenGL ES 2.0 compatible context.
-			glSurfaceView.setEGLContextClientVersion(2);
-
-			// Assign our renderer.
-			//glSurfaceView.setRenderer(new MemoRenderer());
-			glSurfaceView.setRenderer(new AirHockeyRenderer(getApplicationContext()));
+			glSurfaceView = new MemoGLView(this);
 			rendererSet = true;
 		} else {
 			/*

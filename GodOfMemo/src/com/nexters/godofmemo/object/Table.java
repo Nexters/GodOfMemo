@@ -18,11 +18,11 @@ public class Table {
 
 			// Triangle Fan
 			0f, 0f, 0.5f, 0.5f, 
-			-0.5f, -0.4f, 0f, 0.9f,
-			0.5f, -0.4f, 1f, 0.9f,
-			0.5f, 0.4f, 1f, 0.1f,
-			-0.5f, 0.4f, 0f, 0.1f,
-			-0.5f, -0.4f, 0f, 0.9f };
+			-0.5f, -0.4f, 0f, 1f,
+			0.5f, -0.4f, 1f, 1f,
+			0.5f, 0.4f, 1f, 0f,
+			-0.5f, 0.4f, 0f, 0f,
+			-0.5f, -0.4f, 0f, 1f };
 
 	private final VertexArray vertexArray;
 

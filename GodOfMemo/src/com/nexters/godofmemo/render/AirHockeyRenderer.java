@@ -49,7 +49,7 @@ public class AirHockeyRenderer implements Renderer {
         textureProgram = new TextureShaderProgram(context);
         colorProgram = new ColorShaderProgram(context);        
         
-        texture = TextureHelper.loadTexture(context, R.raw.memo02);
+        texture = TextureHelper.loadTexture(context, R.drawable.memo02);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AirHockeyRenderer implements Renderer {
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
 
-        MatrixHelper.perspectiveM(projectionMatrix, 60, (float) width/ (float) height, 1f, 10f);
+        MatrixHelper.perspectiveM(projectionMatrix, 60, (float) width/ (float) height, 1f, 8f);
 
         setIdentityM(modelMatrix, 0);
         translateM(modelMatrix, 0, 0f, 0f, -2.5f);
