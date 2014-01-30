@@ -1,10 +1,20 @@
 package com.nexters.godofmemo;
 
+import java.io.IOException;
+import java.io.InputStream;
 
-
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,22 +24,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.nexters.godofmemo.render.AirHockeyRenderer;
+import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity {
 	/**
 	 * Hold a reference to our GLSurfaceView
 	 */
-	private GLSurfaceView glSurfaceView;
+	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-		glSurfaceView = new MemoGLView(this);
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -56,12 +64,7 @@ public class MainActivity extends ActionBarActivity {
 							.contains("Android SDK built for x86")));
 
 		if (supportsEs2) {
-			// Request an OpenGL ES 2.0 compatible context.
-			glSurfaceView.setEGLContextClientVersion(2);
-
-			// Assign our renderer.
-			//glSurfaceView.setRenderer(new MemoRenderer());
-			glSurfaceView.setRenderer(new AirHockeyRenderer(getApplicationContext()));
+			glSurfaceView = new MemoGLView(this);
 			rendererSet = true;
 		} else {
 			/*
@@ -120,12 +123,79 @@ public class MainActivity extends ActionBarActivity {
 			Toast.makeText(getApplicationContext(), "search",
 					Toast.LENGTH_SHORT).show();
 			return true;
-		case R.id.action_settings:
-			Toast.makeText(getApplicationContext(), "setting",
-					Toast.LENGTH_SHORT).show();
+		case R.id.action_write:
+			Intent intent = new Intent(getApplicationContext(), MemoActivity.class);
+			startActivityForResult(intent, 0);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		System.out.println("onActivityResult");
+		
+		//비정상종료면?
+		if(resultCode != Activity.RESULT_OK) return;
+		
+		String txt = data.getStringExtra("txt");
+		try {
+			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.memo01, txt);
+			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.606f, 0.494f, bitmap));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+    }
+	
+	/**
+	 * 이미지에 텍스트를 쓰는 함수
+	 * 
+	 * @param gContext
+	 * @param gResId
+	 * @param gText
+	 * @return
+	 */
+	public Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
+		Resources resources = gContext.getResources();
+		float scale = resources.getDisplayMetrics().density;
+
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inScaled = false;
+
+		// Read in the resource
+		Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId,
+				options);
+
+		android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
+		// set default bitmap config if none
+		if (bitmapConfig == null) {
+			bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+		}
+		// resource bitmaps are imutable,
+		// so we need to convert it to mutable one
+		bitmap = bitmap.copy(bitmapConfig, true);
+
+		Canvas canvas = new Canvas(bitmap);
+		// new antialised Paint
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// text color - #3D3D3D
+		paint.setColor(Color.rgb(61, 61, 61));
+		// text size in pixels
+		paint.setTextSize((int) (32 * scale));
+		// text shadow
+		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+		// draw text to the Canvas center
+		Rect bounds = new Rect();
+		paint.getTextBounds(gText, 0, gText.length(), bounds);
+		int x = (bitmap.getWidth() - bounds.width()) / 2;
+		int y = (bitmap.getHeight() + bounds.height()) / 2;
+
+		canvas.drawText(gText, x, y, paint);
+
+		return bitmap;
 	}
 }
