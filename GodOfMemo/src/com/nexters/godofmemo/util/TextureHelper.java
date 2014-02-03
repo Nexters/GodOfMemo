@@ -11,9 +11,13 @@ import static android.opengl.GLES20.glGenTextures;
 import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexParameteri;
 import static android.opengl.GLUtils.texImage2D;
+
+import java.nio.ByteBuffer;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLES20;
 import android.util.Log;
 
 public class TextureHelper {
@@ -54,16 +58,44 @@ public class TextureHelper {
 			glDeleteTextures(1, textureObjectIds, 0);
 			return 0;
 		}
+		
+		byte[] buffer = new byte[bitmap.getWidth() * bitmap.getHeight() * 4];
+		for ( int y = 0; y < bitmap.getHeight(); y++ )
+		    for ( int x = 0; x < bitmap.getWidth(); x++ )
+		    {
+		        int pixel = bitmap.getPixel(x, y);
+		        buffer[(y * bitmap.getWidth() + x) * 4 + 0] = (byte)((pixel >> 16) & 0xFF);
+		        buffer[(y * bitmap.getWidth() + x) * 4 + 1] = (byte)((pixel >> 8) & 0xFF);
+		        buffer[(y * bitmap.getWidth() + x) * 4 + 2] = (byte)((pixel >> 0) & 0xFF);
+		        buffer[(y * bitmap.getWidth() + x) * 4 + 3] = (byte)((pixel >> 24) & 0xFF);
+		    }
+		
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmap.getWidth() * bitmap.getHeight() * 4);
+	    byteBuffer.put(buffer).position(0);
+
+
 		// Bind to the texture in OpenGL
 		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
 
+	    //alpha 주기위한 옵션
+		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		GLES20.glEnable(GLES20.GL_BLEND); 
+		
 		// Set filtering: a default must be set, or the texture will be
 		// black.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT );
+	    
+	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT );
+
+	    
 		// Load the bitmap into the bound texture.
-		texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+		GLES20.glTexImage2D ( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmap.getWidth(), bitmap.getHeight(), 0, 
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, byteBuffer );
+
 
 		// Note: Following code may cause an error to be reported in the
 		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
