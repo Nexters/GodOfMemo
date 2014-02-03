@@ -138,8 +138,8 @@ public class MainActivity extends ActionBarActivity {
 		
 		String txt = data.getStringExtra("txt");
 		try {
-			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.memo01, txt);
-			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.606f, 0.494f, bitmap));
+			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.whitememo2, txt);
+			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.5f, 0.5f, bitmap));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

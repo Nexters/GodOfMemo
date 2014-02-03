@@ -19,8 +19,10 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.nexters.godofmemo.R;
+import com.nexters.godofmemo.object.Background;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
+import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MatrixHelper;
 
 public class MemoRenderer implements Renderer {
@@ -31,8 +33,7 @@ public class MemoRenderer implements Renderer {
     private final float[] mvpMatrix = new float[16];
 
     public List<Memo> memoList;
-    private Memo memo;
-    private Memo memo2;
+    private Background background;
     //private Mallet mallet;
     
     private TextureShaderProgram textureProgram;
@@ -58,13 +59,19 @@ public class MemoRenderer implements Renderer {
         memoList = new LinkedList<Memo>();
         
         memoList.add(new Memo(context, 0f, 0f, 0.606f, 0.494f, R.drawable.memo02));
-        memoList.add(new Memo(context, 0.3f, -0.5f, 0.606f, 0.494f, R.drawable.memo03));
+        memoList.add(new Memo(context, 0.3f, -0.5f, 0.5f, 0.5f, R.drawable.whitememo2));
         memoList.add(new Memo(context, -0.6f, -1.0f, 0.606f, 0.494f, R.drawable.memo04));
+        
+        //배경화면
+        background = new Background(context, 0, 0, Constants.DOT_SIZE, Constants.DOT_SIZE, R.drawable.background);
     }
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        
+        background.setTexture();
+        background.setBitmapTexture();
 
         for(Memo memo: memoList){
             // 텍스쳐를 입힌다.
@@ -100,6 +107,19 @@ public class MemoRenderer implements Renderer {
         // Clear the rendering surface.
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //카메라이동
+        setLookAtM(modelMatrix, 0, 
+        		0, 0, 8,
+        		0, 0, 0, 
+        		0f, 1.0f, 0.0f);
+        multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
+        
+        //텍스쳐를 그린다.
+        textureProgram.useProgram();
+        textureProgram.setUniforms(mvpMatrix, background.texture);
+        background.bindData(textureProgram);
+        background.draw();
+        
         //카메라이동
         setLookAtM(modelMatrix, 0, 
         		px, py, zoom,
