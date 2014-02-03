@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -21,7 +22,6 @@ public class MemoActivity extends ActionBarActivity {
 
 		et = (EditText) findViewById(R.id.input_text);
 		findViewById(R.id.okBtn).setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				makeText();
@@ -33,10 +33,22 @@ public class MemoActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		inflater.inflate(R.menu.memo, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.action_write_finish:
+			makeText();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
 	public void makeText() {
 		Intent intent = getIntent();
 		String txt = et.getText().toString();

@@ -1,8 +1,5 @@
 package com.nexters.godofmemo;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -15,7 +12,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -124,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
 					Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_write:
-			Intent intent = new Intent(getApplicationContext(), MemoActivity.class);
+			Intent intent = new Intent(this, MemoActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
 		default:

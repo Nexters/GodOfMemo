@@ -997,8 +997,8 @@ containing a value of this type.
         public static final int action_mode_bar_stub=0x7f06002e;
         public static final int action_mode_close_button=0x7f060022;
         public static final int action_search=0x7f060044;
-        public static final int action_settings=0x7f060046;
         public static final int action_write=0x7f060045;
+        public static final int action_write_finish=0x7f060046;
         public static final int activity_chooser_view_content=0x7f060023;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1163,6 +1163,7 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000b;
         public static final int action_settings=0x7f0b000e;
+        public static final int action_write_finish=0x7f0b0011;
         public static final int app_name=0x7f0b000d;
         public static final int hello_world=0x7f0b000f;
         public static final int title_activity_memo=0x7f0b0010;

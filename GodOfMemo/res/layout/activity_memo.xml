@@ -7,20 +7,35 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MemoActivity" >
-
-    <EditText
+	
+   
+    
+    
+  	<EditText
         android:id="@+id/input_text"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"  
+        android:background="#88cee5"
+        android:ems="4"
+        android:gravity="center_vertical|top|left"
+        android:inputType="textMultiLine"
+        android:lineSpacingExtra="6dp"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp"/>
+        
+	 <Button
+	   	android:id="@+id/okBtn"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/input_text"
+	    android:layout_marginRight="19dp"
+	    android:layout_marginTop="28dp"
+	    android:text="입력" />  
 
-    <Button
-        android:id="@+id/okBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/input_text"
-        android:layout_below="@+id/input_text"
-        android:layout_marginRight="19dp"
-        android:layout_marginTop="28dp"
-        android:text="입력" />
-
+    
+    
 </RelativeLayout>
