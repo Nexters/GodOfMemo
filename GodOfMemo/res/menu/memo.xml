@@ -3,8 +3,7 @@
 
     <item
         android:id="@+id/action_write_finish"
-        android:title="끝"
-        android:showAsAction="always"
-        />
+        android:title="@string/action_write_finish"
+        app:showAsAction="always"/>
 
 </menu>

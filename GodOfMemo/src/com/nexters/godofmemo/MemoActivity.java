@@ -21,12 +21,7 @@ public class MemoActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_memo);
 
 		et = (EditText) findViewById(R.id.input_text);
-		findViewById(R.id.okBtn).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				makeText();
-			}
-		});
+		
 	}
 
 	@Override
