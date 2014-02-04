@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -31,6 +32,9 @@ public class MemoGLView extends GLSurfaceView {
 
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        
+        //진동 초기화
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	private static final String TAG = "MemoGLView";
@@ -58,6 +62,9 @@ public class MemoGLView extends GLSurfaceView {
 	//선택된 메모
 	private Memo selectedMemo;
 	private float selectedAnimationSize = 0.1f;
+    
+    //진동관리
+    private Vibrator vibrator;
 	
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -176,7 +183,7 @@ public class MemoGLView extends GLSurfaceView {
 				float newDist = spacing(event);
 				float scale = newDist / oldDist;	//확대,축소 여부
 
-				float dZ = 0.05f;	//줌가속 변수
+				float dZ = 0.07f;	//줌가속 변수
 				float min = 1f;	//줌 최소
 				float max = 5f;	//줌최대
 				
@@ -279,6 +286,9 @@ public class MemoGLView extends GLSurfaceView {
 				
 				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
 				if(chkX <= 0.9f && chkY <= 0.5f){
+					//선택시 진동
+					vibrator.vibrate(100);
+					
 					//선택된걸 상위로
 					mr.memoList.remove(memo);
 					mr.memoList.add(memo);

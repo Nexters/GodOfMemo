@@ -9,7 +9,6 @@ import static android.opengl.Matrix.setIdentityM;
 import static android.opengl.Matrix.setLookAtM;
 import static android.opengl.Matrix.translateM;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,6 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Vibrator;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.MemoDAO;
