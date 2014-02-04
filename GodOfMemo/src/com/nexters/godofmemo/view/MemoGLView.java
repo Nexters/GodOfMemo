@@ -79,8 +79,11 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_DOWN:
 			//롱클릭이벤트 처리를 위해 등록
 			//일정시간 이상 클릭시 롱클릭 이벤트 발생
-			mLongPressed = new LongClickControll(x,y);
-			handler.postDelayed(mLongPressed , longClickTimeLimit);
+			//줌상태가 아니면
+			if (mode != ZOOM) {
+				mLongPressed = new LongClickControll(x,y);
+				handler.postDelayed(mLongPressed , longClickTimeLimit);
+			}
 			
 			//위치저장
 			start.set(x, y);
@@ -155,7 +158,7 @@ public class MemoGLView extends GLSurfaceView {
 				}else{
 					//화면 이동
 					//TODO 추후 개선 필요
-					float dM = 0.001f*mr.zoom;
+					float dM = 0.0015f*mr.zoom;
 					mr.px += dx>0 ? -(dx*dM) : -(dx*dM);
 					mr.py += dy>0 ? +(dy*dM) : +(dy*dM);
 					System.out.format(" x y %f %f \t", x, y);
@@ -166,6 +169,9 @@ public class MemoGLView extends GLSurfaceView {
 				}
 				
 			} else if (mode == ZOOM) {
+				//줌모드로 들어오면 롱클릭 이벤트를 해제함
+				handler.removeCallbacks(mLongPressed);
+				
 				//Log.d(TAG, "ZOOM");
 				float newDist = spacing(event);
 				float scale = newDist / oldDist;	//확대,축소 여부
