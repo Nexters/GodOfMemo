@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -137,23 +138,9 @@ public class MainActivity extends ActionBarActivity {
 		
 		String short_txt = data.getStringExtra("short_txt");
 		String detailed_txt = data.getStringExtra("detailed_txt");
-		try {
-			Bitmap short_bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.bluememo2, short_txt);
-			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.5f, 0.5f, short_bitmap));
-			
-			if(detailed_txt != null){
-				Bitmap detail_bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.whitememo2, detailed_txt);
-				glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.39f, 0.5f, 0.5f, detail_bitmap));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-    }
-
+		
 		//메모를 저장한다.
-		String txt = data.getStringExtra("txt");
-		Memo newMemo = new Memo(getApplicationContext(), txt); 
+		Memo newMemo = new Memo(getApplicationContext(), short_txt); 
 		MemoDAO memoDao = new MemoDAO(getApplicationContext());
 		long memoIdL = memoDao.insertMemo(newMemo);
 		String memoId = String.valueOf(memoIdL);
