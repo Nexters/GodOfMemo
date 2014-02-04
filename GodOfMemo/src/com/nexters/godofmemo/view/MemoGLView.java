@@ -4,20 +4,22 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
 import com.nexters.godofmemo.util.MultisampleConfigChooser;
 
 public class MemoGLView extends GLSurfaceView {
 	
-
     public MemoRenderer mr;
+    private Context context;
 	
 	public MemoGLView(Context context) {
 		super(context);
+		
+		this.context = context;		
 		
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
@@ -62,6 +64,7 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
+		System.out.println("111  "+x +", "+ y);
 		
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
@@ -75,7 +78,7 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_DOWN:
 			//롱클릭이벤트 처리를 위해 등록
 			//일정시간 이상 클릭시 롱클릭 이벤트 발생
-			mLongPressed = new LongClickControll(event);
+			mLongPressed = new LongClickControll(x,y);
 			handler.postDelayed(mLongPressed , longClickTimeLimit);
 			
 			//위치저장
@@ -107,10 +110,14 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//메모 선택시
 			if(selectedMemo != null){
-				selectedMemo.pHeight -= selectedAnimationSize;
-				selectedMemo.pWidth -= selectedAnimationSize;
+				selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
+				selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
 				selectedMemo.setVertices();
 				requestRender();
+				
+				//이동한 정보를 DB에 입력한다.
+				 MemoDAO memoDao = new MemoDAO(context);
+				 memoDao.updateMemo(selectedMemo);
 				selectedMemo = null;
 			}
 			
@@ -139,8 +146,8 @@ public class MemoGLView extends GLSurfaceView {
 				
 				if(selectedMemo != null){
 					//메모 이동
-					selectedMemo.px = nx;
-					selectedMemo.py = ny;
+					selectedMemo.setX(nx);
+					selectedMemo.setY(ny);
 					selectedMemo.setVertices();
 				}else{
 					//화면 이동
@@ -219,15 +226,29 @@ public class MemoGLView extends GLSurfaceView {
 	public class LongClickControll implements Runnable{
 		MotionEvent event;
 		
-		LongClickControll(MotionEvent event){
+		float x;
+		float y;
+		
+/*		LongClickControll(MotionEvent event){
 			this.event = event;
+		}*/
+		
+		LongClickControll(float x, float y){
+			this.x = x;
+			this.y = y;
 		}
 
 		@Override
 		public void run() {
-			//터치한 좌표
-			float x = event.getX();
-			float y = event.getY();
+//			//터치한 좌표
+//			float x = event.getX();
+//			float y = event.getY();
+			
+			//TODO 버그인가? 위에서 선택했을때랑 여기서 선택했을때랑 y좌표를 다르게 가져온다.
+			//MotionEvent를 등록할때에는 액션봐와 상단메뉴를 제외한 y좌표를 받는데
+			//여기선 액션바와 상단메뉴를 포함한 y좌표를 받는다.
+			//왜일까?
+			System.out.println("222  "+x +", "+ y);
 			
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
@@ -235,19 +256,24 @@ public class MemoGLView extends GLSurfaceView {
 	    	
 	    	//선택된 원을 확인
 			for(Memo memo : mr.memoList){
-				float chkX = Math.abs(nx-memo.px)/(memo.pWidth/2);
-				float chkY = Math.abs(ny-memo.py)/(memo.pHeight/2);
+				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
+				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
 
-				System.out.format("x,y %f %f \n",memo.px, memo.py);
+				System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
 				System.out.format("nx, ny %f %f \n",nx, ny);
 				System.out.format("chk x,y %f %f \n",chkX, chkY);
+				
 				if(chkX <= 1 && chkY <= 1){
+					//선택된걸 상위로
+					mr.memoList.remove(memo);
+					mr.memoList.add(memo);
+					
 					//선택됨
 					selectedMemo = memo;
-					selectedMemo.px = nx;
-					selectedMemo.py = ny;
-					selectedMemo.pHeight += selectedAnimationSize;
-					selectedMemo.pWidth += selectedAnimationSize;
+					selectedMemo.setX(nx);
+					selectedMemo.setY(ny);
+					selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
+					selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
 					selectedMemo.setVertices();
 					requestRender();
 					return;

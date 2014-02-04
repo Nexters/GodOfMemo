@@ -978,14 +978,8 @@ containing a value of this type.
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
         public static final int background=0x7f020057;
         public static final int bluememo=0x7f020058;
-        public static final int bluememo2=0x7f020059;
-        public static final int ic_launcher=0x7f02005a;
-        public static final int memo01=0x7f02005b;
-        public static final int memo02=0x7f02005c;
-        public static final int memo03=0x7f02005d;
-        public static final int memo04=0x7f02005e;
-        public static final int whitememo=0x7f02005f;
-        public static final int whitememo2=0x7f020060;
+        public static final int ic_launcher=0x7f020059;
+        public static final int whitememo=0x7f02005a;
     }
     public static final class id {
         public static final int action_bar=0x7f06001a;
@@ -1119,12 +1113,10 @@ containing a value of this type.
         public static final int memo=0x7f0d0001;
     }
     public static final class raw {
-        public static final int ic_launcher=0x7f050000;
-        public static final int memo02=0x7f050001;
-        public static final int simple_fragment_shader=0x7f050002;
-        public static final int simple_vertex_shader=0x7f050003;
-        public static final int texture_fragment_shader=0x7f050004;
-        public static final int texture_vertex_shader=0x7f050005;
+        public static final int simple_fragment_shader=0x7f050000;
+        public static final int simple_vertex_shader=0x7f050001;
+        public static final int texture_fragment_shader=0x7f050002;
+        public static final int texture_vertex_shader=0x7f050003;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 

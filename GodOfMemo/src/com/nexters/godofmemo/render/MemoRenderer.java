@@ -19,6 +19,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.nexters.godofmemo.R;
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Background;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
@@ -34,11 +35,8 @@ public class MemoRenderer implements Renderer {
 
     public List<Memo> memoList;
     private Background background;
-    //private Mallet mallet;
     
     private TextureShaderProgram textureProgram;
-    
-    private int texture;
     
     //바라보는 화면 위치를 저장하는 변수
     public float px = 0f;
@@ -56,11 +54,13 @@ public class MemoRenderer implements Renderer {
 
     public MemoRenderer(Context context) {
         this.context = context;
-        memoList = new LinkedList<Memo>();
-        
-        memoList.add(new Memo(context, 0f, 0f, 0.606f, 0.494f, R.drawable.memo02));
-        memoList.add(new Memo(context, 0.3f, -0.5f, 0.5f, 0.5f, R.drawable.whitememo2));
-        memoList.add(new Memo(context, -0.6f, -1.0f, 0.606f, 0.494f, R.drawable.memo04));
+
+        MemoDAO memoDao = new MemoDAO(context);
+        memoList = memoDao.getMemoList();
+         
+//		memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
+//		memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
+//		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
         
         //배경화면
         background = new Background(context, 0, 0, Constants.DOT_SIZE, Constants.DOT_SIZE, R.drawable.background);
@@ -71,12 +71,10 @@ public class MemoRenderer implements Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         
         background.setTexture();
-        background.setBitmapTexture();
 
         for(Memo memo: memoList){
             // 텍스쳐를 입힌다.
         	memo.setTexture();
-        	memo.setBitmapTexture();
         }
         
         textureProgram = new TextureShaderProgram(context);
@@ -84,14 +82,18 @@ public class MemoRenderer implements Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+    	System.out.println(width);
+    	System.out.println(height);
     	//높이 너비 저장
     	this.width = width;
     	this.height = height;
     	
+    	System.out.println(Constants.actionbarHeight);
+    	
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
 
-        MatrixHelper.perspectiveM(projectionMatrix, fov*100, (float) width/ (float) height, 1f, 8f);
+        MatrixHelper.perspectiveM(projectionMatrix, fov*100, (float) width/ (float) height, 1f, Constants.SCREEN_SIZE);
 
         setIdentityM(modelMatrix, 0);
         translateM(modelMatrix, 0, 0f, 0f, -zoom);
@@ -107,18 +109,18 @@ public class MemoRenderer implements Renderer {
         // Clear the rendering surface.
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //카메라이동
+        //########################
+        //배경 그리기
         setLookAtM(modelMatrix, 0, 
-        		0, 0, 8,
+        		0, 0, Constants.SCREEN_SIZE,
         		0, 0, 0, 
         		0f, 1.0f, 0.0f);
         multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
-        
-        //텍스쳐를 그린다.
         textureProgram.useProgram();
         textureProgram.setUniforms(mvpMatrix, background.texture);
         background.bindData(textureProgram);
         background.draw();
+        //#########################
         
         //카메라이동
         setLookAtM(modelMatrix, 0, 
