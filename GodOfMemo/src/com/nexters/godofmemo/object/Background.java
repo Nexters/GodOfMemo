@@ -98,12 +98,8 @@ public class Background {
 	//텍스쳐 설정
 	public void setTexture(){
 		this.texture = TextureHelper.loadTexture(context, textureSource);
-	}
-	
-	//텍스쳐 설정
-	public void setBitmapTexture(){
 		if(textBitmap != null){
-			this.texture = TextureHelper.loadTextureBitmp(textBitmap);
+			this.texture = TextureHelper.loadBitmpTexture(textBitmap);
 		}
 	}
 

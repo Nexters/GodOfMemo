@@ -5,22 +5,17 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity {
@@ -34,6 +29,9 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		//액션바 높이를 저장한다.
+		Constants.actionbarHeight = getActionBarHeight();
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -127,71 +125,30 @@ public class MainActivity extends ActionBarActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		System.out.println("onActivityResult");
-		
-		//비정상종료면?
-		if(resultCode != Activity.RESULT_OK) return;
-		
+
+		// 비정상종료면?
+		if (resultCode != Activity.RESULT_OK)
+			return;
+
 		String txt = data.getStringExtra("txt");
-		try {
-			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.whitememo2, txt);
-			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.5f, 0.5f, bitmap));
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
-    }
+		glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(), txt));
+	}
 	
-	/**
-	 * 이미지에 텍스트를 쓰는 함수
-	 * 
-	 * @param gContext
-	 * @param gResId
-	 * @param gText
-	 * @return
-	 */
-	public Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
-		Resources resources = gContext.getResources();
-		float scale = resources.getDisplayMetrics().density;
-
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inScaled = false;
-
-		// Read in the resource
-		Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId,
-				options);
-
-		android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
-		// set default bitmap config if none
-		if (bitmapConfig == null) {
-			bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
-		}
-		// resource bitmaps are imutable,
-		// so we need to convert it to mutable one
-		bitmap = bitmap.copy(bitmapConfig, true);
-
-		Canvas canvas = new Canvas(bitmap);
-		// new antialised Paint
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		// text color - #3D3D3D
-		paint.setColor(Color.rgb(61, 61, 61));
-		// text size in pixels
-		paint.setTextSize((int) (32 * scale));
-		// text shadow
-		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-
-		// draw text to the Canvas center
-		Rect bounds = new Rect();
-		paint.getTextBounds(gText, 0, gText.length(), bounds);
-		int x = (bitmap.getWidth() - bounds.width()) / 2;
-		int y = (bitmap.getHeight() + bounds.height()) / 2;
-
-		canvas.drawText(gText, x, y, paint);
-
-		return bitmap;
+	private int getActionBarHeight() {
+	    int actionBarHeight = getSupportActionBar().getHeight();
+	    if (actionBarHeight != 0)
+	        return actionBarHeight;
+	    final TypedValue tv = new TypedValue();
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+	            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+	    } else if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true))
+	        actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+	    return actionBarHeight;
 	}
 }

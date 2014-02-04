@@ -4,8 +4,15 @@ import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glDrawArrays;
 import static com.nexters.godofmemo.util.Constants.BYTES_PER_FLOAT;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
+import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.TextureHelper;
@@ -88,44 +95,51 @@ public class Memo {
 
 		vertexArray = new VertexArray(VERTEX_DATA);
 	}
-	
-	//텍스쳐 설정
-	public void setTexture(int texture){
-		this.texture = texture;
-	}
-	
-	//텍스쳐 설정
-	public void setTexture(){
-		this.texture = TextureHelper.loadTexture(context, textureSource);
-	}
-	
-	//텍스쳐 설정
-	public void setBitmapTexture(){
-		if(textBitmap != null){
-			this.texture = TextureHelper.loadTextureBitmp(textBitmap);
+
+	// 텍스쳐 설정
+	public void setTexture() {
+		if (textureSource != 0) {
+			// 텍스쳐를 불러보고
+			this.texture = TextureHelper.loadTexture(context, textureSource);
+		} else if (textBitmap != null) {
+			// 비트맵이 있으면 비트맵 텍스쳐를 입힌다.
+			this.texture = TextureHelper.loadBitmpTexture(textBitmap);
 		}
 	}
 
-	public Memo(Context context, float px, float py, float pWidth, float pHeight, int texture) {
+	/**
+	 * 저장된 메모를 그린다
+	 * @param context
+	 * 컨텍스트
+	 * @param px
+	 * 
+	 * @param py
+	 * @param pWidth
+	 * @param pHeight
+	 * @param text
+	 */
+	public Memo(Context context, float px, float py, float pWidth, float pHeight, String text) {
 		this.context = context;
 		this.px = px;
 		this.py = py;
 		this.pWidth = pWidth;
 		this.pHeight = pHeight;
-		this.textureSource = texture;
+		this.textBitmap = drawTextToBitmap(context, R.drawable.whitememo, text);
 		
 		setVertices();
 	}
 	
-	public Memo(Context context, float px, float py, float pWidth, float pHeight, Bitmap texture) {
+	//신규입력시
+	public Memo(Context context, String text) {
 		this.context = context;
-		this.px = px;
-		this.py = py;
-		this.pWidth = pWidth;
-		this.pHeight = pHeight;
-		this.textBitmap = texture;
+		this.px = 0;
+		this.py = 0;
+		this.pWidth = 0.5f;
+		this.pHeight = 0.5f;
+		this.textBitmap = drawTextToBitmap(context, R.drawable.whitememo, text);
 		
 		setVertices();
+		
 	}
 
 	public void bindData(TextureShaderProgram textureProgram) {
@@ -140,5 +154,55 @@ public class Memo {
 
 	public void draw() {
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	}
+	
+	/**
+	 * 이미지에 텍스트를 쓰는 함수
+	 * 
+	 * @param gContext
+	 * @param gResId
+	 * @param gText
+	 * @return
+	 */
+	public Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
+		Resources resources = gContext.getResources();
+		float scale = resources.getDisplayMetrics().density;
+
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inScaled = false;
+
+		// Read in the resource
+		Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId,
+				options);
+
+		android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
+		// set default bitmap config if none
+		if (bitmapConfig == null) {
+			bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+		}
+		// resource bitmaps are imutable,
+		// so we need to convert it to mutable one
+		bitmap = bitmap.copy(bitmapConfig, true);
+
+		Canvas canvas = new Canvas(bitmap);
+		// new antialised Paint
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// text color - #3D3D3D
+		paint.setColor(Color.rgb(61, 61, 61));
+		// text size in pixels
+		paint.setTextSize((int) (32 * scale));
+		// text shadow
+		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+		// draw text to the Canvas center
+		Rect bounds = new Rect();
+		paint.getTextBounds(gText, 0, gText.length(), bounds);
+		int x = (bitmap.getWidth() - bounds.width()) / 2;
+		int y = (bitmap.getHeight() + bounds.height()) / 2;
+
+		//TODO 텍스트를 메모 위 어느 위치에 그릴것인지 정해야 한다.
+		canvas.drawText(gText, x, y, paint);
+
+		return bitmap;
 	}
 }
