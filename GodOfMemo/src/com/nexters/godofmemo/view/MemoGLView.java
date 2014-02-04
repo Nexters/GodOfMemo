@@ -277,7 +277,8 @@ public class MemoGLView extends GLSurfaceView {
 				//System.out.format("nx, ny %f %f \n",nx, ny);
 				//System.out.format("chk x,y %f %f \n",chkX, chkY);
 				
-				if(chkX <= 1 && chkY <= 1){
+				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
+				if(chkX <= 0.9f && chkY <= 0.5f){
 					//선택된걸 상위로
 					mr.memoList.remove(memo);
 					mr.memoList.add(memo);
