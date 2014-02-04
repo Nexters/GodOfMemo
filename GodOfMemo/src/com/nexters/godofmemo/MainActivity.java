@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -19,7 +22,7 @@ import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.view.MemoGLView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnClickListener{
 	/**
 	 * Hold a reference to our GLSurfaceView
 	 */
@@ -29,7 +32,12 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
+		getSupportActionBar().setCustomView(R.layout.actionbar_memoboard);
+		
+		findViewById(R.id.action_write).setOnClickListener(this);
+
 		
 		//액션바 높이를 저장한다.
 		Constants.actionbarHeight = getActionBarHeight();
@@ -105,26 +113,9 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		//MenuInflater inflater = getMenuInflater();
+		//inflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-		case R.id.action_search:
-			Toast.makeText(getApplicationContext(), "search",
-					Toast.LENGTH_SHORT).show();
-			return true;
-		case R.id.action_write:
-			Intent intent = new Intent(this, MemoActivity.class);
-			startActivityForResult(intent, 0);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	@Override
@@ -159,5 +150,16 @@ public class MainActivity extends ActionBarActivity {
 	    } else if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true))
 	        actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 	    return actionBarHeight;
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.action_write:
+			Intent intent = new Intent(this, MemoActivity.class);
+			startActivityForResult(intent, 0);
+			return;
+		}
+		
 	}
 }
