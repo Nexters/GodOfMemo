@@ -136,10 +136,16 @@ public class MainActivity extends ActionBarActivity {
 		//비정상종료면?
 		if(resultCode != Activity.RESULT_OK) return;
 		
-		String txt = data.getStringExtra("txt");
+		String short_txt = data.getStringExtra("short_txt");
+		String detailed_txt = data.getStringExtra("detailed_txt");
 		try {
-			Bitmap bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.whitememo2, txt);
-			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.5f, 0.5f, bitmap));
+			Bitmap short_bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.bluememo2, short_txt);
+			glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.5f, 0.5f, 0.5f, short_bitmap));
+			
+			if(detailed_txt != null){
+				Bitmap detail_bitmap = drawTextToBitmap(getApplicationContext(),R.drawable.whitememo2, detailed_txt);
+				glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(),0.5f, 0.39f, 0.5f, 0.5f, detail_bitmap));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
