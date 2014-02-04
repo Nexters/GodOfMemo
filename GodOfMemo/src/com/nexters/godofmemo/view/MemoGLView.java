@@ -48,6 +48,7 @@ public class MemoGLView extends GLSurfaceView {
 	
 	// 위치정보 기억!!
 	PointF start = new PointF();
+	PointF pre = new PointF();
 	PointF mid = new PointF();
 	float oldDist = 1f;
 	
@@ -64,12 +65,12 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
-		System.out.println("111  "+x +", "+ y);
+		//System.out.println("111  "+x +", "+ y);
 		
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
     	float ny = getNormalizedY(y);
-    	System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
+    	//System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
     	
 		// Handle touch events here...
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -83,10 +84,11 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//위치저장
 			start.set(x, y);
+			pre.set(x, y);
 			mode = DRAG;
 			
 			//위치표시
-			//System.out.format("%f %f \n", x, y);
+			////System.out.format("%f %f \n", x, y);
 			
 			break;
 			
@@ -135,8 +137,9 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
 				//Log.d(TAG, "DRAG");
-				float dx= x - start.x;
-				float dy = y - start.y;
+				float dx= x - pre.x;
+				float dy = y - pre.y;
+				pre.set(x,y);
 				
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함
 				float dLimit = 10f;
@@ -152,9 +155,14 @@ public class MemoGLView extends GLSurfaceView {
 				}else{
 					//화면 이동
 					//TODO 추후 개선 필요
-					float dM = 0.0004f;
+					float dM = 0.001f*mr.zoom;
 					mr.px += dx>0 ? -(dx*dM) : -(dx*dM);
 					mr.py += dy>0 ? +(dy*dM) : +(dy*dM);
+					System.out.format(" x y %f %f \t", x, y);
+					System.out.format(" nx ny %f %f \t", nx, ny);
+					System.out.format(" px py %f %f \n", mr.px, mr.py);
+					//mr.px = nx;
+					//mr.py = ny;
 				}
 				
 			} else if (mode == ZOOM) {
@@ -248,7 +256,7 @@ public class MemoGLView extends GLSurfaceView {
 			//MotionEvent를 등록할때에는 액션봐와 상단메뉴를 제외한 y좌표를 받는데
 			//여기선 액션바와 상단메뉴를 포함한 y좌표를 받는다.
 			//왜일까?
-			System.out.println("222  "+x +", "+ y);
+			//System.out.println("222  "+x +", "+ y);
 			
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
@@ -259,9 +267,9 @@ public class MemoGLView extends GLSurfaceView {
 				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
 				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
 
-				System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
-				System.out.format("nx, ny %f %f \n",nx, ny);
-				System.out.format("chk x,y %f %f \n",chkX, chkY);
+				//System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
+				//System.out.format("nx, ny %f %f \n",nx, ny);
+				//System.out.format("chk x,y %f %f \n",chkX, chkY);
 				
 				if(chkX <= 1 && chkY <= 1){
 					//선택된걸 상위로
