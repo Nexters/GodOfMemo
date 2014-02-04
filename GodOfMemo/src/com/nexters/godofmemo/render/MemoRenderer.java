@@ -19,6 +19,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.nexters.godofmemo.R;
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Background;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
@@ -53,11 +54,13 @@ public class MemoRenderer implements Renderer {
 
     public MemoRenderer(Context context) {
         this.context = context;
-        memoList = new LinkedList<Memo>();
 
-		memoList.add(new Memo(context, 0f, 0f, 0.3f, 0.3f, "test1"));
-		memoList.add(new Memo(context, 0.3f, -0.5f, 0.4f, 0.4f, "test2"));
-		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
+        MemoDAO memoDao = new MemoDAO(context);
+        memoList = memoDao.getMemoList();
+         
+//		memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
+//		memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
+//		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
         
         //배경화면
         background = new Background(context, 0, 0, Constants.DOT_SIZE, Constants.DOT_SIZE, R.drawable.background);
@@ -106,18 +109,18 @@ public class MemoRenderer implements Renderer {
         // Clear the rendering surface.
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //카메라이동
+        //########################
+        //배경 그리기
         setLookAtM(modelMatrix, 0, 
         		0, 0, Constants.SCREEN_SIZE,
         		0, 0, 0, 
         		0f, 1.0f, 0.0f);
         multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
-        
-        //텍스쳐를 그린다.
         textureProgram.useProgram();
         textureProgram.setUniforms(mvpMatrix, background.texture);
         background.bindData(textureProgram);
         background.draw();
+        //#########################
         
         //카메라이동
         setLookAtM(modelMatrix, 0, 

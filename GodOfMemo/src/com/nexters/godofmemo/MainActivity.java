@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.view.MemoGLView;
@@ -134,9 +135,17 @@ public class MainActivity extends ActionBarActivity {
 		// 비정상종료면?
 		if (resultCode != Activity.RESULT_OK)
 			return;
-
+		
+		//메모를 저장한다.
 		String txt = data.getStringExtra("txt");
-		glSurfaceView.mr.memoList.add(new Memo(getApplicationContext(), txt));
+		Memo newMemo = new Memo(getApplicationContext(), txt); 
+		MemoDAO memoDao = new MemoDAO(getApplicationContext());
+		long memoIdL = memoDao.insertMemo(newMemo);
+		String memoId = String.valueOf(memoIdL);
+		newMemo.setMemoId(memoId);
+		
+		//화면에 그릴 목록에 추가
+		glSurfaceView.mr.memoList.add(newMemo);
 	}
 	
 	private int getActionBarHeight() {

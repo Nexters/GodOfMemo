@@ -4,17 +4,12 @@ import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glDrawArrays;
 import static com.nexters.godofmemo.util.Constants.BYTES_PER_FLOAT;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
+import com.nexters.godofmemo.util.BitmapHelper;
 import com.nexters.godofmemo.util.TextureHelper;
 
 public class Memo {
@@ -26,11 +21,17 @@ public class Memo {
 	private static float[] VERTEX_DATA;
 	private VertexArray vertexArray;
 	
+	//기본정보
+	private String memoId;
+	private String memoContent;
+	private String memoDate;
+	private String memoTime;
+	
 	//위치, 크기정보
-	public float px;
-	public float py;
-	public float pWidth;
-	public float pHeight;
+	private float x;
+	private float y;
+	private float width;
+	private float height;
 	
 	//텍스쳐 정보
 	public int texture;
@@ -53,43 +54,43 @@ public class Memo {
 
 		// top left
 		int s = 0;
-		VERTEX_DATA[0] = px; // x
-		VERTEX_DATA[1] = py; // y
+		VERTEX_DATA[0] = x; // x
+		VERTEX_DATA[1] = y; // y
 		VERTEX_DATA[2] = 0.5f; // S
 		VERTEX_DATA[3] = 0.5f; // T
 
 		// 왼쪽 아래
 		s++;
-		VERTEX_DATA[s * 4 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA[s * 4 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 0f; // z
 		VERTEX_DATA[s * 4 + 3] = 1f; // z
 
 		// 오른쪽 아래
 		s++;
-		VERTEX_DATA[s * 4 + 0] = px + pWidth / 2; // x
-		VERTEX_DATA[s * 4 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA[s * 4 + 0] = x + width / 2; // x
+		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 1f; // z
 		VERTEX_DATA[s * 4 + 3] = 1f; // z
 
 		// 오른쪽 위에 
 		s++;
-		VERTEX_DATA[s * 4 + 0] = px + pWidth / 2; // x
-		VERTEX_DATA[s * 4 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA[s * 4 + 0] = x + width / 2; // x
+		VERTEX_DATA[s * 4 + 1] = y + height / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 1f; // z
 		VERTEX_DATA[s * 4 + 3] = 0f; // z
 
 		// 왼쪽 위에
 		s++;
-		VERTEX_DATA[s * 4 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA[s * 4 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA[s * 4 + 1] = y + height / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 0f; // z
 		VERTEX_DATA[s * 4 + 3] = 0f; // z
 
 		// 왼쪽 아래
 		s++;
-		VERTEX_DATA[s * 4 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA[s * 4 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 0f; // z
 		VERTEX_DATA[s * 4 + 3] = 1f; // z
 
@@ -108,23 +109,32 @@ public class Memo {
 	}
 
 	/**
+	 * 생성자
+	 * 
+	 * @param context
+	 */
+	public Memo(Context context){
+		this.context = context;
+	}
+			
+	/**
 	 * 저장된 메모를 그린다
 	 * @param context
 	 * 컨텍스트
-	 * @param px
+	 * @param x
 	 * 
-	 * @param py
-	 * @param pWidth
-	 * @param pHeight
+	 * @param y
+	 * @param width
+	 * @param height
 	 * @param text
 	 */
-	public Memo(Context context, float px, float py, float pWidth, float pHeight, String text) {
+	public Memo(Context context, float x, float y, float width, float height, String text) {
 		this.context = context;
-		this.px = px;
-		this.py = py;
-		this.pWidth = pWidth;
-		this.pHeight = pHeight;
-		this.textBitmap = drawTextToBitmap(context, R.drawable.whitememo, text);
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, text);
 		
 		setVertices();
 	}
@@ -132,11 +142,14 @@ public class Memo {
 	//신규입력시
 	public Memo(Context context, String text) {
 		this.context = context;
-		this.px = 0;
-		this.py = 0;
-		this.pWidth = 0.5f;
-		this.pHeight = 0.5f;
-		this.textBitmap = drawTextToBitmap(context, R.drawable.whitememo, text);
+		//내용 채우고
+		setMemoContent(text);
+		
+		//위치와 크기
+		setX(0);
+		setY(0);
+		setWidth(0.5f);
+		setHeight(0.5f);
 		
 		setVertices();
 		
@@ -155,54 +168,79 @@ public class Memo {
 	public void draw() {
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
+
 	
-	/**
-	 * 이미지에 텍스트를 쓰는 함수
-	 * 
-	 * @param gContext
-	 * @param gResId
-	 * @param gText
-	 * @return
-	 */
-	public Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
-		Resources resources = gContext.getResources();
-		float scale = resources.getDisplayMetrics().density;
+	//##############
+	// Getter, Setter
+	//##############
 
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inScaled = false;
-
-		// Read in the resource
-		Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId,
-				options);
-
-		android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
-		// set default bitmap config if none
-		if (bitmapConfig == null) {
-			bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
-		}
-		// resource bitmaps are imutable,
-		// so we need to convert it to mutable one
-		bitmap = bitmap.copy(bitmapConfig, true);
-
-		Canvas canvas = new Canvas(bitmap);
-		// new antialised Paint
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		// text color - #3D3D3D
-		paint.setColor(Color.rgb(61, 61, 61));
-		// text size in pixels
-		paint.setTextSize((int) (32 * scale));
-		// text shadow
-		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-
-		// draw text to the Canvas center
-		Rect bounds = new Rect();
-		paint.getTextBounds(gText, 0, gText.length(), bounds);
-		int x = (bitmap.getWidth() - bounds.width()) / 2;
-		int y = (bitmap.getHeight() + bounds.height()) / 2;
-
-		//TODO 텍스트를 메모 위 어느 위치에 그릴것인지 정해야 한다.
-		canvas.drawText(gText, x, y, paint);
-
-		return bitmap;
+	public String getMemoId() {
+		return memoId;
 	}
+
+	public void setMemoId(String memoId) {
+		this.memoId = memoId;
+	}
+
+	public String getMemoContent() {
+		return memoContent;
+	}
+
+	public void setMemoContent(String memoContent) {
+		if(memoContent == null){
+			memoContent = "test";
+		}
+		//메모내용을 담은 비트맵 생성
+		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, memoContent);
+		this.memoContent = memoContent;
+	}
+
+	public String getMemoDate() {
+		return memoDate;
+	}
+
+	public void setMemoDate(String memoDate) {
+		this.memoDate = memoDate;
+	}
+
+	public String getMemoTime() {
+		return memoTime;
+	}
+
+	public void setMemoTime(String memoTime) {
+		this.memoTime = memoTime;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+	
 }

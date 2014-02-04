@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
 import com.nexters.godofmemo.util.MultisampleConfigChooser;
@@ -14,9 +14,12 @@ import com.nexters.godofmemo.util.MultisampleConfigChooser;
 public class MemoGLView extends GLSurfaceView {
 	
     public MemoRenderer mr;
+    private Context context;
 	
 	public MemoGLView(Context context) {
 		super(context);
+		
+		this.context = context;		
 		
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
@@ -107,10 +110,14 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//메모 선택시
 			if(selectedMemo != null){
-				selectedMemo.pHeight -= selectedAnimationSize;
-				selectedMemo.pWidth -= selectedAnimationSize;
+				selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
+				selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
 				selectedMemo.setVertices();
 				requestRender();
+				
+				//이동한 정보를 DB에 입력한다.
+				 MemoDAO memoDao = new MemoDAO(context);
+				 memoDao.updateMemo(selectedMemo);
 				selectedMemo = null;
 			}
 			
@@ -139,8 +146,8 @@ public class MemoGLView extends GLSurfaceView {
 				
 				if(selectedMemo != null){
 					//메모 이동
-					selectedMemo.px = nx;
-					selectedMemo.py = ny;
+					selectedMemo.setX(nx);
+					selectedMemo.setY(ny);
 					selectedMemo.setVertices();
 				}else{
 					//화면 이동
@@ -249,10 +256,10 @@ public class MemoGLView extends GLSurfaceView {
 	    	
 	    	//선택된 원을 확인
 			for(Memo memo : mr.memoList){
-				float chkX = Math.abs(nx-memo.px)/(memo.pWidth/2);
-				float chkY = Math.abs(ny-memo.py)/(memo.pHeight/2);
+				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
+				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
 
-				System.out.format("x,y %f %f \n",memo.px, memo.py);
+				System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
 				System.out.format("nx, ny %f %f \n",nx, ny);
 				System.out.format("chk x,y %f %f \n",chkX, chkY);
 				
@@ -263,10 +270,10 @@ public class MemoGLView extends GLSurfaceView {
 					
 					//선택됨
 					selectedMemo = memo;
-					selectedMemo.px = nx;
-					selectedMemo.py = ny;
-					selectedMemo.pHeight += selectedAnimationSize;
-					selectedMemo.pWidth += selectedAnimationSize;
+					selectedMemo.setX(nx);
+					selectedMemo.setY(ny);
+					selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
+					selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
 					selectedMemo.setVertices();
 					requestRender();
 					return;

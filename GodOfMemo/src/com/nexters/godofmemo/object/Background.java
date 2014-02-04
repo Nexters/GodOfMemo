@@ -43,17 +43,10 @@ public class Background {
 	 */
 	public void setVertices() {
 
-		VERTEX_DATA = new float[24];
+		VERTEX_DATA = new float[20];
 
 		// top left
 		int s = 0;
-		/*VERTEX_DATA[0] = px; // x
-		VERTEX_DATA[1] = py; // y
-		VERTEX_DATA[2] = 0f; // S
-		VERTEX_DATA[3] = 0f; // T
-		s++;
-*/
-		// 왼쪽 아래
 		VERTEX_DATA[s * 4 + 0] = px - pWidth / 2; // x
 		VERTEX_DATA[s * 4 + 1] = py - pHeight / 2; // y
 		VERTEX_DATA[s * 4 + 2] = 0f; // z
