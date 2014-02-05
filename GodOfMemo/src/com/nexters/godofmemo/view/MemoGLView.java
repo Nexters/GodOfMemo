@@ -183,7 +183,7 @@ public class MemoGLView extends GLSurfaceView {
 				float newDist = spacing(event);
 				float scale = newDist / oldDist;	//확대,축소 여부
 
-				float dZ = 0.07f;	//줌가속 변수
+				float dZ = 0.05f;	//줌가속 변수
 				float min = 1f;	//줌 최소
 				float max = 5f;	//줌최대
 				

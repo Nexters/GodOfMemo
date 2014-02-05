@@ -47,7 +47,7 @@ public class MemoRenderer implements Renderer {
     public int height;
     
     //줌 배율
-    public float zoom = 2.5f;
+    public float zoom = 1.5f;
     
     //fov
     public float fov = 0.6f;
@@ -64,7 +64,10 @@ public class MemoRenderer implements Renderer {
 //		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
         
         //배경화면
-        background = new Background(context, 0, 0, Constants.DOT_SIZE, Constants.DOT_SIZE, R.drawable.background);
+        background = new Background(context, 0, 0, Constants.DOT_SIZE/20f, Constants.DOT_SIZE/20f, R.drawable.background);
+        
+        //TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
+        
     }
 
     @Override
@@ -112,16 +115,6 @@ public class MemoRenderer implements Renderer {
 
         //########################
         //배경 그리기
-        setLookAtM(modelMatrix, 0, 
-        		0, 0, Constants.SCREEN_SIZE,
-        		0, 0, 0, 
-        		0f, 1.0f, 0.0f);
-        multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
-        textureProgram.useProgram();
-        textureProgram.setUniforms(mvpMatrix, background.texture);
-        background.bindData(textureProgram);
-        background.draw();
-        //#########################
         
         //카메라이동
         setLookAtM(modelMatrix, 0, 
@@ -129,6 +122,12 @@ public class MemoRenderer implements Renderer {
         		px, py, 0, 
         		0f, 1.0f, 0.0f);
         multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
+        
+        textureProgram.useProgram();
+        textureProgram.setUniforms(mvpMatrix, background.texture);
+        background.bindData(textureProgram);
+        background.draw();
+        //#########################
         
         //메모들을 그린다
         for(Memo memo: memoList){
