@@ -984,6 +984,9 @@ containing a value of this type.
         public static final int memo_write_btn_press=0x7f02005b;
         public static final int memo_write_btn_selector=0x7f02005c;
         public static final int whitememo=0x7f02005d;
+        public static final int write01=0x7f02005e;
+        public static final int write02=0x7f02005f;
+        public static final int write03=0x7f020060;
     }
     public static final class id {
         public static final int action_bar=0x7f06001a;

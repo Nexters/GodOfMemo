@@ -12,13 +12,40 @@
         android:text="메모 보드"
         android:textColor="#159ae5"
         android:textSize="22dp" />
-
+    <!--
     <Button
+        android:background="@drawable/memo_write_btn_selector"
+        android:textColor="#FFFFFF" />
+    -->
+
+    <LinearLayout
         android:id="@+id/action_write"
         android:layout_width="wrap_content"
-        android:layout_height="33dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:background="@drawable/memo_write_btn_selector"
-        android:textColor="#FFFFFF" />
+        android:padding="5dp" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/write01" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/write02"
+            android:gravity="center_vertical"
+            android:text="메모 쓰기"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/write03" />
+    </LinearLayout>
 
 </FrameLayout>
