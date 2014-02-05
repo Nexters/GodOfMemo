@@ -1000,14 +1000,13 @@ containing a value of this type.
         public static final int action_mode_bar_stub=0x7f06002e;
         public static final int action_mode_close_button=0x7f060022;
         public static final int action_write=0x7f060043;
-        public static final int action_write_finish=0x7f060046;
+        public static final int action_write_finish=0x7f060045;
         public static final int activity_chooser_view_content=0x7f060023;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
         public static final int checkbox=0x7f06002b;
         public static final int collapseActionView=0x7f06000d;
         public static final int default_activity_button=0x7f060026;
-        public static final int detailed_text=0x7f060045;
         public static final int dialog=0x7f06000e;
         public static final int disableHome=0x7f060008;
         public static final int dropdown=0x7f06000f;
