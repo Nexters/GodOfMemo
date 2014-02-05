@@ -794,10 +794,11 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f070002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f080003;
+        public static final int abc_search_url_text_holo=0x7f080004;
         public static final int abc_search_url_text_normal=0x7f080000;
         public static final int abc_search_url_text_pressed=0x7f080002;
         public static final int abc_search_url_text_selected=0x7f080001;
+        public static final int titlecolor=0x7f080003;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -979,7 +980,10 @@ containing a value of this type.
         public static final int background=0x7f020057;
         public static final int bluememo=0x7f020058;
         public static final int ic_launcher=0x7f020059;
-        public static final int whitememo=0x7f02005a;
+        public static final int memo_write_btn=0x7f02005a;
+        public static final int memo_write_btn_press=0x7f02005b;
+        public static final int memo_write_btn_selector=0x7f02005c;
+        public static final int whitememo=0x7f02005d;
     }
     public static final class id {
         public static final int action_bar=0x7f06001a;
@@ -995,8 +999,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f06002f;
         public static final int action_mode_bar_stub=0x7f06002e;
         public static final int action_mode_close_button=0x7f060022;
-        public static final int action_search=0x7f060044;
-        public static final int action_write=0x7f060045;
+        public static final int action_write=0x7f060043;
         public static final int action_write_finish=0x7f060046;
         public static final int activity_chooser_view_content=0x7f060023;
         public static final int always=0x7f06000b;
@@ -1004,7 +1007,7 @@ containing a value of this type.
         public static final int checkbox=0x7f06002b;
         public static final int collapseActionView=0x7f06000d;
         public static final int default_activity_button=0x7f060026;
-        public static final int detailed_text=0x7f060043;
+        public static final int detailed_text=0x7f060045;
         public static final int dialog=0x7f06000e;
         public static final int disableHome=0x7f060008;
         public static final int dropdown=0x7f06000f;
@@ -1020,6 +1023,7 @@ containing a value of this type.
         public static final int left_icon=0x7f060031;
         public static final int listMode=0x7f060001;
         public static final int list_item=0x7f060027;
+        public static final int memoBoardTitle=0x7f060042;
         public static final int middle=0x7f060012;
         public static final int never=0x7f060009;
         public static final int none=0x7f060010;
@@ -1039,7 +1043,7 @@ containing a value of this type.
         public static final int search_plate=0x7f06003c;
         public static final int search_src_text=0x7f06003d;
         public static final int search_voice_btn=0x7f060041;
-        public static final int short_text=0x7f060042;
+        public static final int short_text=0x7f060044;
         public static final int shortcut=0x7f06002c;
         public static final int showCustom=0x7f060007;
         public static final int showHome=0x7f060004;
@@ -1104,9 +1108,10 @@ containing a value of this type.
         public static final int abc_screen=0x7f030015;
         public static final int abc_search_dropdown_item_icons_2line=0x7f030016;
         public static final int abc_search_view=0x7f030017;
-        public static final int activity_main=0x7f030018;
-        public static final int activity_memo=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int actionbar_memoboard=0x7f030018;
+        public static final int activity_main=0x7f030019;
+        public static final int activity_memo=0x7f03001a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
@@ -1193,6 +1198,12 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0c0080;
+        /**  the theme applied to the application or activity 
+         */
+        public static final int CustomActionBarTheme=0x7f0c0081;
+        /**  ActionBar styles 
+         */
+        public static final int MyActionBar=0x7f0c0082;
         /**  Mimic text appearance in select_dialog_item.xml 
          */
         public static final int TextAppearance_AppCompat_Base_CompactMenu_Dialog=0x7f0c0061;

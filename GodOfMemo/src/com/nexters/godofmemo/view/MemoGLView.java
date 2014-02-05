@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -31,6 +32,9 @@ public class MemoGLView extends GLSurfaceView {
 
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        
+        //진동 초기화
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	private static final String TAG = "MemoGLView";
@@ -48,6 +52,7 @@ public class MemoGLView extends GLSurfaceView {
 	
 	// 위치정보 기억!!
 	PointF start = new PointF();
+	PointF pre = new PointF();
 	PointF mid = new PointF();
 	float oldDist = 1f;
 	
@@ -57,6 +62,9 @@ public class MemoGLView extends GLSurfaceView {
 	//선택된 메모
 	private Memo selectedMemo;
 	private float selectedAnimationSize = 0.1f;
+    
+    //진동관리
+    private Vibrator vibrator;
 	
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -64,12 +72,12 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
-		System.out.println("111  "+x +", "+ y);
+		//System.out.println("111  "+x +", "+ y);
 		
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
     	float ny = getNormalizedY(y);
-    	System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
+    	//System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
     	
 		// Handle touch events here...
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -78,15 +86,19 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_DOWN:
 			//롱클릭이벤트 처리를 위해 등록
 			//일정시간 이상 클릭시 롱클릭 이벤트 발생
-			mLongPressed = new LongClickControll(x,y);
-			handler.postDelayed(mLongPressed , longClickTimeLimit);
+			//줌상태가 아니면
+			if (mode != ZOOM) {
+				mLongPressed = new LongClickControll(x,y);
+				handler.postDelayed(mLongPressed , longClickTimeLimit);
+			}
 			
 			//위치저장
 			start.set(x, y);
+			pre.set(x, y);
 			mode = DRAG;
 			
 			//위치표시
-			//System.out.format("%f %f \n", x, y);
+			////System.out.format("%f %f \n", x, y);
 			
 			break;
 			
@@ -135,8 +147,9 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
 				//Log.d(TAG, "DRAG");
-				float dx= x - start.x;
-				float dy = y - start.y;
+				float dx= x - pre.x;
+				float dy = y - pre.y;
+				pre.set(x,y);
 				
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함
 				float dLimit = 10f;
@@ -152,17 +165,25 @@ public class MemoGLView extends GLSurfaceView {
 				}else{
 					//화면 이동
 					//TODO 추후 개선 필요
-					float dM = 0.0004f;
+					float dM = 0.0015f*mr.zoom;
 					mr.px += dx>0 ? -(dx*dM) : -(dx*dM);
 					mr.py += dy>0 ? +(dy*dM) : +(dy*dM);
+					System.out.format(" x y %f %f \t", x, y);
+					System.out.format(" nx ny %f %f \t", nx, ny);
+					System.out.format(" px py %f %f \n", mr.px, mr.py);
+					//mr.px = nx;
+					//mr.py = ny;
 				}
 				
 			} else if (mode == ZOOM) {
+				//줌모드로 들어오면 롱클릭 이벤트를 해제함
+				handler.removeCallbacks(mLongPressed);
+				
 				//Log.d(TAG, "ZOOM");
 				float newDist = spacing(event);
 				float scale = newDist / oldDist;	//확대,축소 여부
 
-				float dZ = 0.05f;	//줌가속 변수
+				float dZ = 0.07f;	//줌가속 변수
 				float min = 1f;	//줌 최소
 				float max = 5f;	//줌최대
 				
@@ -248,7 +269,7 @@ public class MemoGLView extends GLSurfaceView {
 			//MotionEvent를 등록할때에는 액션봐와 상단메뉴를 제외한 y좌표를 받는데
 			//여기선 액션바와 상단메뉴를 포함한 y좌표를 받는다.
 			//왜일까?
-			System.out.println("222  "+x +", "+ y);
+			//System.out.println("222  "+x +", "+ y);
 			
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
@@ -259,11 +280,15 @@ public class MemoGLView extends GLSurfaceView {
 				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
 				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
 
-				System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
-				System.out.format("nx, ny %f %f \n",nx, ny);
-				System.out.format("chk x,y %f %f \n",chkX, chkY);
+				//System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
+				//System.out.format("nx, ny %f %f \n",nx, ny);
+				//System.out.format("chk x,y %f %f \n",chkX, chkY);
 				
-				if(chkX <= 1 && chkY <= 1){
+				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
+				if(chkX <= 0.9f && chkY <= 0.5f){
+					//선택시 진동
+					vibrator.vibrate(100);
+					
 					//선택된걸 상위로
 					mr.memoList.remove(memo);
 					mr.memoList.add(memo);

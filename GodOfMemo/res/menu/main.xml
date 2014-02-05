@@ -2,15 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 	<!-- title은 이후에 icon으로 변경. -->
     <!-- Search, should appear as action button -->
-    <item
-        android:id="@+id/action_search"
-        android:title="검색"
-        app:showAsAction="always"/>
 
     <!-- Settings, should always be in the overflow -->
     <item
         android:id="@+id/action_write"
-        android:title="쓰기"
-        app:showAsAction="always"/>
+        android:title="메모쓰기 ╊"
+        app:showAsAction="ifRoom"
+        
+        />
 
 </menu>

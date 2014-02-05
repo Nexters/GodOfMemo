@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.nexters.godofmemo.db.MemoDBHelper;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.util.Util;
 
 /**
  * 이야기에 대한 정보를 읽고/쓰는 객체. DataAccessObject. 
@@ -114,8 +115,8 @@ public class MemoDAO {
 		ContentValues values = new ContentValues();
 		
 		values.put(MemoDBHelper.COL_MEMO_CONTENT, memo.getMemoContent());
-		values.put(MemoDBHelper.COL_MEMO_DATE, "");
-		values.put(MemoDBHelper.COL_MEMO_TIME, "");
+		values.put(MemoDBHelper.COL_MEMO_DATE, Util.getDate());
+		values.put(MemoDBHelper.COL_MEMO_TIME, Util.getTime());
 		
 		values.put(MemoDBHelper.COL_MEMO_X, memo.getX());
 		values.put(MemoDBHelper.COL_MEMO_Y, memo.getY());
