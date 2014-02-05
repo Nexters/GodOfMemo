@@ -190,6 +190,7 @@ public class Memo {
 		if(memoContent == null){
 			memoContent = "test";
 		}
+
 		//메모내용을 담은 비트맵 생성
 		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, memoContent);
 		this.memoContent = memoContent;

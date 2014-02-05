@@ -57,6 +57,7 @@ public class MemoRenderer implements Renderer {
 
         MemoDAO memoDao = new MemoDAO(context);
         memoList = memoDao.getMemoList();
+        
          
 //		memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
 //		memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
@@ -82,13 +83,13 @@ public class MemoRenderer implements Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-    	System.out.println(width);
-    	System.out.println(height);
+    	//System.out.println(width);
+    	//System.out.println(height);
     	//높이 너비 저장
     	this.width = width;
     	this.height = height;
     	
-    	System.out.println(Constants.actionbarHeight);
+    	//System.out.println(Constants.actionbarHeight);
     	
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
