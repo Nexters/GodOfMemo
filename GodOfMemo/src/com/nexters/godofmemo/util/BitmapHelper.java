@@ -45,16 +45,26 @@ public class BitmapHelper {
 		// text color - #3D3D3D
 		paint.setColor(Color.rgb(61, 61, 61));
 		// text size in pixels
-		paint.setTextSize((int) (32 * scale));
+		int textSize = (int) (28 * scale);
+		paint.setTextSize(textSize);
 		// text shadow
 		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+		
+
+
+		//텍스트를 자른다.
+		int maxLength = 5;
+		if(gText.length()>maxLength){
+			gText = gText.substring(0, maxLength);
+			gText += "...";
+		}
 
 		// draw text to the Canvas center
 		Rect bounds = new Rect();
 		paint.getTextBounds(gText, 0, gText.length(), bounds);
 		int x = (bitmap.getWidth() - bounds.width()) / 2;
 		int y = (bitmap.getHeight() + bounds.height()) / 2;
-
+		
 		// TODO 텍스트를 메모 위 어느 위치에 그릴것인지 정해야 한다.
 		canvas.drawText(gText, x, y, paint);
 

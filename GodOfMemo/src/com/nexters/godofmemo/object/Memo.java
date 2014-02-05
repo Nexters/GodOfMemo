@@ -148,8 +148,8 @@ public class Memo {
 		//위치와 크기
 		setX(0);
 		setY(0);
-		setWidth(0.5f);
-		setHeight(0.5f);
+		setWidth(0.8f);
+		setHeight(0.8f);
 		
 		setVertices();
 		
