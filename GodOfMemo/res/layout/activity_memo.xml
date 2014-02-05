@@ -24,22 +24,4 @@
         android:textColor="@android:color/black"
         android:textSize="17sp"/>
   	
-  	<EditText
-        android:id="@+id/detailed_text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:layout_below="@id/short_text" 
-        android:background="#999"
-        android:alpha="0.3"
-        android:ems="4"
-        android:inputType="textMultiLine"
-        android:lineSpacingExtra="6dp"
-        android:paddingBottom="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
-        android:textColor="@android:color/black"
-        android:textSize="17sp"
-        android:text="@string/detailed_message"/>
-    
 </RelativeLayout>
