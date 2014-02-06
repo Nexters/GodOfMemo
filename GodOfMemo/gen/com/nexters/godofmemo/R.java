@@ -1002,8 +1002,9 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f06002f;
         public static final int action_mode_bar_stub=0x7f06002e;
         public static final int action_mode_close_button=0x7f060022;
+        public static final int action_settings=0x7f060047;
         public static final int action_write=0x7f060043;
-        public static final int action_write_finish=0x7f060045;
+        public static final int action_write_finish=0x7f060046;
         public static final int activity_chooser_view_content=0x7f060023;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1026,6 +1027,7 @@ containing a value of this type.
         public static final int listMode=0x7f060001;
         public static final int list_item=0x7f060027;
         public static final int memoBoardTitle=0x7f060042;
+        public static final int memoContentView=0x7f060045;
         public static final int middle=0x7f060012;
         public static final int never=0x7f060009;
         public static final int none=0x7f060010;
@@ -1113,11 +1115,13 @@ containing a value of this type.
         public static final int actionbar_memoboard=0x7f030018;
         public static final int activity_main=0x7f030019;
         public static final int activity_memo=0x7f03001a;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
+        public static final int activity_revised=0x7f03001b;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
         public static final int memo=0x7f0d0001;
+        public static final int revised=0x7f0d0002;
     }
     public static final class raw {
         public static final int simple_fragment_shader=0x7f050000;
@@ -1172,6 +1176,7 @@ containing a value of this type.
         public static final int detailed_message=0x7f0b0012;
         public static final int hello_world=0x7f0b000f;
         public static final int title_activity_memo=0x7f0b0010;
+        public static final int title_activity_revised=0x7f0b0013;
     }
     public static final class style {
         /** 

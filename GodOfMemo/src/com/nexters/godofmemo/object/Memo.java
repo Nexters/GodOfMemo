@@ -56,7 +56,7 @@ public class Memo {
 
 		VERTEX_DATA = new float[24];
 
-		// top left
+		// 중심. 
 		int s = 0;
 		VERTEX_DATA[0] = x; // x
 		VERTEX_DATA[1] = y; // y
@@ -201,6 +201,7 @@ public class Memo {
 		if(memoContent == null){
 			memoContent = "test";
 		}
+
 		//메모내용을 담은 비트맵 생성
 		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, memoContent);
 		this.memoContent = memoContent;
