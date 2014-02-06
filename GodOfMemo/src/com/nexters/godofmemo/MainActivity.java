@@ -28,10 +28,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_memoboard);
@@ -126,11 +127,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		//비정상종료면?
 		if(resultCode != Activity.RESULT_OK) return;
 		
-		String short_txt = data.getStringExtra("short_txt");
-		String detailed_txt = data.getStringExtra("detailed_txt");
+		String txt = data.getStringExtra("short_txt");
 		
 		//메모를 저장한다.
-		Memo newMemo = new Memo(getApplicationContext(), short_txt); 
+		Memo newMemo = new Memo(getApplicationContext(), txt); 
 		MemoDAO memoDao = new MemoDAO(getApplicationContext());
 		long memoIdL = memoDao.insertMemo(newMemo);
 		String memoId = String.valueOf(memoIdL);

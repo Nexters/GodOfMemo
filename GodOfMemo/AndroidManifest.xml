@@ -12,12 +12,12 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-    
+
     <!-- DB사용위해 -->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<!-- 메모 선택시 진동 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 메모 선택시 진동 -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -25,7 +25,7 @@
         android:theme="@style/CustomActionBarTheme" >
         <activity
             android:name="com.nexters.godofmemo.MainActivity"
-            android:label="메모보드">
+            android:label="메모보드" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,6 +35,10 @@
         <activity
             android:name="com.nexters.godofmemo.MemoActivity"
             android:label="@string/title_activity_memo" >
+        </activity>
+        <activity
+            android:name="com.nexters.godofmemo.RevisedActivity"
+            android:label="@string/title_activity_revised" >
         </activity>
     </application>
 

@@ -1,12 +1,15 @@
 package com.nexters.godofmemo.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 
+import com.nexters.godofmemo.MemoActivity;
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
@@ -44,12 +47,24 @@ public class MemoGLView extends GLSurfaceView {
 	static final int NONE = 0;
 	static final int DRAG = 1;
 	static final int ZOOM = 2;
+	
 	int mode = NONE;	//처음상태는 NONE
+	
+	//tab 유형.
+	static final int TAB = 3;
+	static final int DOUBLETAB = 4;
+	static final int LONGTAB = 5;
+	
+	int tabMode = NONE;//처음상태는 NONE 
 	
 	//롱클릭 이벤트 처리를 위한 변수들
 	private final Handler handler = new Handler(); 
 	private Runnable mLongPressed;
 	private final long longClickTimeLimit = 200;	//얼마동안 누르고 있어야 롱클릭이벤트로 판단할지(ms)
+	
+	//tab 하기 위한 정보
+	private long startMilliSecond;
+	private long dMilliSecond;
 	
 	// 위치정보 기억!!
 	PointF start = new PointF();
@@ -89,9 +104,27 @@ public class MemoGLView extends GLSurfaceView {
 			//일정시간 이상 클릭시 롱클릭 이벤트 발생
 			//줌상태가 아니면
 			if (mode != ZOOM) {
+				// 경과 시간을 재기.
+				startMilliSecond = System.currentTimeMillis();
+				
 				mLongPressed = new LongClickControll(x,y);
 				handler.postDelayed(mLongPressed , longClickTimeLimit);
 			}
+			
+			//선택된 원을 확인
+			//터치한 곳이 메모라면 selectedMemo에 추가. 
+			for(Memo memo : mr.memoList){
+				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
+				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
+
+				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
+				if(chkX <= 0.9f && chkY <= 0.5f){
+					//선택됨
+					selectedMemo = memo;
+				}
+			}
+			
+			requestRender();
 			
 			//위치저장
 			start.set(x, y);
@@ -121,16 +154,29 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_UP:
 			handler.removeCallbacks(mLongPressed);
 			
+			// 화면을 누른 시간을 구한다.
+			dMilliSecond = System.currentTimeMillis() - startMilliSecond;
+			
 			//메모 선택시
-			if(selectedMemo != null){
-				selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
-				selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
-				selectedMemo.setVertices();
-				requestRender();
-				
-				//이동한 정보를 DB에 입력한다.
-				 MemoDAO memoDao = new MemoDAO(context);
-				 memoDao.updateMemo(selectedMemo);
+			//LongClickEvent에서 selectedMemo를 설정.
+			if(selectedMemo != null ){
+				if(0< dMilliSecond && dMilliSecond < 200){
+					tabMode= TAB;
+					Intent intent = new Intent(context, MemoActivity.class);
+					//보기, 수정 화면으로 넘어가기. 
+					intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
+					
+					((Activity)context).startActivityForResult(intent, 1);
+				}else if(tabMode == LONGTAB){
+					//selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
+					//selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
+					selectedMemo.setVertices();
+					requestRender();
+					
+					//이동한 정보를 DB에 입력한다.
+					MemoDAO memoDao = new MemoDAO(context);
+					memoDao.updateMemo(selectedMemo);
+				}
 				selectedMemo = null;
 			}
 			
@@ -386,15 +432,13 @@ public class MemoGLView extends GLSurfaceView {
 	    	
 	    	//선택된 원을 확인
 			for(Memo memo : mr.memoList){
-				float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
-				float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
-
+				
 				//System.out.format("x,y %f %f \n",memo.getX(), memo.getY());
 				//System.out.format("nx, ny %f %f \n",nx, ny);
 				//System.out.format("chk x,y %f %f \n",chkX, chkY);
 				
 				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
-				if(chkX <= 0.9f && chkY <= 0.5f){
+				if(selectedMemo != null){
 					//선택시 진동
 					vibrator.vibrate(100);
 					
@@ -402,13 +446,12 @@ public class MemoGLView extends GLSurfaceView {
 					mr.memoList.remove(memo);
 					mr.memoList.add(memo);
 					
-					//선택됨
-					selectedMemo = memo;
 					selectedMemo.setX(nx);
 					selectedMemo.setY(ny);
-					selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
-					selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
+					//selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
+					//selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
 					selectedMemo.setVertices();
+					tabMode=LONGTAB;
 					requestRender();
 					return;
 				}
