@@ -11,6 +11,7 @@ import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.BitmapHelper;
 import com.nexters.godofmemo.util.TextureHelper;
+import com.nexters.godofmemo.view.MemoGLView;
 
 public class Memo {
 	private static final int POSITION_COMPONENT_COUNT = 2;
@@ -32,6 +33,9 @@ public class Memo {
 	private float y;
 	private float width;
 	private float height;
+	
+	//생성시
+	private long prodTime=0;
 	
 	//텍스쳐 정보
 	public int texture;
@@ -140,16 +144,23 @@ public class Memo {
 	}
 	
 	//신규입력시
-	public Memo(Context context, String text) {
+	public Memo(Context context, String text, MemoGLView memoGLView ) {
 		this.context = context;
 		//내용 채우고
 		setMemoContent(text);
 		
 		//위치와 크기
-		setX(0);
-		setY(0);
 		setWidth(0.8f);
 		setHeight(0.8f);
+		
+		float tempX = (memoGLView.mr.width)/2; //폰의 보여지는 width 값 
+		float tempY = (memoGLView.mr.height)/2;
+		
+		float nx = memoGLView.getNormalizedX(tempX);
+		float ny = memoGLView.getNormalizedY(tempY);
+		
+		setX(nx);
+		setY(ny);
 		
 		setVertices();
 		
@@ -244,6 +255,15 @@ public class Memo {
 
 	public void setHeight(float height) {
 		this.height = height;
+	}
+
+	public long getProdTime() {
+		
+		return prodTime;
+	}
+
+	public void setProdTime(long prodTime) {
+		this.prodTime = prodTime;
 	}
 	
 }
