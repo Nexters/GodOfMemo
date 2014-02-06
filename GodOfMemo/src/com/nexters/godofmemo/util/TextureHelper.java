@@ -66,18 +66,21 @@ public class TextureHelper {
 			return 0;
 		}
 		
-		byte[] buffer = new byte[bitmap.getWidth() * bitmap.getHeight() * 4];
-		for ( int y = 0; y < bitmap.getHeight(); y++ )
-		    for ( int x = 0; x < bitmap.getWidth(); x++ )
+		int bitmapWidth = bitmap.getWidth();
+		int bitmapHeight = bitmap.getHeight();
+		
+		byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4];
+		for ( int y = 0; y < bitmapHeight; y++ )
+		    for ( int x = 0; x < bitmapWidth; x++ )
 		    {
 		        int pixel = bitmap.getPixel(x, y);
-		        buffer[(y * bitmap.getWidth() + x) * 4 + 0] = (byte)((pixel >> 16) & 0xFF);
-		        buffer[(y * bitmap.getWidth() + x) * 4 + 1] = (byte)((pixel >> 8) & 0xFF);
-		        buffer[(y * bitmap.getWidth() + x) * 4 + 2] = (byte)((pixel >> 0) & 0xFF);
-		        buffer[(y * bitmap.getWidth() + x) * 4 + 3] = (byte)((pixel >> 24) & 0xFF);
+		        buffer[(y * bitmapWidth + x) * 4 + 0] = (byte)((pixel >> 16) & 0xFF);
+		        buffer[(y * bitmapWidth + x) * 4 + 1] = (byte)((pixel >> 8) & 0xFF);
+		        buffer[(y * bitmapWidth + x) * 4 + 2] = (byte)((pixel >> 0) & 0xFF);
+		        buffer[(y * bitmapWidth + x) * 4 + 3] = (byte)((pixel >> 24) & 0xFF);
 		    }
 		
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmap.getWidth() * bitmap.getHeight() * 4);
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
 	    byteBuffer.put(buffer).position(0);
 
 
@@ -100,7 +103,7 @@ public class TextureHelper {
 
 	    
 		// Load the bitmap into the bound texture.
-		GLES20.glTexImage2D ( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmap.getWidth(), bitmap.getHeight(), 0, 
+		GLES20.glTexImage2D ( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmapWidth, bitmapHeight, 0, 
                 GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, byteBuffer );
 
 
