@@ -17,6 +17,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Vibrator;
+import android.widget.Toast;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -127,6 +128,21 @@ public class MemoRenderer implements Renderer {
         background.bindData(textureProgram);
         background.draw();
         //#########################
+        
+        
+        long maxMemoTime = 0;
+        Memo maxMemo;
+        for(Memo memo: memoList){
+        	//새 메모 검사
+        	//여러 메모중에 최신 메모를 찾는다
+        	long memoTime = memo.getProdTime();
+        	if (maxMemoTime < memoTime){
+        		maxMemoTime = memoTime;
+        		maxMemo = memo;
+        	}
+        	//TODO 만약 최신 메모가 생성된지 3초가 안되었으면 알려주기 
+        	
+        }
         
         //메모들을 그린다
         for(Memo memo: memoList){

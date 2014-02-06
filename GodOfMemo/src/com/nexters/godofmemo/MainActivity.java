@@ -129,12 +129,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		String short_txt = data.getStringExtra("short_txt");
 		String detailed_txt = data.getStringExtra("detailed_txt");
 		
+		//TODO 새 메모 체크하기 
 		//메모를 저장한다.
-		Memo newMemo = new Memo(getApplicationContext(), short_txt); 
+		Memo newMemo = new Memo(getApplicationContext(), short_txt, glSurfaceView);
+		//지금 시간을 구한다
+		long curr = System.currentTimeMillis();
+		//setter
+		newMemo.setProdTime(curr);
 		MemoDAO memoDao = new MemoDAO(getApplicationContext());
 		long memoIdL = memoDao.insertMemo(newMemo);
 		String memoId = String.valueOf(memoIdL);
 		newMemo.setMemoId(memoId);
+		
+		//TODO 새 메모가 생겼을때 토스트
+		String text = "새 메모!";
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(this, text, duration);
+		toast.show();
 		
 		//화면에 그릴 목록에 추가
 		glSurfaceView.mr.memoList.add(newMemo);
