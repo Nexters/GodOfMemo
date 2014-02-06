@@ -52,7 +52,7 @@ public class Memo {
 
 		VERTEX_DATA = new float[24];
 
-		// top left
+		// 중심. 
 		int s = 0;
 		VERTEX_DATA[0] = x; // x
 		VERTEX_DATA[1] = y; // y

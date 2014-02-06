@@ -28,10 +28,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_memoboard);
