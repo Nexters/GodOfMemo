@@ -7,12 +7,14 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.MemoActivity;
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
+import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MultisampleConfigChooser;
 
 public class MemoGLView extends GLSurfaceView {
@@ -153,13 +155,19 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_UP:
 			handler.removeCallbacks(mLongPressed);
 			
+			float dx= x - pre.x;
+			float dy = y - pre.y;
+			pre.set(x,y);
+			
 			// 화면을 누른 시간을 구한다.
 			dMilliSecond = System.currentTimeMillis() - startMilliSecond;
 			
+			float moveLimit = 0.005f;
+			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
+			
 			//메모 선택시
-			//LongClickEvent에서 selectedMemo를 설정.
-			if(selectedMemo != null ){
-				if(0< dMilliSecond && dMilliSecond < 200){
+			if(selectedMemo != null && !isMoved ){
+				if(0< dMilliSecond && dMilliSecond < 100){
 					tabMode= TAB;
 					Intent intent = new Intent(context, MemoActivity.class);
 					//보기, 수정 화면으로 넘어가기. 
@@ -174,11 +182,11 @@ public class MemoGLView extends GLSurfaceView {
 					
 					//이동한 정보를 DB에 입력한다.
 					MemoDAO memoDao = new MemoDAO(context);
-					memoDao.updateMemo(selectedMemo);
+					memoDao.updateMemo(selectedMemo);	
 				}
 				selectedMemo = null;
+				tabMode = NONE;
 			}
-			
 			
 			break;
 		
@@ -192,18 +200,20 @@ public class MemoGLView extends GLSurfaceView {
 		//손을 대고 움직일때
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
-				//Log.d(TAG, "DRAG");
-				float dx= x - pre.x;
-				float dy = y - pre.y;
+				Log.d(TAG, "DRAG");
+				System.out.println(tabMode);
+				dx= x - pre.x;
+				dy = y - pre.y;
 				pre.set(x,y);
 				
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함
 				float dLimit = 10f;
 				if(Math.abs(dx)>dLimit || Math.abs(dy)> dLimit){
 					handler.removeCallbacks(mLongPressed);
+
 				}
 				
-				if(selectedMemo != null){
+				if(selectedMemo != null && tabMode == LONGTAB){
 					//메모 이동
 					selectedMemo.setX(nx);
 					selectedMemo.setY(ny);
@@ -211,16 +221,29 @@ public class MemoGLView extends GLSurfaceView {
 				}else{
 					//화면 이동
 					//TODO 추후 개선 필요
+					
 					float dM = 0.0015f*mr.zoom;
-					mr.px += dx>0 ? -(dx*dM) : -(dx*dM);
-					mr.py += dy>0 ? +(dy*dM) : +(dy*dM);
+					
+					float tempX = mr.px;
+					float tempY = mr.py;
+					
+					tempX += -(dx*dM);
+					tempY += +(dy*dM);
+					
+					//화면을 넘어간지 확인한다.
+					if(!isOutOfBoundary(tempX, tempY, mr.zoom)){
+						mr.px = tempX;
+						mr.py = tempY;
+					}else{
+						System.out.println("true");
+					}
+					
 					System.out.format(" x y %f %f \t", x, y);
 					System.out.format(" nx ny %f %f \t", nx, ny);
 					System.out.format(" px py %f %f \n", mr.px, mr.py);
 					//mr.px = nx;
 					//mr.py = ny;
 				}
-				
 			} else if (mode == ZOOM) {
 				//줌모드로 들어오면 롱클릭 이벤트를 해제함
 				handler.removeCallbacks(mLongPressed);
@@ -233,19 +256,31 @@ public class MemoGLView extends GLSurfaceView {
 				float min = 1f;	//줌 최소
 				float max = 5f;	//줌최대
 				
+				float tempZoom = 0;
+				tempZoom = mr.zoom;
+				
 				//TODO 줌 버그잇음. 특정 상황에 확대축소가 반대로 작용함.	
 				//줌 최대최소 판별 후
 				if (min < mr.zoom  && mr.zoom < max) {				
 					if(scale > 1){
 						//확대
-						if(min<(mr.zoom-dZ)) mr.zoom -= dZ*mr.zoom;
+						if(min<(mr.zoom-dZ)) tempZoom -= dZ*mr.zoom;
 					}else{
 						//축소
-						if(max>(mr.zoom+dZ)) mr.zoom += dZ*mr.zoom;
+						if(max>(mr.zoom+dZ)) tempZoom += dZ*mr.zoom;
 					}
 				} else {
-					//최대최소 줌 범위를 넘어갔을때를 위한 로직
-					mr.zoom += scale > 1 ? +dZ : -dZ;
+					if (mr.zoom <= min){
+						//축소
+						if(max>(mr.zoom+dZ)) tempZoom += dZ;
+					}else if (mr.zoom >= max){
+						//확대
+						if(min<(mr.zoom-dZ)) tempZoom -= dZ;
+					}
+				}
+				
+				if(!isOutOfBoundary(mr.px, mr.py, tempZoom)){
+					mr.zoom = tempZoom;
 				}
 			}
 			
@@ -256,6 +291,77 @@ public class MemoGLView extends GLSurfaceView {
 		}
 
 		return true;
+	}
+	
+	/**
+	 * 화면이동 or 줌인/아웃 시 뒷 배경을 넘어가는지 여부 확인.
+	 * @param tempX
+	 * @param tempY
+	 * @param tempZoom
+	 * @return
+	 */
+	private boolean isOutOfBoundary(float tempX, float tempY, float tempZoom){
+		
+		//허용되는 최대 한계치
+		float margin = Constants.DOT_BACKGROUND_SIZE/5f;
+		
+		float ratioX = 1;
+		float ratioY = 1;
+
+		if (mr.width > mr.height) {
+			ratioX = (float) mr.width / mr.height;
+		} else {
+			ratioY = (float) mr.height / mr.width ;
+		}
+		
+		System.out.format("w h %d %d \n",mr.width, mr.height);
+		
+		float leftBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
+		float rightBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
+		float topBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
+		float bottomBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
+		
+		System.out.format("boundary %f %f %f %f \n", leftBoundary, rightBoundary, topBoundary, bottomBoundary);
+		
+		//현재 화면의 상태
+		float left = 0 ;
+		float right = mr.width;
+		float top = 0;
+		float bottom = mr.height;
+		
+		float normalizedLeft = getNormalizedX(left, tempX, tempY, tempZoom);
+		float normalizedRight = getNormalizedX(right, tempX, tempY, tempZoom);
+		float normalizedTop = getNormalizedY(top, tempX, tempY, tempZoom);
+		float normalizedBottom = getNormalizedY(bottom, tempX, tempY, tempZoom);
+		
+		System.out.format("normalized %f %f %f %f \n", normalizedLeft, normalizedRight, normalizedTop, normalizedBottom);
+		
+		//자동줌
+		if(mode == ZOOM){
+			float autoMoveDist = 0.08f;
+			if(normalizedLeft < leftBoundary){
+				mr.px += autoMoveDist;
+			}
+			if(normalizedRight > rightBoundary){
+				mr.px -= autoMoveDist;
+			}
+			if(normalizedTop > topBoundary){
+				mr.py -= autoMoveDist;
+			}
+			if(normalizedBottom < bottomBoundary){
+				mr.py += autoMoveDist;
+			}	
+		}
+		
+		//영역이 초과했는지 확인한다.
+		if(normalizedLeft < leftBoundary) return true;
+		if(normalizedRight > rightBoundary) return true;
+		if(normalizedTop > topBoundary) return true;
+		if(normalizedBottom < bottomBoundary) return true;
+		
+		System.out.println("false!!");
+		
+		return false;
 	}
 	
 	/** Determine the space between the first two fingers */
@@ -276,13 +382,24 @@ public class MemoGLView extends GLSurfaceView {
 	 * 정규화된 좌표를 구한다 
 	 */
 	//TODO 식이 너무 복잡해...
-	//TODO 액션바 위치에 따라서 좌표가 달라지는듯?? 버그
-	
+	//TODO 터치한 픽셀좌표(기기 해상도)를 OpenGL상의 좌표 (-1,-1부터 1,1같은)로 변환한다.
 	public float getNormalizedX(float x){
 		return ((((x/mr.width)* 2)-1)*mr.zoom*mr.width/mr.height*mr.fov)+mr.px;
 	}
 	public float getNormalizedY(float y){
 		return ((-(((y/mr.height)*2)-1))*mr.zoom*mr.fov)+mr.py;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @return
+	 */
+	public float getNormalizedX(float x, float px, float py, float zoom){
+		return ((((x/mr.width)* 2)-1)*zoom*mr.width/mr.height*mr.fov)+px;
+	}
+	public float getNormalizedY(float y, float px, float py, float zoom){
+		return ((-(((y/mr.height)*2)-1))*zoom*mr.fov)+py;
 	}
 	
 	/**
@@ -330,6 +447,7 @@ public class MemoGLView extends GLSurfaceView {
 				
 				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
 				if(selectedMemo != null){
+					tabMode=LONGTAB;
 					//선택시 진동
 					vibrator.vibrate(100);
 					
@@ -342,11 +460,12 @@ public class MemoGLView extends GLSurfaceView {
 					//selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
 					//selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
 					selectedMemo.setVertices();
-					tabMode=LONGTAB;
+					
 					requestRender();
 					return;
 				}
 			}
+			
 			
 			requestRender();
 		}

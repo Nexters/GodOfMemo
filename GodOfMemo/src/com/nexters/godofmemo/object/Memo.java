@@ -179,6 +179,8 @@ public class Memo {
 	public void draw() {
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
+	
+	
 
 	
 	//##############
