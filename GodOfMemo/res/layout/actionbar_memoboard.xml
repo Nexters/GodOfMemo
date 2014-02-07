@@ -15,7 +15,7 @@
     <!--
     <Button
         android:background="@drawable/memo_write_btn_selector"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF" />
     -->
 
     <LinearLayout

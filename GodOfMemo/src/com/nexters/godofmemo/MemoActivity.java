@@ -24,7 +24,7 @@ public class MemoActivity extends ActionBarActivity {
 		
 		Intent intent = getIntent();
 		String memoContent = intent.getStringExtra("selectedMemoContent");
-		short_et.append(memoContent);
+		short_et.setText(memoContent);
 	}
 
 	@Override

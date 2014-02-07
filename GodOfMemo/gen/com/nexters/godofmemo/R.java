@@ -794,11 +794,12 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f070002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f080004;
+        public static final int abc_search_url_text_holo=0x7f080005;
         public static final int abc_search_url_text_normal=0x7f080000;
         public static final int abc_search_url_text_pressed=0x7f080002;
         public static final int abc_search_url_text_selected=0x7f080001;
-        public static final int titlecolor=0x7f080003;
+        public static final int black_overlay=0x7f080003;
+        public static final int titlecolor=0x7f080004;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -983,10 +984,11 @@ containing a value of this type.
         public static final int memo_write_btn=0x7f02005a;
         public static final int memo_write_btn_press=0x7f02005b;
         public static final int memo_write_btn_selector=0x7f02005c;
-        public static final int whitememo=0x7f02005d;
-        public static final int write01=0x7f02005e;
-        public static final int write02=0x7f02005f;
-        public static final int write03=0x7f020060;
+        public static final int splash=0x7f02005d;
+        public static final int whitememo=0x7f02005e;
+        public static final int write01=0x7f02005f;
+        public static final int write02=0x7f020060;
+        public static final int write03=0x7f020061;
     }
     public static final class id {
         public static final int action_bar=0x7f06001a;
@@ -1002,9 +1004,9 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f06002f;
         public static final int action_mode_bar_stub=0x7f06002e;
         public static final int action_mode_close_button=0x7f060022;
-        public static final int action_settings=0x7f060047;
+        public static final int action_settings=0x7f06004a;
         public static final int action_write=0x7f060043;
-        public static final int action_write_finish=0x7f060046;
+        public static final int action_write_finish=0x7f060049;
         public static final int activity_chooser_view_content=0x7f060023;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1018,16 +1020,19 @@ containing a value of this type.
         public static final int end=0x7f060013;
         public static final int expand_activities_button=0x7f060024;
         public static final int expanded_menu=0x7f06002a;
+        public static final int fullscreen_content=0x7f060047;
+        public static final int fullscreen_content_controls=0x7f060048;
         public static final int home=0x7f060014;
         public static final int homeAsUp=0x7f060005;
         public static final int icon=0x7f060028;
         public static final int ifRoom=0x7f06000a;
         public static final int image=0x7f060025;
+        public static final int intro=0x7f060044;
         public static final int left_icon=0x7f060031;
         public static final int listMode=0x7f060001;
         public static final int list_item=0x7f060027;
         public static final int memoBoardTitle=0x7f060042;
-        public static final int memoContentView=0x7f060045;
+        public static final int memoContentView=0x7f060046;
         public static final int middle=0x7f060012;
         public static final int never=0x7f060009;
         public static final int none=0x7f060010;
@@ -1047,7 +1052,7 @@ containing a value of this type.
         public static final int search_plate=0x7f06003c;
         public static final int search_src_text=0x7f06003d;
         public static final int search_voice_btn=0x7f060041;
-        public static final int short_text=0x7f060044;
+        public static final int short_text=0x7f060045;
         public static final int shortcut=0x7f06002c;
         public static final int showCustom=0x7f060007;
         public static final int showHome=0x7f060004;
@@ -1112,11 +1117,14 @@ containing a value of this type.
         public static final int abc_screen=0x7f030015;
         public static final int abc_search_dropdown_item_icons_2line=0x7f030016;
         public static final int abc_search_view=0x7f030017;
-        public static final int actionbar_memoboard=0x7f030018;
-        public static final int activity_main=0x7f030019;
-        public static final int activity_memo=0x7f03001a;
-        public static final int activity_revised=0x7f03001b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
+        public static final int actionbar_intro=0x7f030018;
+        public static final int actionbar_memoboard=0x7f030019;
+        public static final int activity_intro=0x7f03001a;
+        public static final int activity_main=0x7f03001b;
+        public static final int activity_memo=0x7f03001c;
+        public static final int activity_revised=0x7f03001d;
+        public static final int activity_splash=0x7f03001e;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001f;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
@@ -1171,12 +1179,16 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000b;
         public static final int action_settings=0x7f0b000e;
-        public static final int action_write_finish=0x7f0b0011;
+        public static final int action_write_finish=0x7f0b0012;
         public static final int app_name=0x7f0b000d;
-        public static final int detailed_message=0x7f0b0012;
+        public static final int detailed_message=0x7f0b0013;
+        public static final int dummy_button=0x7f0b0016;
+        public static final int dummy_content=0x7f0b0017;
         public static final int hello_world=0x7f0b000f;
-        public static final int title_activity_memo=0x7f0b0010;
-        public static final int title_activity_revised=0x7f0b0013;
+        public static final int intro=0x7f0b0010;
+        public static final int title_activity_memo=0x7f0b0011;
+        public static final int title_activity_revised=0x7f0b0014;
+        public static final int title_activity_splash=0x7f0b0015;
     }
     public static final class style {
         /** 
@@ -1205,12 +1217,16 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0c0080;
+        public static final int ButtonBar=0x7f0c0082;
+        public static final int ButtonBarButton=0x7f0c0083;
         /**  the theme applied to the application or activity 
          */
-        public static final int CustomActionBarTheme=0x7f0c0081;
+        public static final int CustomActionBarTheme=0x7f0c0085;
+        public static final int FullscreenActionBarStyle=0x7f0c0084;
+        public static final int FullscreenTheme=0x7f0c0081;
         /**  ActionBar styles 
          */
-        public static final int MyActionBar=0x7f0c0082;
+        public static final int MyActionBar=0x7f0c0086;
         /**  Mimic text appearance in select_dialog_item.xml 
          */
         public static final int TextAppearance_AppCompat_Base_CompactMenu_Dialog=0x7f0c0061;
