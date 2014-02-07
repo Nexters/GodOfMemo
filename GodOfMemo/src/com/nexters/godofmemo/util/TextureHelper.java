@@ -12,6 +12,8 @@ import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexParameteri;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -69,6 +71,27 @@ public class TextureHelper {
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
 		
+		
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
+		byteBuffer.order(ByteOrder.BIG_ENDIAN);
+		IntBuffer ib = byteBuffer.asIntBuffer();
+		
+		int[] pixels = new int[bitmapWidth * bitmapHeight];
+		bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+		for(int i=0; i<pixels.length; i++){
+		    ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+		}
+		
+		//bitmap.recycle();
+		
+		byteBuffer.position(0);
+		
+		/*int[] pixels = new int[bitmapWidth * bitmapHeight];
+        bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+        for(int i=0; i<pixels.length; i++){
+            ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+        }
+        
 		byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4];
 		for ( int y = 0; y < bitmapHeight; y++ )
 		    for ( int x = 0; x < bitmapWidth; x++ )
@@ -81,7 +104,7 @@ public class TextureHelper {
 		    }
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
-	    byteBuffer.put(buffer).position(0);
+	    byteBuffer.put(buffer).position(0);*/
 
 
 		// Bind to the texture in OpenGL

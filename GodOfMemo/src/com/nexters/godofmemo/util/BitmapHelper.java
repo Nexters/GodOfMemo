@@ -45,7 +45,7 @@ public class BitmapHelper {
 		// text color - #3D3D3D
 		paint.setColor(Color.rgb(61, 61, 61));
 		// text size in pixels
-		int textSize = (int) (28 * scale);
+		int textSize = (int) (24 * scale);
 		paint.setTextSize(textSize);
 		// text shadow
 		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);

@@ -138,7 +138,7 @@ public class Memo {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, text);
+		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo_256, text);
 		
 		setVertices();
 	}
@@ -205,7 +205,7 @@ public class Memo {
 		}
 
 		//메모내용을 담은 비트맵 생성
-		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo, memoContent);
+		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo_256, memoContent);
 		this.memoContent = memoContent;
 	}
 
