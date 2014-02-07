@@ -1,7 +1,7 @@
 package com.nexters.godofmemo.dao;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -62,9 +62,9 @@ public class MemoDAO {
 	 *  메모 목록 조회
 	 * @return
 	 */
-	public List<Memo> getMemoList() {
+	public ConcurrentLinkedQueue<Memo> getMemoList() {
 		this.open();
-		List<Memo> memoList = new LinkedList<Memo>();
+		ConcurrentLinkedQueue<Memo> memoList = new ConcurrentLinkedQueue<Memo>();
 
 		Cursor cursor = database.query(MemoDBHelper.TABLE_MEMO_INFO,
 				allColumns, null, null, null, null, MemoDBHelper.COL_MEMO_DATE

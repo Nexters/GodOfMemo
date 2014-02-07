@@ -14,6 +14,8 @@ import static android.opengl.GLES20.glTexParameteri;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,6 +25,8 @@ import android.util.Log;
 
 public class TextureHelper {
 	private static final String TAG = "TextureHelper";
+	
+	private static Map<Integer, ByteBuffer> bitmapCache = new HashMap<Integer, ByteBuffer>();
 
 	/**
 	 * Loads a texture from a resource ID, returning the OpenGL ID for that
@@ -53,6 +57,17 @@ public class TextureHelper {
 	 * @return
 	 */
 	public static int loadBitmpTexture(Bitmap bitmap) {
+		return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+	}
+	
+	/**
+	 * Bitmap에서 텍스쳐를 가져온다. 캐쉬사용.
+	 * 
+	 * @param bitmap
+	 * @param id
+	 * @return
+	 */
+	public static int loadBitmpTexture(Bitmap bitmap, int id) {
 		final int[] textureObjectIds = new int[1];
 		glGenTextures(1, textureObjectIds, 0);
 		
@@ -68,18 +83,24 @@ public class TextureHelper {
 			return 0;
 		}
 		
+		ByteBuffer byteBuffer;
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
 		
-		
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
-		byteBuffer.order(ByteOrder.BIG_ENDIAN);
-		IntBuffer ib = byteBuffer.asIntBuffer();
-		
-		int[] pixels = new int[bitmapWidth * bitmapHeight];
-		bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-		for(int i=0; i<pixels.length; i++){
-		    ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+		if(bitmapCache.containsKey(id)){
+			byteBuffer = bitmapCache.get(id);
+			System.out.println("cached!!");
+		}else{
+			byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
+			byteBuffer.order(ByteOrder.BIG_ENDIAN);
+			IntBuffer ib = byteBuffer.asIntBuffer();
+			
+			int[] pixels = new int[bitmapWidth * bitmapHeight];
+			bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+			for(int i=0; i<pixels.length; i++){
+			    ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+			}
+			bitmapCache.put(id, byteBuffer);
 		}
 		
 		//bitmap.recycle();
@@ -149,5 +170,15 @@ public class TextureHelper {
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return textureObjectIds[0];
+	}
+	
+	/**
+	 * 텍스트 텍스쳐
+	 * @param text
+	 * @return
+	 */
+	public static int loadTextBitmpTexture(String text){
+		Bitmap bitmap = BitmapHelper.drawTextToBitmap(text);
+		return loadBitmpTexture(bitmap);
 	}
 }

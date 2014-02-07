@@ -107,16 +107,6 @@ public class Background {
 		setVertices();
 	}
 	
-	public Background(Context context, float px, float py, float pWidth, float pHeight, Bitmap texture) {
-		this.context = context;
-		this.px = px;
-		this.py = py;
-		this.pWidth = pWidth;
-		this.pHeight = pHeight;
-		this.textBitmap = texture;
-		
-		setVertices();
-	}
 
 	public void bindData(TextureShaderProgram textureProgram) {
 		vertexArray.setVertexAttribPointer(0,

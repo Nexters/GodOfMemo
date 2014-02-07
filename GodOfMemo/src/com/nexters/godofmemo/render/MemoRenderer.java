@@ -9,15 +9,13 @@ import static android.opengl.Matrix.setIdentityM;
 import static android.opengl.Matrix.setLookAtM;
 import static android.opengl.Matrix.translateM;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.Vibrator;
-import android.widget.Toast;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -34,7 +32,7 @@ public class MemoRenderer implements Renderer {
     private final float[] modelMatrix = new float[16];
     private final float[] mvpMatrix = new float[16];
 
-    public List<Memo> memoList;
+    public ConcurrentLinkedQueue<Memo> memoList;
     private Background background;
     
     private TextureShaderProgram textureProgram;
@@ -145,17 +143,17 @@ public class MemoRenderer implements Renderer {
         	
         }
         
-        synchronized (this) {
 
-            //메모들을 그린다
-            for(Memo memo: memoList){
-                // Draw the memo.
-                textureProgram.useProgram();
-                textureProgram.setUniforms(mvpMatrix, memo.texture);
-                memo.bindData(textureProgram);
-                memo.draw();
-                
-            }	
-		}
+        //메모들을 그린다
+        for(Memo memo: memoList){
+            // Draw the memo.
+            textureProgram.useProgram();
+            textureProgram.setUniforms(mvpMatrix, memo.texture);
+            memo.drawMemo(textureProgram);
+
+            textureProgram.setUniforms(mvpMatrix, memo.textTexture);
+            memo.drawText(textureProgram);
+            
+        }
     }
 }

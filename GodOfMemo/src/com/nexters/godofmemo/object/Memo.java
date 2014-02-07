@@ -22,6 +22,10 @@ public class Memo {
 	private static float[] VERTEX_DATA;
 	private VertexArray vertexArray;
 	
+	//텍스트 입력을 위한 정보
+	private static float[] VERTEX_DATA_TEXT;
+	private VertexArray vertexArrayText;
+	
 	//기본정보
 	private String memoId;
 	private String memoContent;
@@ -39,12 +43,16 @@ public class Memo {
 	
 	//텍스쳐 정보
 	public int texture;
+	//글씨 텍스처
+	public int textTexture;
 	
 	//텍스쳐 원본
 	public int textureSource;
 	
 	//텍스트를 입력한 비트맵
 	public Bitmap textBitmap;
+	//비트맵 아이디
+	public int textBitmapId;
 	
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
@@ -99,6 +107,65 @@ public class Memo {
 		VERTEX_DATA[s * 4 + 3] = 1f; // z
 
 		vertexArray = new VertexArray(VERTEX_DATA);
+		
+		//글자저장을 위한 저장...
+		setTextVertices();
+	}
+	
+	private void setTextVertices(){
+		VERTEX_DATA_TEXT = new float[24];
+		
+		float x = this.x;
+		float y = this.y;
+		float width = this.width;
+		float height = this.height;
+
+		width = width * 8 / 10;
+		height = height * 6 / 10;
+
+		// 중심. 
+		int s = 0;
+		VERTEX_DATA_TEXT[0] = x; // x
+		VERTEX_DATA_TEXT[1] = y; // y
+		VERTEX_DATA_TEXT[2] = 0.5f; // S
+		VERTEX_DATA_TEXT[3] = 0.5f; // T
+
+		// 왼쪽 아래
+		s++;
+		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+
+		// 오른쪽 아래
+		s++;
+		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
+		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+
+		// 오른쪽 위에 
+		s++;
+		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
+		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+
+		// 왼쪽 위에
+		s++;
+		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+
+		// 왼쪽 아래
+		s++;
+		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
+		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+
+		vertexArrayText = new VertexArray(VERTEX_DATA_TEXT);
 	}
 
 	// 텍스쳐 설정
@@ -108,7 +175,8 @@ public class Memo {
 			this.texture = TextureHelper.loadTexture(context, textureSource);
 		} else if (textBitmap != null) {
 			// 비트맵이 있으면 비트맵 텍스쳐를 입힌다.
-			this.texture = TextureHelper.loadBitmpTexture(textBitmap);
+			this.texture = TextureHelper.loadBitmpTexture(textBitmap, textBitmapId);
+			this.textTexture = TextureHelper.loadTextBitmpTexture(memoContent);
 		}
 	}
 
@@ -119,28 +187,6 @@ public class Memo {
 	 */
 	public Memo(Context context){
 		this.context = context;
-	}
-			
-	/**
-	 * 저장된 메모를 그린다
-	 * @param context
-	 * 컨텍스트
-	 * @param x
-	 * 
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @param text
-	 */
-	public Memo(Context context, float x, float y, float width, float height, String text) {
-		this.context = context;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo_256, text);
-		
-		setVertices();
 	}
 	
 	//신규입력시
@@ -166,7 +212,8 @@ public class Memo {
 		
 	}
 
-	public void bindData(TextureShaderProgram textureProgram) {
+	public void drawMemo(TextureShaderProgram textureProgram) {
+		//메모지 그리기
 		vertexArray.setVertexAttribPointer(0,
 				textureProgram.getPositionAttributeLocation(),
 				POSITION_COMPONENT_COUNT, STRIDE);
@@ -174,14 +221,22 @@ public class Memo {
 		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
 				textureProgram.getTextureCoordinatesAttributeLocation(),
 				TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
-	}
-
-	public void draw() {
+		
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
 	
-	
+	public void drawText(TextureShaderProgram textureProgram) {
+	//텍스트에 대한 처리...
+		vertexArrayText.setVertexAttribPointer(0,
+				textureProgram.getPositionAttributeLocation(),
+				POSITION_COMPONENT_COUNT, STRIDE);
 
+		vertexArrayText.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
+				textureProgram.getTextureCoordinatesAttributeLocation(),
+				TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
+		
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	}
 	
 	//##############
 	// Getter, Setter
@@ -205,7 +260,9 @@ public class Memo {
 		}
 
 		//메모내용을 담은 비트맵 생성
-		this.textBitmap = BitmapHelper.drawTextToBitmap(context, R.drawable.whitememo_256, memoContent);
+		this.textBitmapId = R.drawable.whitememo;
+		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
+		
 		this.memoContent = memoContent;
 	}
 
