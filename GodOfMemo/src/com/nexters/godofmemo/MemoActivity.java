@@ -8,10 +8,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 
 
-public class MemoActivity extends ActionBarActivity {
+public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 	EditText short_et;
 
@@ -63,6 +65,12 @@ public class MemoActivity extends ActionBarActivity {
 		
 		setResult(RESULT_OK, intent);
 		finish();
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

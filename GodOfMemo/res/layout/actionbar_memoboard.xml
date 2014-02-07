@@ -15,7 +15,7 @@
     <!--
     <Button
         android:background="@drawable/memo_write_btn_selector"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF" />
     -->
 
     <LinearLayout
@@ -29,14 +29,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write01" />
+            android:background="@drawable/btn_write01" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write02"
+            android:background="@drawable/btn_write02"
             android:gravity="center_vertical"
+            android:paddingLeft="12sp"
             android:text="메모 쓰기"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
@@ -45,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write03" />
+            android:background="@drawable/btn_write03" />
     </LinearLayout>
 
 </FrameLayout>

@@ -6,6 +6,8 @@
     tools:context=".MemoActivity" >
 
     <RelativeLayout
+        
+        android:id="@+id/memo_img_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -16,19 +18,27 @@
 
         <EditText
             android:id="@+id/short_text"
-            android:layout_width="240dp"
-            android:layout_height="120dp"
+            android:layout_width="160dp"
+            android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
             android:inputType="textMultiLine"
             android:lineSpacingExtra="6dp"
-            android:maxLines="4"
+            android:maxLines="2"
             android:maxWidth="40sp"
-            android:padding="5dp"
+            android:padding="7dp"
             android:textColor="@android:color/black"
             android:textSize="17sp" />
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/memo_img_background"
+        
+        android:layout_marginTop="180dp"
+        android:background="@drawable/trashcan_btn_selector" />
 
 </RelativeLayout>
