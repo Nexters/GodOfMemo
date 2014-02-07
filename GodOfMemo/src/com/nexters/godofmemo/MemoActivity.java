@@ -5,23 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 
 public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 	EditText short_et;
 	Intent intent; 
-	
-	private final int NONE = 0;
-	private final int CREATE = 1;
-	private final int UPDATE = 2;
-	private int write_mode = NONE;
 	
 	private final int BACK = 3;
 	
@@ -45,12 +38,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
-		findViewById(R.id.trash_can).setOnClickListener(this);
+		ImageView trash_can =  (ImageView)findViewById(R.id.trash_can);
+		trash_can.setOnClickListener(this);
 		
 		if(memoContent==null){
-			write_mode = CREATE;
+			trash_can.setVisibility(View.GONE);
 		}else{
-			write_mode = UPDATE;
+			
 			short_et.setText(memoContent);
 		}
 	}
@@ -72,6 +66,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	        break;
 		case R.id.btn_back:
 			intent.putExtra("checkBack", BACK);
+			setResult(RESULT_OK, intent);
+			finish();
+			break;
+		case R.id.trash_can:
+			intent.putExtra("selectedMemoId", memoId);
+			intent.putExtra("delete", true);
+			setResult(RESULT_OK, intent);
 			finish();
 			break;
 		}
