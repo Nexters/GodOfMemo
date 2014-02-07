@@ -154,13 +154,20 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_UP:
 			handler.removeCallbacks(mLongPressed);
 			
+			float dx= x - pre.x;
+			float dy = y - pre.y;
+			pre.set(x,y);
+			
 			// 화면을 누른 시간을 구한다.
 			dMilliSecond = System.currentTimeMillis() - startMilliSecond;
 			
+			float moveLimit = 0.005f;
+			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
+			
 			//메모 선택시
 			//LongClickEvent에서 selectedMemo를 설정.
-			if(selectedMemo != null ){
-				if(0< dMilliSecond && dMilliSecond < 200){
+			if(selectedMemo != null && !isMoved ){
+				if(0< dMilliSecond && dMilliSecond < 100){
 					tabMode= TAB;
 					Intent intent = new Intent(context, MemoActivity.class);
 					//보기, 수정 화면으로 넘어가기. 
@@ -194,8 +201,8 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
 				//Log.d(TAG, "DRAG");
-				float dx= x - pre.x;
-				float dy = y - pre.y;
+				dx= x - pre.x;
+				dy = y - pre.y;
 				pre.set(x,y);
 				
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함

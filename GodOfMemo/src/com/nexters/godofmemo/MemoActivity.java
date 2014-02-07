@@ -29,7 +29,10 @@ public class MemoActivity extends ActionBarActivity {
 		
 		Intent intent = getIntent();
 		String memoContent = intent.getStringExtra("selectedMemoContent");
-		short_et.setText(memoContent);
+
+		if(memoContent!=null){
+			short_et.setText(memoContent);
+		}
 	}
 
 	@Override
