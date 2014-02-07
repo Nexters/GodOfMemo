@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="메모 보드"
-        android:textColor="#159ae5"
+        android:textColor="#414141"
         android:textSize="22dp" />
     <!--
     <Button

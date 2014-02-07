@@ -34,10 +34,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.nexters.godofmemo.MemoActivity"
-            android:label="@string/title_activity_memo" >
+            android:label="@string/title_activity_memo"
+            android:windowSoftInputMode="stateHidden|adjustPan"  >
         </activity>
+        
         <activity
             android:name="com.nexters.godofmemo.RevisedActivity"
             android:label="@string/title_activity_revised" >

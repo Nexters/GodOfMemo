@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/memoBoardTitle"
@@ -10,16 +10,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="메모 수정"
-        android:textColor="#159ae5"
+        android:textColor="#414141"
         android:textSize="22dp" />
-
+<!-- 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:background="@drawable/memo_finish_btn_selector" />
-
-    <!--
+        android:background="@drawable/memo_finish_btn_selector"
+        android:layout_margin="5sp" />
+ -->
+ 
     <LinearLayout
         android:id="@+id/action_write"
         android:layout_width="wrap_content"
@@ -31,15 +32,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write01" />
+            android:background="@drawable/btn_finish_a01" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write02"
+            android:background="@drawable/btn_finish_a01"
             android:gravity="center_vertical"
-            android:text="메모 완료"
+            android:text="　완료　 "
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
 
@@ -47,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/write03" />
+            android:background="@drawable/btn_finish_a03" />
+        
     </LinearLayout>
-    -->
 
 </FrameLayout>
