@@ -145,14 +145,17 @@ public class MemoRenderer implements Renderer {
         	
         }
         
-        //메모들을 그린다
-        for(Memo memo: memoList){
-            // Draw the memo.
-            textureProgram.useProgram();
-            textureProgram.setUniforms(mvpMatrix, memo.texture);
-            memo.bindData(textureProgram);
-            memo.draw();
-            
-        }
+        synchronized (this) {
+
+            //메모들을 그린다
+            for(Memo memo: memoList){
+                // Draw the memo.
+                textureProgram.useProgram();
+                textureProgram.setUniforms(mvpMatrix, memo.texture);
+                memo.bindData(textureProgram);
+                memo.draw();
+                
+            }	
+		}
     }
 }
