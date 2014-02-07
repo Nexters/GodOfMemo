@@ -979,14 +979,17 @@ containing a value of this type.
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
         public static final int background=0x7f020057;
         public static final int bluememo=0x7f020058;
-        public static final int ic_launcher=0x7f020059;
-        public static final int memo_write_btn=0x7f02005a;
-        public static final int memo_write_btn_press=0x7f02005b;
-        public static final int memo_write_btn_selector=0x7f02005c;
-        public static final int whitememo=0x7f02005d;
-        public static final int write01=0x7f02005e;
-        public static final int write02=0x7f02005f;
-        public static final int write03=0x7f020060;
+        public static final int btn_finishall=0x7f020059;
+        public static final int btn_finishall_a=0x7f02005a;
+        public static final int ic_launcher=0x7f02005b;
+        public static final int memo_finish_btn_selector=0x7f02005c;
+        public static final int memo_write_btn=0x7f02005d;
+        public static final int memo_write_btn_press=0x7f02005e;
+        public static final int memo_write_btn_selector=0x7f02005f;
+        public static final int whitememo=0x7f020060;
+        public static final int write01=0x7f020061;
+        public static final int write02=0x7f020062;
+        public static final int write03=0x7f020063;
     }
     public static final class id {
         public static final int action_bar=0x7f06001a;
@@ -1112,11 +1115,12 @@ containing a value of this type.
         public static final int abc_screen=0x7f030015;
         public static final int abc_search_dropdown_item_icons_2line=0x7f030016;
         public static final int abc_search_view=0x7f030017;
-        public static final int actionbar_memoboard=0x7f030018;
-        public static final int activity_main=0x7f030019;
-        public static final int activity_memo=0x7f03001a;
-        public static final int activity_revised=0x7f03001b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
+        public static final int actionbar_memo_edit=0x7f030018;
+        public static final int actionbar_memoboard=0x7f030019;
+        public static final int activity_main=0x7f03001a;
+        public static final int activity_memo=0x7f03001b;
+        public static final int activity_revised=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;

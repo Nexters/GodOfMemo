@@ -3,6 +3,7 @@ package com.nexters.godofmemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +18,11 @@ public class MemoActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
+		getSupportActionBar().setCustomView(R.layout.actionbar_memo_edit);
+		
 		setContentView(R.layout.activity_memo);
 
 		short_et = (EditText) findViewById(R.id.short_text);
