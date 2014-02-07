@@ -4,9 +4,13 @@
     <string name="app_name">GodOfMemo</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="intro">인트로 화면 </string>
     <string name="title_activity_memo">MemoActivity</string>
     <string name="action_write_finish">메모 끝</string>
     <string name="detailed_message">이 곳을 누르면 더 자세하게 메모를 작성할 수 있습니다.</string>
     <string name="title_activity_revised">RevisedActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

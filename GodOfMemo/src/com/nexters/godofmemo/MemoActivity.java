@@ -32,6 +32,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		Intent intent = getIntent();
 		String memoContent = intent.getStringExtra("selectedMemoContent");
 
+
 		if(memoContent!=null){
 			short_et.setText(memoContent);
 		}

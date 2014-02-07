@@ -7,6 +7,7 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.MemoActivity;
@@ -165,7 +166,6 @@ public class MemoGLView extends GLSurfaceView {
 			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
 			
 			//메모 선택시
-			//LongClickEvent에서 selectedMemo를 설정.
 			if(selectedMemo != null && !isMoved ){
 				if(0< dMilliSecond && dMilliSecond < 100){
 					tabMode= TAB;
@@ -182,11 +182,11 @@ public class MemoGLView extends GLSurfaceView {
 					
 					//이동한 정보를 DB에 입력한다.
 					MemoDAO memoDao = new MemoDAO(context);
-					memoDao.updateMemo(selectedMemo);
+					memoDao.updateMemo(selectedMemo);	
 				}
 				selectedMemo = null;
+				tabMode = NONE;
 			}
-			
 			
 			break;
 		
@@ -200,7 +200,8 @@ public class MemoGLView extends GLSurfaceView {
 		//손을 대고 움직일때
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
-				//Log.d(TAG, "DRAG");
+				Log.d(TAG, "DRAG");
+				System.out.println(tabMode);
 				dx= x - pre.x;
 				dy = y - pre.y;
 				pre.set(x,y);
@@ -212,7 +213,7 @@ public class MemoGLView extends GLSurfaceView {
 
 				}
 				
-				if(selectedMemo != null){
+				if(selectedMemo != null && tabMode == LONGTAB){
 					//메모 이동
 					selectedMemo.setX(nx);
 					selectedMemo.setY(ny);
@@ -446,6 +447,7 @@ public class MemoGLView extends GLSurfaceView {
 				
 				//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
 				if(selectedMemo != null){
+					tabMode=LONGTAB;
 					//선택시 진동
 					vibrator.vibrate(100);
 					
@@ -458,11 +460,12 @@ public class MemoGLView extends GLSurfaceView {
 					//selectedMemo.setHeight(selectedMemo.getHeight()+ selectedAnimationSize);
 					//selectedMemo.setWidth(selectedMemo.getWidth()+ selectedAnimationSize);
 					selectedMemo.setVertices();
-					tabMode=LONGTAB;
+					
 					requestRender();
 					return;
 				}
 			}
+			
 			
 			requestRender();
 		}
