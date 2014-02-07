@@ -17,6 +17,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Vibrator;
+import android.widget.Toast;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.MemoDAO;
@@ -64,7 +65,7 @@ public class MemoRenderer implements Renderer {
 //		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
         
         //배경화면
-        background = new Background(context, 0, 0, Constants.DOT_SIZE/20f, Constants.DOT_SIZE/20f, R.drawable.background);
+        background = new Background(context, 0, 0, Constants.DOT_BACKGROUND_SIZE, Constants.DOT_BACKGROUND_SIZE, R.drawable.background);
         
         //TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
         
@@ -129,6 +130,21 @@ public class MemoRenderer implements Renderer {
         background.draw();
         //#########################
         
+        
+        long maxMemoTime = 0;
+        Memo maxMemo;
+        for(Memo memo: memoList){
+        	//새 메모 검사
+        	//여러 메모중에 최신 메모를 찾는다
+        	long memoTime = memo.getProdTime();
+        	if (maxMemoTime < memoTime){
+        		maxMemoTime = memoTime;
+        		maxMemo = memo;
+        	}
+        	//TODO 만약 최신 메모가 생성된지 3초가 안되었으면 알려주기 
+        	
+        }
+        
         //메모들을 그린다
         for(Memo memo: memoList){
             // Draw the memo.
@@ -136,6 +152,7 @@ public class MemoRenderer implements Renderer {
             textureProgram.setUniforms(mvpMatrix, memo.texture);
             memo.bindData(textureProgram);
             memo.draw();
+            
         }
     }
 }
