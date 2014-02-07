@@ -134,7 +134,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		case CREATE_RESULT:
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			memoContent = data.getStringExtra("short_txt");
-			
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
 
