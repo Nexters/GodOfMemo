@@ -172,7 +172,7 @@ public class MemoGLView extends GLSurfaceView {
 					Intent intent = new Intent(context, MemoActivity.class);
 					//보기, 수정 화면으로 넘어가기. 
 					intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
-					
+					intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
 					((Activity)context).startActivityForResult(intent, 1);
 				}else if(tabMode == LONGTAB){
 					//selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);

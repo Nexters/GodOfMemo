@@ -16,7 +16,17 @@ import android.widget.EditText;
 public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 	EditText short_et;
-
+	Intent intent; 
+	
+	private final int NONE = 0;
+	private final int CREATE = 1;
+	private final int UPDATE = 2;
+	private int write_mode = NONE;
+	
+	private final int BACK = 3;
+	
+	private String memoContent;
+	private String memoId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,49 +39,42 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 		short_et = (EditText) findViewById(R.id.short_text);
 		
-		Intent intent = getIntent();
-		String memoContent = intent.getStringExtra("selectedMemoContent");
+		intent = getIntent();
+		memoContent = intent.getStringExtra("selectedMemoContent");
+		memoId = intent.getStringExtra("selectedMemoId");
 
-
-		if(memoContent!=null){
+		findViewById(R.id.btn_back).setOnClickListener(this);
+		findViewById(R.id.btn_finish).setOnClickListener(this);
+		findViewById(R.id.trash_can).setOnClickListener(this);
+		
+		if(memoContent==null){
+			write_mode = CREATE;
+		}else{
+			write_mode = UPDATE;
 			short_et.setText(memoContent);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu items for use in the action bar
-		/*MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.memo, menu);*/
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-		case R.id.action_write_finish:
-			makeText();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
 		}
 	}
 	
 	public void makeText() {
-		Intent intent = getIntent();
-		
 		String short_txt = short_et.getText().toString();
 		intent.putExtra("short_txt", short_txt);
-		
 		setResult(RESULT_OK, intent);
-		finish();
 	}
 
 	@Override
-	public void onClick(View arg0) {
+	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		switch (v.getId()) {
+		case R.id.btn_finish:
+			makeText();
+			intent.putExtra("selectedMemoId", memoId);
+			finish();
+	        break;
+		case R.id.btn_back:
+			intent.putExtra("checkBack", BACK);
+			finish();
+			break;
+		}
 	}
 
 }

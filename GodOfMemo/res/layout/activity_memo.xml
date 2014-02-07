@@ -34,6 +34,7 @@
     </RelativeLayout>
 
     <ImageView
+        android:id="@+id/trash_can"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/memo_img_background"
