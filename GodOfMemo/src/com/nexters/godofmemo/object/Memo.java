@@ -61,6 +61,7 @@ public class Memo {
 	 * 위치와 크기를 지정한다
 	 */
 	public void setVertices() {
+		//System.out.println("setVertices");
 
 		VERTEX_DATA = new float[24];
 
@@ -113,6 +114,7 @@ public class Memo {
 	}
 	
 	private void setTextVertices(){
+		//System.out.println("setTextVertices");
 		VERTEX_DATA_TEXT = new float[24];
 		
 		float x = this.x;
@@ -214,6 +216,11 @@ public class Memo {
 
 	public void drawMemo(TextureShaderProgram textureProgram) {
 		//메모지 그리기
+		if(vertexArray == null){
+			//System.out.println("vertexArray null!!!!"+this.getMemoContent());
+		}else{
+			//System.out.println("vertexArray not null....."+this.getMemoContent());
+		}
 		vertexArray.setVertexAttribPointer(0,
 				textureProgram.getPositionAttributeLocation(),
 				POSITION_COMPONENT_COUNT, STRIDE);

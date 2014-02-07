@@ -85,13 +85,13 @@ public class MemoRenderer implements Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-    	//System.out.println(width);
-    	//System.out.println(height);
+    	////System.out.println(width);
+    	////System.out.println(height);
     	//높이 너비 저장
     	this.width = width;
     	this.height = height;
     	
-    	//System.out.println(Constants.actionbarHeight);
+    	////System.out.println(Constants.actionbarHeight);
     	
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
@@ -146,6 +146,7 @@ public class MemoRenderer implements Renderer {
 
         //메모들을 그린다
         for(Memo memo: memoList){
+        	//System.out.println("메모들 아이디는 요거 >> " + memo.getMemoId());
             // Draw the memo.
             textureProgram.useProgram();
             textureProgram.setUniforms(mvpMatrix, memo.texture);

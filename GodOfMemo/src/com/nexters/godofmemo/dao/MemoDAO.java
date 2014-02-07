@@ -187,6 +187,9 @@ public class MemoDAO {
 	private Memo getMemo(Cursor cursor) {
 		Memo memo = new Memo(context); // 객체 초기화
 		
+		//System.out.println("getMemo");
+		//System.out.println(cursor.getCount());
+		
 		if(cursor.getCount()==0) return memo;
 		
 		//기본정보

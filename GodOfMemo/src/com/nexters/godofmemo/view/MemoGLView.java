@@ -1,5 +1,10 @@
 package com.nexters.godofmemo.view;
 
+import java.util.Collection;
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -90,12 +95,12 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
-		//////System.out.println("111  "+x +", "+ y);
+		////////System.out.println("111  "+x +", "+ y);
 		
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
     	float ny = getNormalizedY(y);
-    	//////System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
+    	////////System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
     	
 		// Handle touch events here...
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -126,7 +131,7 @@ public class MemoGLView extends GLSurfaceView {
 			mode = DRAG;
 			
 			//위치표시
-			////////System.out.format("%f %f \n", x, y);
+			//////////System.out.format("%f %f \n", x, y);
 			
 			break;
 			
@@ -148,7 +153,7 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_UP:
 			handler.removeCallbacks(mLongPressed);
 			
-			//System.out.format("x y preX preY %f %f %f %f \n",x, y,start.x ,start.y);
+			////System.out.format("x y preX preY %f %f %f %f \n",x, y,start.x ,start.y);
 			
 			float dx= x - start.x;
 			float dy = y - start.y;
@@ -158,12 +163,14 @@ public class MemoGLView extends GLSurfaceView {
 			
 			float moveLimit = 10f;
 			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
-			//System.out.format("%f %f ",Math.abs(dx), Math.abs(dy));
-			//System.out.println("isMoved : "+isMoved);
+			////System.out.format("%f %f ",Math.abs(dx), Math.abs(dy));
+			////System.out.println("isMoved : "+isMoved);
 			
 			//메모 선택시
 			if(!isMoved ){
-				//System.out.println("dMilliSecond : "+dMilliSecond);
+				////System.out.println("dMilliSecond : "+dMilliSecond);
+				System.out.println("tabMode");
+				System.out.println(tabMode);
 				if(0< dMilliSecond && dMilliSecond < clickEventLimit){
 					
 					if(isMemoChecked(nx, ny)){
@@ -171,19 +178,22 @@ public class MemoGLView extends GLSurfaceView {
 						Intent intent = new Intent(context, MemoActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
 						intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
+						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
 						((Activity)context).startActivityForResult(intent, 1);
 					}
 					
-				}else if(tabMode == LONGTAB){
-					//selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
-					//selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
-					selectedMemo.setVertices();
-					requestRender();
-					
-					//이동한 정보를 DB에 입력한다.
-					MemoDAO memoDao = new MemoDAO(context);
-					memoDao.updateMemo(selectedMemo);	
 				}
+			}
+			
+			if(selectedMemo != null){
+				//selectedMemo.setWidth(selectedMemo.getWidth() - selectedAnimationSize);
+				//selectedMemo.setHeight(selectedMemo.getHeight() - selectedAnimationSize);
+				selectedMemo.setVertices();
+				requestRender();
+				
+				//이동한 정보를 DB에 입력한다.
+				MemoDAO memoDao = new MemoDAO(context);
+				memoDao.updateMemo(selectedMemo);	
 			}
 			
 			selectedMemo = null;
@@ -202,7 +212,7 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_MOVE:
 			if (mode == DRAG) {
 				Log.d(TAG, "DRAG");
-				////System.out.println(tabMode);
+				//////System.out.println(tabMode);
 				dx= x - pre.x;
 				dy = y - pre.y;
 				pre.set(x,y);
@@ -236,12 +246,12 @@ public class MemoGLView extends GLSurfaceView {
 						mr.px = tempX;
 						mr.py = tempY;
 					}else{
-						////System.out.println("true");
+						//////System.out.println("true");
 					}
 					
-					////System.out.format(" x y %f %f \t", x, y);
-					////System.out.format(" nx ny %f %f \t", nx, ny);
-					////System.out.format(" px py %f %f \n", mr.px, mr.py);
+					//////System.out.format(" x y %f %f \t", x, y);
+					//////System.out.format(" nx ny %f %f \t", nx, ny);
+					//////System.out.format(" px py %f %f \n", mr.px, mr.py);
 					//mr.px = nx;
 					//mr.py = ny;
 				}
@@ -315,14 +325,14 @@ public class MemoGLView extends GLSurfaceView {
 			ratioY = (float) mr.height / mr.width ;
 		}
 		
-		////System.out.format("w h %d %d \n",mr.width, mr.height);
+		//////System.out.format("w h %d %d \n",mr.width, mr.height);
 		
 		float leftBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
 		float rightBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
 		float topBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
 		float bottomBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
 		
-		////System.out.format("boundary %f %f %f %f \n", leftBoundary, rightBoundary, topBoundary, bottomBoundary);
+		//////System.out.format("boundary %f %f %f %f \n", leftBoundary, rightBoundary, topBoundary, bottomBoundary);
 		
 		//현재 화면의 상태
 		float left = 0 ;
@@ -335,7 +345,7 @@ public class MemoGLView extends GLSurfaceView {
 		float normalizedTop = getNormalizedY(top, tempX, tempY, tempZoom);
 		float normalizedBottom = getNormalizedY(bottom, tempX, tempY, tempZoom);
 		
-		////System.out.format("normalized %f %f %f %f \n", normalizedLeft, normalizedRight, normalizedTop, normalizedBottom);
+		//////System.out.format("normalized %f %f %f %f \n", normalizedLeft, normalizedRight, normalizedTop, normalizedBottom);
 		
 		//자동줌
 		if(mode == ZOOM){
@@ -360,7 +370,7 @@ public class MemoGLView extends GLSurfaceView {
 		if(normalizedTop > topBoundary) return true;
 		if(normalizedBottom < bottomBoundary) return true;
 		
-		////System.out.println("false!!");
+		//////System.out.println("false!!");
 		
 		return false;
 	}
@@ -404,12 +414,15 @@ public class MemoGLView extends GLSurfaceView {
 	}
 	
 	private boolean isMemoChecked(float nx, float ny){
-		for(Memo memo : mr.memoList){
-
+		Deque<Memo> deque = new LinkedBlockingDeque<Memo>(mr.memoList); 
+		
+		while(deque.size()>0){
+			Memo memo = deque.pollLast();
+	
 			float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
 			float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
 
-			//System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
+			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
 			
 			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
 			if(chkX <= 0.9f && chkY <= 0.5f){
@@ -418,7 +431,6 @@ public class MemoGLView extends GLSurfaceView {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -452,7 +464,7 @@ public class MemoGLView extends GLSurfaceView {
 			//MotionEvent를 등록할때에는 액션봐와 상단메뉴를 제외한 y좌표를 받는데
 			//여기선 액션바와 상단메뉴를 포함한 y좌표를 받는다.
 			//왜일까?
-			//////System.out.println("222  "+x +", "+ y);
+			////////System.out.println("222  "+x +", "+ y);
 			
 			//정규화된 좌표
 			float nx = getNormalizedX(x);

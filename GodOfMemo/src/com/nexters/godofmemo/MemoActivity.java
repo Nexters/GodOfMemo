@@ -5,18 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 
 public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 	EditText short_et;
-
+	Intent intent; 
+	
+	private final int BACK = 3;
+	
+	private String memoContent;
+	private String memoId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,49 +32,50 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
 		short_et = (EditText) findViewById(R.id.short_text);
 		
-		Intent intent = getIntent();
-		String memoContent = intent.getStringExtra("selectedMemoContent");
-
-
-		if(memoContent!=null){
+		intent = getIntent();
+		memoContent = intent.getStringExtra("selectedMemoContent");
+		memoId = intent.getStringExtra("selectedMemoId");
+		//System.out.println("memoId: "+ memoId);
+		findViewById(R.id.btn_back).setOnClickListener(this);
+		findViewById(R.id.btn_finish).setOnClickListener(this);
+		ImageView trash_can =  (ImageView)findViewById(R.id.trash_can);
+		trash_can.setOnClickListener(this);
+		
+		if(memoContent==null){
+			trash_can.setVisibility(View.GONE);
+		}else{
+			
 			short_et.setText(memoContent);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu items for use in the action bar
-		/*MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.memo, menu);*/
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-		case R.id.action_write_finish:
-			makeText();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
 		}
 	}
 	
 	public void makeText() {
-		Intent intent = getIntent();
-		
 		String short_txt = short_et.getText().toString();
 		intent.putExtra("short_txt", short_txt);
-		
 		setResult(RESULT_OK, intent);
-		finish();
 	}
 
 	@Override
-	public void onClick(View arg0) {
+	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+		switch (v.getId()) {
+		case R.id.btn_finish:
+			makeText();
+			intent.putExtra("selectedMemoId", memoId);
+			finish();
+	        break;
+		case R.id.btn_back:
+			intent.putExtra("checkBack", BACK);
+			setResult(RESULT_OK, intent);
+			finish();
+			break;
+		case R.id.trash_can:
+			intent.putExtra("selectedMemoId", memoId);
+			intent.putExtra("delete", true);
+			setResult(RESULT_OK, intent);
+			finish();
+			break;
+		}
 	}
 
 }

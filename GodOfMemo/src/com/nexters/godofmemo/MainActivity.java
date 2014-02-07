@@ -1,5 +1,6 @@
 package com.nexters.godofmemo;
 
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -11,8 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -28,6 +27,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
+	private final int CREATE_RESULT= 0;
+	private final int UPDATE_RESULT= 1;
+	private String memoContent;
+	private String memoId;
+	private MemoDAO memoDao;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,37 +126,88 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.out.println("onActivityResult");
-
+		//System.out.println("onActivityResult");
+		memoDao = new MemoDAO(getApplicationContext());
 		//비정상종료면?
 		if(resultCode != Activity.RESULT_OK) return;
-		
-		String txt = data.getStringExtra("short_txt");
-		
-		//TODO 새 메모 체크하기 
-		//메모를 저장한다.
+		switch(requestCode){
+		case CREATE_RESULT:
+			if(data.getIntExtra("checkBack",0)!=0) return;
+			memoContent = data.getStringExtra("short_txt");
+			//TODO 새 메모 체크하기 
+			//메모를 저장한다.
 
-		Memo newMemo = new Memo(getApplicationContext(), txt, glSurfaceView);
-		//지금 시간을 구한다
-		long curr = System.currentTimeMillis();
-		//setter
-		newMemo.setProdTime(curr);
+			Memo newMemo = new Memo(getApplicationContext(), memoContent, glSurfaceView);
+			//지금 시간을 구한다
+			long curr = System.currentTimeMillis();
+			//setter
+			newMemo.setProdTime(curr);
+			
+			long memoIdL = memoDao.insertMemo(newMemo);
+			memoId = String.valueOf(memoIdL);
+			newMemo.setMemoId(memoId);
+			
+			//TODO 새 메모가 생겼을때 토스트
+			String newText = "새 메모!";
+			createToast(newText);
+			
+			//화면에 그릴 목록에 추가
+			glSurfaceView.mr.memoList.add(newMemo);
+			break;
+		case UPDATE_RESULT:
+			if(data.getIntExtra("checkBack",0)!=0) return;
+			
+			memoContent = data.getStringExtra("short_txt");
+			memoId = data.getStringExtra("selectedMemoId");
+			
+			if(data.getBooleanExtra("delete", false)){
+				Memo deleteMemo =  memoDao.getMemoInfo(memoId);
+				memoDao.delMemo(deleteMemo);
+				removeMemo(deleteMemo);
+				createToast("메모 삭제");
+				return;
+			}
+			
+			//System.out.println("메모 아이디 ");
+			//System.out.println(memoId);
+			Memo updateMemo = memoDao.getMemoInfo(memoId);
+			//System.out.println("새 메모 생성");
+			
+			
+			//setter
+			updateMemo.setProdTime(System.currentTimeMillis());
+			updateMemo.setMemoContent(memoContent);
+			memoDao.updateMemo(updateMemo);
+			
+			//System.out.println("그리기 이전");
+			//새로 그리기 위해.
+			removeMemo(updateMemo);
+			glSurfaceView.mr.memoList.add(updateMemo);
+			
+			//System.out.println("액티비티 끗");
+			break;
+		}
 		
-		MemoDAO memoDao = new MemoDAO(getApplicationContext());
-		long memoIdL = memoDao.insertMemo(newMemo);
-		String memoId = String.valueOf(memoIdL);
-		newMemo.setMemoId(memoId);
-		
-		//TODO 새 메모가 생겼을때 토스트
-		String text = "새 메모!";
+	}
+	
+	/**
+	 * renderer의 memoList안에 있는 memo를 지우는 로직을 메서드화.
+	 */
+	private void removeMemo(Memo updateMemo){
+		for(Memo memo: glSurfaceView.mr.memoList){
+			if(memo.getMemoId().equals(updateMemo.getMemoId())){
+				glSurfaceView.mr.memoList.remove(memo);
+				break;
+			}
+		}
+	}
+	
+	private void createToast(String text){
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(this, text, duration);
 		toast.show();
-		
-		//화면에 그릴 목록에 추가
-		glSurfaceView.mr.memoList.add(newMemo);
 	}
-
+	
 	private int getActionBarHeight() {
 	    int actionBarHeight = getSupportActionBar().getHeight();
 	    if (actionBarHeight != 0)

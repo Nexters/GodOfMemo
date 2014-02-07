@@ -1,5 +1,8 @@
 package com.nexters.godofmemo.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,6 +13,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class BitmapHelper {
+	
+	private static Map<Integer, Bitmap> bitmapCache = new HashMap<Integer, Bitmap>();
 
 	/**
 	 * 이미지에 텍스트를 쓰는 함수
@@ -89,9 +94,16 @@ public class BitmapHelper {
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
 
-		// Read in the resource
-		Bitmap bitmap = BitmapFactory
-				.decodeResource(resources, gResId, options);
+		Bitmap bitmap;
+		if(bitmapCache.containsKey(gResId)){
+			bitmap = bitmapCache.get(gResId);
+		}else{
+			// Read in the resource
+			bitmap = BitmapFactory
+					.decodeResource(resources, gResId, options);
+			bitmapCache.put(gResId, bitmap);
+		}
+		
 
 		return bitmap;
 	}
