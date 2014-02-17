@@ -25,24 +25,9 @@
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme" >
 
-
-        <!-- Main activity -->
-        <activity
-            android:name="com.nexters.godofmemo.MainActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="com.nexters.godofmemo.MemoActivity"
-            android:label="@string/title_activity_memo"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name="com.nexters.godofmemo.RevisedActivity"
-            android:label="@string/title_activity_revised" >
-        </activity>
+        <!-- 스플래쉬 화면 앱을 처음 구동할 때 실행한다. -->
         <activity
             android:name="com.nexters.godofmemo.SplashActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
@@ -50,6 +35,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- Main activity 메모 보드 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.MainActivity"
+            android:label="@string/title_activity_board" >
+        </activity>
+
+        <!-- Memo activity 메모 신규 입력/수정 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.MemoActivity"
+            android:label="@string/title_activity_memo" >
         </activity>
     </application>
 

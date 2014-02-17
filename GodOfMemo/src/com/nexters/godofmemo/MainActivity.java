@@ -10,15 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.TypedValue;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
-import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener{
@@ -27,8 +24,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
-	private final int CREATE_RESULT= 0;
-	private final int UPDATE_RESULT= 1;
+	public static final int CREATE_RESULT= 0;
+	public static final int UPDATE_RESULT= 1;
 	private String memoContent;
 	private String memoId;
 	private MemoDAO memoDao;
@@ -38,14 +35,14 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 	
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		//커스톰 액션바 구현.
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_memoboard);
 		
+		//쓰기버튼에 클릭이벤트를 등록한
 		findViewById(R.id.action_write).setOnClickListener(this);
 
-		
-		//액션바 높이를 저장한다.
-		Constants.actionbarHeight = getActionBarHeight();
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -114,77 +111,67 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			glSurfaceView.onResume();
 		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu items for use in the action bar
-		//MenuInflater inflater = getMenuInflater();
-		//inflater.inflate(R.menu.main, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		//System.out.println("onActivityResult");
 		memoDao = new MemoDAO(getApplicationContext());
 		//비정상종료면?
 		if(resultCode != Activity.RESULT_OK) return;
+		
+		// 또 다른 액티비티를 사용하고 나서 결과 값으로 생성화면과 수정화면을 구분한다.
 		switch(requestCode){
 		case CREATE_RESULT:
+			//뒤로가기 버튼을 눌렀는지 체크
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			memoContent = data.getStringExtra("short_txt");
+			
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
-
 			Memo newMemo = new Memo(getApplicationContext(), memoContent, glSurfaceView);
 			//지금 시간을 구한다
 			long curr = System.currentTimeMillis();
 			//setter
 			newMemo.setProdTime(curr);
 			
+			//새로 생성한 메모에 아이디를 설정. 
 			long memoIdL = memoDao.insertMemo(newMemo);
 			memoId = String.valueOf(memoIdL);
 			newMemo.setMemoId(memoId);
 			
-			//TODO 새 메모가 생겼을때 토스트
+			//새 메모가 생겼을때 토스트
 			String newText = "새 메모!";
 			createToast(newText);
 			
 			//화면에 그릴 목록에 추가
 			glSurfaceView.mr.memoList.add(newMemo);
 			break;
+			
 		case UPDATE_RESULT:
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			
 			memoContent = data.getStringExtra("short_txt");
 			memoId = data.getStringExtra("selectedMemoId");
 			
+			
+			// 휴지통 버튼을 눌렀는지 체크
 			if(data.getBooleanExtra("delete", false)){
 				Memo deleteMemo =  memoDao.getMemoInfo(memoId);
 				memoDao.delMemo(deleteMemo);
-				removeMemo(deleteMemo);
 				createToast("메모 삭제");
 				return;
 			}
 			
-			//System.out.println("메모 아이디 ");
-			//System.out.println(memoId);
+			// 수정된 메모 정보를 갱신한다.
 			Memo updateMemo = memoDao.getMemoInfo(memoId);
-			//System.out.println("새 메모 생성");
-			
-			
-			//setter
 			updateMemo.setProdTime(System.currentTimeMillis());
 			updateMemo.setMemoContent(memoContent);
 			memoDao.updateMemo(updateMemo);
 			
-			//System.out.println("그리기 이전");
 			//새로 그리기 위해.
 			removeMemo(updateMemo);
 			glSurfaceView.mr.memoList.add(updateMemo);
-			
-			//System.out.println("액티비티 끗");
+
 			break;
 		}
 		
@@ -194,39 +181,25 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 * renderer의 memoList안에 있는 memo를 지우는 로직을 메서드화.
 	 */
 	private void removeMemo(Memo updateMemo){
-		for(Memo memo: glSurfaceView.mr.memoList){
-			if(memo.getMemoId().equals(updateMemo.getMemoId())){
-				glSurfaceView.mr.memoList.remove(memo);
-				break;
-			}
-		}
+		glSurfaceView.mr.memoList.remove(updateMemo);
 	}
 	
+	/**
+	 * 토스트를 굽는다.
+	 * @param text
+	 */
 	private void createToast(String text){
 		int duration = Toast.LENGTH_SHORT;
 		Toast toast = Toast.makeText(this, text, duration);
 		toast.show();
 	}
 	
-	private int getActionBarHeight() {
-	    int actionBarHeight = getSupportActionBar().getHeight();
-	    if (actionBarHeight != 0)
-	        return actionBarHeight;
-	    final TypedValue tv = new TypedValue();
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-	            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-	    } else if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true))
-	        actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-	    return actionBarHeight;
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.action_write:
 			Intent intent = new Intent(this, MemoActivity.class);
-			startActivityForResult(intent, 0);
+			startActivityForResult(intent, CREATE_RESULT);
 			return;
 		}
 		

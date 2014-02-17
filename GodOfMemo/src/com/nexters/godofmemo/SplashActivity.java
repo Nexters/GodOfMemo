@@ -52,11 +52,13 @@ public class SplashActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		//액션바 없애는 코드 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_intro);
 		
 		setContentView(R.layout.activity_splash);
 		
+		//
         new Handler().postDelayed(new Runnable() {
         	 
             /*

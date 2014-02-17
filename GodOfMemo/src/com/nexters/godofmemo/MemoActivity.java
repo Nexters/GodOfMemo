@@ -25,6 +25,8 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 	
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		//커스텀 액션바 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_memo_edit);
 		
