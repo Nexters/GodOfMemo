@@ -67,6 +67,7 @@ public class MemoRenderer implements Renderer {
         
         //TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
         
+       
     }
 
     @Override
@@ -74,7 +75,7 @@ public class MemoRenderer implements Renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         
         background.setTexture();
-
+        
         for(Memo memo: memoList){
             // 텍스쳐를 입힌다.
         	memo.setTexture();
@@ -126,7 +127,6 @@ public class MemoRenderer implements Renderer {
         textureProgram.setUniforms(mvpMatrix, background.texture);
         background.bindData(textureProgram);
         background.draw();
-        //#########################
         
         
         long maxMemoTime = 0;

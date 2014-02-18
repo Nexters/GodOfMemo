@@ -44,26 +44,11 @@ public class MemoDAO {
 	}
 
 	/**
-	 * 쓰기전에 open해주고
-	 * @throws SQLException
-	 */
-	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
-	}
-
-	/**
-	 *  다쓰면 close한다
-	 */
-	public void close() {
-		dbHelper.close();
-	}
-
-	/**
 	 *  메모 목록 조회
 	 * @return
 	 */
 	public ConcurrentLinkedQueue<Memo> getMemoList() {
-		this.open();
+		database = dbHelper.getReadableDatabase();
 		ConcurrentLinkedQueue<Memo> memoList = new ConcurrentLinkedQueue<Memo>();
 
 		Cursor cursor = database.query(MemoDBHelper.TABLE_MEMO_INFO,
@@ -79,7 +64,7 @@ public class MemoDAO {
 		
 		// Make sure to close the cursor
 		cursor.close();
-		this.close();
+		database.close();
 		
 		return memoList;
 	}
@@ -90,7 +75,7 @@ public class MemoDAO {
 	 * @return
 	 */
 	public Memo getMemoInfo(String memoId) {
-		this.open();
+		database = dbHelper.getReadableDatabase();
 		Cursor cur = database.query(MemoDBHelper.TABLE_MEMO_INFO,
 				allColumns, MemoDBHelper.COL_MEMO_ID + " = " + memoId, null, null,
 				null, null);
@@ -98,7 +83,7 @@ public class MemoDAO {
 
 		Memo returnedMemo = getMemo(cur); // 반환할 객체
 		cur.close();
-		this.close();
+		database.close();
 		//Log.i("memo info",returnedMemo.toString());
 
 		return returnedMemo;
@@ -111,7 +96,7 @@ public class MemoDAO {
 	 * @return
 	 */
 	public Long insertMemo(Memo memo) {
-		this.open();
+		database = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		
 		values.put(MemoDBHelper.COL_MEMO_CONTENT, memo.getMemoContent());
@@ -125,7 +110,7 @@ public class MemoDAO {
 		
 		long insertedId = database.insert(MemoDBHelper.TABLE_MEMO_INFO,
 				null, values);
-		this.close();
+		database.close();
 		
 		//Log.i("memo is inserted",String.valueOf(insertedId));
 		return insertedId;
@@ -138,7 +123,7 @@ public class MemoDAO {
 	 * @return
 	 */
 	public Integer updateMemo(Memo memo) {
-		this.open();
+		database = dbHelper.getWritableDatabase();
 		String memoId = memo.getMemoId();
 		ContentValues values = new ContentValues();
 		
@@ -153,7 +138,7 @@ public class MemoDAO {
 		
 		int rtn = database.update(MemoDBHelper.TABLE_MEMO_INFO, values,
 				MemoDBHelper.COL_MEMO_ID + " = " + memoId, null);
-		this.close();
+		database.close();
 		
 		//Log.i("memo is updated",String.valueOf(rtn));
 
@@ -168,11 +153,11 @@ public class MemoDAO {
 	 * @return
 	 */
 	public Integer delMemo(Memo memo) {
-		this.open();
+		database = dbHelper.getWritableDatabase();
 		String memoId = memo.getMemoId();
 		int rtn = database.delete(MemoDBHelper.TABLE_MEMO_INFO,
 				MemoDBHelper.COL_MEMO_ID + " = " + memoId, null);
-		this.close();
+		database.close();
 		
 		//Log.i("memo is deleted",String.valueOf(rtn));
 		return rtn;
