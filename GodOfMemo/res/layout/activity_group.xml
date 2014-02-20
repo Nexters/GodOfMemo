@@ -47,7 +47,7 @@
         android:layout_alignLeft="@+id/group_name"
         android:layout_below="@+id/group_name"
         android:layout_marginTop="15dp"
-        android:text="위 Bar를 움직여보세요."
+        android:text="아래 Bar를 움직여보세요."
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <!-- Seek bar -->
