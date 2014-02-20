@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	private boolean rendererSet = false;
 	public static final int CREATE_RESULT= 0;
 	public static final int UPDATE_RESULT= 1;
+	public static final int CREATE_GROUP= 2;
 	private String memoContent;
 	private String memoId;
 	private MemoDAO memoDao;
@@ -40,8 +41,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 
 		getSupportActionBar().setCustomView(R.layout.actionbar_memoboard);
 		
-		//쓰기버튼에 클릭이벤트를 등록한
+		//쓰기버튼에 클릭이벤트를 등록한다 
 		findViewById(R.id.action_write).setOnClickListener(this);
+		findViewById(R.id.action_group).setOnClickListener(this);
 
 
 		// Check if the system supports OpenGL ES 2.0.
@@ -173,6 +175,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			glSurfaceView.mr.memoList.add(updateMemo);
 
 			break;
+			
+		case CREATE_GROUP:
+			System.out.println("Group activity");
+			break;
 		}
 		
 	}
@@ -200,7 +206,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		case R.id.action_write:
 			Intent intent = new Intent(this, MemoActivity.class);
 			startActivityForResult(intent, CREATE_RESULT);
-			return;
+			break;
+			
+		case R.id.action_group:
+			Intent groupIntent = new Intent(this, GroupActivity.class);
+			startActivityForResult(groupIntent, CREATE_GROUP);
+			break;
 		}
 		
 	}

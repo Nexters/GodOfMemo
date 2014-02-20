@@ -48,6 +48,12 @@
             android:name="com.nexters.godofmemo.MemoActivity"
             android:label="@string/title_activity_memo" >
         </activity>
+
+        <!-- Group activity 메모 신규 입력/수정 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.GroupActivity"
+            android:label="@string/title_activity_group" >
+        </activity>
     </application>
 
 </manifest>
