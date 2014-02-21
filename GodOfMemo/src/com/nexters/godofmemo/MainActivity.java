@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.util.Font;
 import com.nexters.godofmemo.view.MemoGLView;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener{
@@ -36,6 +38,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 	
 		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		//폰트 초기화
+		Font.setTf(Typeface.createFromAsset(getAssets(), "fonts/nanum.ttf"));
 		
 		//커스톰 액션바 구현.
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM); 

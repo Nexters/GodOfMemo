@@ -57,6 +57,10 @@ public class Memo {
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
 	
+	//텍스트가 들어갈 상자의 비율
+	public static float ratioW = 8f / 10f;
+	public static float ratioH = 6f / 10f;
+	
 	/**
 	 * 위치와 크기를 지정한다
 	 */
@@ -121,51 +125,51 @@ public class Memo {
 		float y = this.y;
 		float width = this.width;
 		float height = this.height;
-
-		width = width * 8 / 10;
-		height = height * 6 / 10;
+		
+		width = width * ratioW;
+		height = height * ratioH;
 
 		// 중심. 
 		int s = 0;
 		VERTEX_DATA_TEXT[0] = x; // x
 		VERTEX_DATA_TEXT[1] = y; // y
-		VERTEX_DATA_TEXT[2] = 0.5f; // S
-		VERTEX_DATA_TEXT[3] = 0.5f; // T
+		VERTEX_DATA_TEXT[2] = 0.5f*ratioW; // S
+		VERTEX_DATA_TEXT[3] = 0.5f*ratioH; // T
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
 
 		// 오른쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f*ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
 
 		// 오른쪽 위에 
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f*ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f*ratioH; // z
 
 		// 왼쪽 위에
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f*ratioH; // z
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
 
 		vertexArrayText = new VertexArray(VERTEX_DATA_TEXT);
 	}

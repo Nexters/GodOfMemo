@@ -1,8 +1,6 @@
 package com.nexters.godofmemo.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -13,6 +11,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+
+import com.nexters.godofmemo.object.Memo;
 
 public class BitmapHelper {
 	
@@ -26,13 +27,13 @@ public class BitmapHelper {
 	/**
 	 * 이미지에 텍스트를 쓰는 함수
 	 * 
-	 * @param gContext
+	 * @param context
 	 * @param gResId
 	 * @param gText
 	 * @return
 	 */
-	public static Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
-		Resources resources = gContext.getResources();
+	public static Bitmap drawTextToBitmap(Context context, int gResId, String gText) {
+		Resources resources = context.getResources();
 		float scale = resources.getDisplayMetrics().density;
 
 		final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -81,6 +82,10 @@ public class BitmapHelper {
 		paint.getTextBounds(gText, 0, gText.length(), bounds);
 		int x = (bitmap.getWidth() - bounds.width()) / 2;
 		int y = (bitmap.getHeight() + bounds.height()) / 2;
+
+		// 폰트설정
+		Typeface tf = Typeface.createFromAsset(context.getAssets(), "fonts/NanumBarunGothicBold.ttf");
+		paint.setTypeface(tf);
 		
 		// TODO 텍스트를 메모 위 어느 위치에 그릴것인지 정해야 한다.
 		canvas.drawText(gText, x, y, paint);
@@ -125,8 +130,8 @@ public class BitmapHelper {
 	 */
 	public static Bitmap drawTextToBitmap(String gText) {
 		
-		int width = 400;
-		int height = 300;
+		int width = 512;
+		int height = 512;
 
 		// Read in the resource
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -151,8 +156,8 @@ public class BitmapHelper {
 		String[] dividedTextArray = dividedText.split("\n");
 
 		// draw text to the Canvas center
-		int x = width / 2;
-		int y = height / 2;
+		int x = (int) (width * Memo.ratioW / 2);
+		int y = (int) (height * Memo.ratioH / 2);
 
 		int loopCnt = 0;
 		int textOffsetY = 0;
@@ -168,6 +173,9 @@ public class BitmapHelper {
 		
 		//시작 높이 위치 정하기
 		textOffsetY = y - (offset/2)*(loopCnt-1) + margin;
+		
+		//폰트 설정
+		paint.setTypeface(Font.getTf());
 		
 		//여러줄 출력하기
 		for(int i=0; i<loopCnt; i++){
