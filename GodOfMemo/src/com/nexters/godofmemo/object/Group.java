@@ -39,7 +39,7 @@ public class Group {
 	// Symbol 에 대한 논의도 필요. 
 	private String groupDate;
 	private String groupTime;	
-	
+	public static final int DEFAULT_GROUP_COLOR=0;
 	//위치, 크기정보
 	private float x;
 	private float y;
@@ -225,12 +225,7 @@ public class Group {
 	}
 
 	public void drawGroup(TextureShaderProgram textureProgram) {
-		//메모지 그리기
-		if(vertexArray == null){
-			//System.out.println("vertexArray null!!!!"+this.getMemoContent());
-		}else{
-			//System.out.println("vertexArray not null....."+this.getMemoContent());
-		}
+		
 		vertexArray.setVertexAttribPointer(0,
 				textureProgram.getPositionAttributeLocation(),
 				POSITION_COMPONENT_COUNT, STRIDE);
@@ -273,6 +268,16 @@ public class Group {
 
 	public void setGroupColor(int groupColor) {
 		this.groupColor = groupColor;
+		
+		switch(groupColor){
+		case DEFAULT_GROUP_COLOR:
+			//creating bitmap that containing a title of group.
+			this.textBitmapId = R.drawable.whitememo_128;
+			break;
+		}
+		
+		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
+				
 	}
 
 	public String getGroupTitle() {
@@ -283,11 +288,6 @@ public class Group {
 		if(groupTitle == null){
 			groupTitle = "test";
 		}
-
-		//creating bitmap that containing a title of group.
-		this.textBitmapId = R.drawable.whitememo;
-		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
-		
 		this.groupTitle = groupTitle;
 	}
 

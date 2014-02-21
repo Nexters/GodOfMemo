@@ -57,13 +57,12 @@ public class MemoRenderer implements Renderer {
     public MemoRenderer(Context context) {
         this.context = context;
         
-        GroupDAO groupDao = new GroupDAO(context);
-        //TODO fix SQL bugs
-        groupList = groupDao.getGroupList();
+        
         MemoDAO memoDao = new MemoDAO(context);
         memoList = memoDao.getMemoList();
         
-         
+        GroupDAO groupDao = new GroupDAO(context);
+        groupList = groupDao.getGroupList();
 //		memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
 //		memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
 //		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
@@ -82,11 +81,15 @@ public class MemoRenderer implements Renderer {
         
         background.setTexture();
         
+        for(Group group: groupList){
+        	group.setTexture();
+        	System.out.println("onCreated"+group.getGroupTitle());
+        }
+        
         for(Memo memo: memoList){
             // 텍스쳐를 입힌다.
         	memo.setTexture();
         }
-        
         
         textureProgram = new TextureShaderProgram(context);
     }
@@ -135,6 +138,17 @@ public class MemoRenderer implements Renderer {
         background.bindData(textureProgram);
         background.draw();
         
+        //그룹들을 그린다
+        for(Group group: groupList){
+            // Draw the memo.
+            textureProgram.useProgram();
+            textureProgram.setUniforms(mvpMatrix, group.texture);
+            group.drawGroup(textureProgram);
+
+            textureProgram.setUniforms(mvpMatrix, group.textTexture);
+            group.drawTitle(textureProgram);
+            System.out.println("onDrawFrame"+group.getGroupTitle());
+        }
         
         long maxMemoTime = 0;
         Memo maxMemo;

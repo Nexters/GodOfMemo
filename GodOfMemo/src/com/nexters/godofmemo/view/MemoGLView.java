@@ -1,8 +1,6 @@
 package com.nexters.godofmemo.view;
 
-import java.util.Collection;
 import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import android.app.Activity;
@@ -12,12 +10,14 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import com.nexters.godofmemo.GroupActivity;
 import com.nexters.godofmemo.MainActivity;
 import com.nexters.godofmemo.MemoActivity;
+import com.nexters.godofmemo.dao.GroupDAO;
 import com.nexters.godofmemo.dao.MemoDAO;
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
 import com.nexters.godofmemo.util.Constants;
@@ -42,7 +42,7 @@ public class MemoGLView extends GLSurfaceView {
         setRenderer(mr);
 
         // Render the view only when there is a change in the drawing data
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         
         //진동 초기화
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -84,7 +84,8 @@ public class MemoGLView extends GLSurfaceView {
 	
 	//선택된 메모
 	private Memo selectedMemo;
-    
+	//선택된 그
+	private Group selectedGroup;
     //진동관리
     private Vibrator vibrator;
 	
@@ -158,14 +159,23 @@ public class MemoGLView extends GLSurfaceView {
 			if(!isMoved ){
 				//롱클릭이벤트를 하면 드래그로 인식하는데, 그 사이시간안에 손가락을 띄우면 클릭으로 간주한다. 
 				if(dMilliSecond < clickEventLimit){
+					//Seperate what you got!
+					Intent intent;
 					if(isMemoChecked(nx, ny)){
-						tabMode= TAB;
-						Intent intent = new Intent(context, MemoActivity.class);
+						intent = new Intent(context, MemoActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
 						intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
 						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
+					}else if(isGroupChecked(nx, ny)){
+						intent = new Intent(context, GroupActivity.class);
+						//보기, 수정 화면으로 넘어가기. 
+						intent.putExtra("selectedGroupTitle", selectedGroup.getGroupTitle());
+						intent.putExtra("selectedGroupId", selectedGroup.getGroupId());
+						intent.putExtra("selectedGroupColor", selectedGroup.getGroupColor());
+						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_GROUP_RESULT);
 					}
+					tabMode= TAB;
 				}
 			}
 			
@@ -175,8 +185,15 @@ public class MemoGLView extends GLSurfaceView {
 				MemoDAO memoDao = new MemoDAO(context);
 				memoDao.updateMemo(selectedMemo);	
 			}
+
+			if(selectedGroup != null){
+				//이동한 정보를 DB에 입력한다.
+				GroupDAO groupDao = new GroupDAO(context);
+				groupDao.updateGroup(selectedGroup);	
+			}
 			
 			//손가락을 떼면 선택 해제.
+			selectedGroup = null;
 			selectedMemo = null;
 			tabMode = NONE;
 			
@@ -218,6 +235,10 @@ public class MemoGLView extends GLSurfaceView {
 					selectedMemo.setX(nx);
 					selectedMemo.setY(ny);
 					selectedMemo.setVertices();
+				}else if(selectedGroup != null && tabMode == LONGTAB){
+					selectedGroup.setX(nx);
+					selectedGroup.setY(ny);
+					selectedGroup.setVertices();
 				}else{
 					//여기는 2
 					//화면 이동
@@ -423,6 +444,27 @@ public class MemoGLView extends GLSurfaceView {
 		return false;
 	}
 	
+	private boolean isGroupChecked(float nx, float ny){
+		Deque<Group> deque = new LinkedBlockingDeque<Group>(mr.groupList);
+		
+		while(deque.size()>0){
+			Group group = deque.pollLast();
+	
+			float chkX = Math.abs(nx-group.getX())/(group.getWidth()/2);
+			float chkY = Math.abs(ny-group.getY())/(group.getHeight()/2);
+
+			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
+			
+			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
+			if(chkX <= 0.9f && chkY <= 0.5f){
+				//선택됨
+				selectedGroup = group;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * LongClick이벤트를 처리하는 클래스
 	 * @author lifenjoy51
@@ -447,18 +489,24 @@ public class MemoGLView extends GLSurfaceView {
 	    	
 	    	//선택된 원을 확인
 			if(isMemoChecked(nx, ny)){
-				tabMode=LONGTAB;
-				//선택시 진동
-				vibrator.vibrate(100);
-				
 				//선택된걸 상위로
+				setLongTab();
 				mr.memoList.remove(selectedMemo);
 				mr.memoList.add(selectedMemo);
-				
+				return;
+			}else if(isGroupChecked(nx, ny)){
+				//선택된걸 상위로
+				setLongTab();
+				mr.groupList.remove(selectedGroup);
+				mr.groupList.add(selectedGroup);
 				return;
 			}
 		}
 		
+		private void setLongTab(){
+			tabMode=LONGTAB;
+			//선택시 진동
+			vibrator.vibrate(100);
+		}	
 	}
-
 }

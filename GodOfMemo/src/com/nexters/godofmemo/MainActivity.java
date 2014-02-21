@@ -31,12 +31,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	public static final int CREATE_MEMO_RESULT= 0;
 	public static final int UPDATE_MEMO_RESULT= 1;
 	public static final int CREATE_GROUP_RESULT= 2;
+	public static final int UPDATE_GROUP_RESULT= 3;
 	private String memoContent;
 	private String memoId;
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
-	private final int DEFAULT_COLOR = 0;
 	private MemoDAO memoDao;
 	private GroupDAO groupDao;
 	
@@ -187,7 +187,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			//새로 그리기 위해.
 			removeMemo(updateMemo);
 			glSurfaceView.mr.memoList.add(updateMemo);
-
 			break;
 			
 		case CREATE_GROUP_RESULT:
@@ -195,7 +194,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			// You need to check whether write code in Group Activity.
 			groupTitle = data.getStringExtra("newGroupTitle");
-			groupColor = data.getIntExtra("newGroupColor", DEFAULT_COLOR);
+			groupColor = data.getIntExtra("newGroupColor", Group.DEFAULT_GROUP_COLOR);
 			
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
@@ -215,9 +214,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			createToast(newText);
 			
 			//화면에 그릴 목록에 추가
-			//glSurfaceView.mr.groupList.add(newGroup);
+			glSurfaceView.mr.groupList.add(newGroup);
 			break;
 		// TODO Please write Update logic @Subin
+		case UPDATE_GROUP_RESULT:
+			break;
 		}
 		
 	}

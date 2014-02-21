@@ -33,7 +33,7 @@ public class AllDBHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(AllDBHelper.class.getName(), "Upgrading database from version "
 				+ oldVersion + " to " + newVersion);
-
+		// TODO Handling case that existing old version database.
 		db.execSQL("DROP TABLE IF EXISTS " + AllSQL.TABLE_GROUP_INFO_TEMP);		
 		db.execSQL(AllSQL.CREATE_GROUP_TEMP_TABLE);		
 		db.execSQL(AllSQL.GROUP_OLD_TO_TEMP);		
