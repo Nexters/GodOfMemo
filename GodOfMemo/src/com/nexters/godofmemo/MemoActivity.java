@@ -2,16 +2,22 @@ package com.nexters.godofmemo;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.nexters.godofmemo.dao.MemoDAO;
+import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.util.Util;
 
 
 public class MemoActivity extends ActionBarActivity implements OnClickListener{
@@ -27,8 +33,19 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	//memo background
 	private View memoBg;
 	//
-	private Drawable shortTextDrawable;
-	private Drawable longTextDrawable;
+	int dWidth = 0;
+	int dHeight = 0;
+	//
+	private boolean isLong = false;
+	//
+	private int shortMemoSize = 25;
+	private int longMemoSize = 45;
+	//
+	private int textDivisionSize = 20;
+	//
+	private TextView memoTimeTextView;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,38 +57,31 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		getSupportActionBar().setCustomView(R.layout.actionbar_memo_edit);
 		
 		setContentView(R.layout.activity_memo);
+		
+		//memo size
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		dWidth = metrics.widthPixels;
+		dHeight= metrics.heightPixels;
+		
+		//width
+		dWidth = dWidth * 8 / 10;
+		
 
 		//memo backgroudn control
 		memoBg = findViewById(R.id.memo_img_background);
-		shortTextDrawable = getResources().getDrawable(R.drawable.bluememo);
-		longTextDrawable = getResources().getDrawable(R.drawable.whitememo);
+		setMemoBgSize(dHeight*shortMemoSize/100);
+		
 		short_et = (EditText) findViewById(R.id.short_text);
-		short_et.addTextChangedListener(new TextWatcher() {
-			public void afterTextChanged(Editable s) {
-				int textLength = s.length();
-
-				if (textLength > 40) {
-					// 긴거
-					if (memoBg.getBackground() != longTextDrawable) {
-						memoBg.setBackgroundResource(R.drawable.whitememo);
-					}
-				} else {
-					// 짧은거
-					if (memoBg.getBackground() != longTextDrawable) {
-						memoBg.setBackgroundResource(R.drawable.bluememo);
-					}
-
-				}
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-		});
+		//텍스트 길이에 따른 배경 변화 로직 추가.
+		onTextChanged();
+		
+		//메모 색깔 버튼 선택 이벤트
+		findViewById(R.id.memo_color_select_red).setOnClickListener(this);
+		findViewById(R.id.memo_color_select_blue).setOnClickListener(this);
+		findViewById(R.id.memo_color_select_yellow).setOnClickListener(this);
+		
+		//memo time
+		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
 		
 		intent = getIntent();
 		memoContent = intent.getStringExtra("selectedMemoContent");
@@ -82,11 +92,19 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		ImageView trash_can =  (ImageView)findViewById(R.id.trash_can);
 		trash_can.setOnClickListener(this);
 		
+		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
 		if(memoContent==null){
+			//입력모드
 			trash_can.setVisibility(View.GONE);
+			String memoDate = Util.getDate();
+			String memoTime = Util.getTime();
+			memoTimeTextView.setText(memoDate +" "+ memoTime);
 		}else{
-			
+			//수정모드
 			short_et.setText(memoContent);
+			MemoDAO dao = new MemoDAO(getApplicationContext());
+			Memo memo = dao.getMemoInfo(memoId);
+			memoTimeTextView.setText(memo.getMemoDate() +" "+ memo.getMemoTime());
 		}
 	}
 	
@@ -102,6 +120,23 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 			break;
 		case R.id.trash_can:
 			deleteMemo();
+			break;
+			
+
+		case R.id.memo_color_select_red:
+			//
+			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_red);
+			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_red);
+			break;
+
+		case R.id.memo_color_select_blue:
+			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_blue);
+			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_blue);
+			break;
+
+		case R.id.memo_color_select_yellow:
+			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_yellow);
+			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_yellow);
 			break;
 		}
 	}
@@ -127,5 +162,51 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		intent.putExtra("checkBack", BACK);
 		setResult(RESULT_OK, intent);
 		finish();
+	}
+	
+	private void setMemoBgSize(int height){
+		RelativeLayout.LayoutParams lp =  new RelativeLayout.LayoutParams(dWidth,
+				height);
+		lp.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+		lp.addRule(RelativeLayout.BELOW, R.id.memo_color_selection_area);
+		lp.topMargin = dWidth * 5 / 100;
+		memoBg.setLayoutParams(lp);
+		
+	}
+	
+	private void onTextChanged(){
+
+		short_et.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+				int textLength = s.length();
+
+				if (textLength > textDivisionSize) {
+					// 긴거
+					if (!isLong) {
+						setMemoBgSize(dHeight*longMemoSize/100);
+						isLong = true;
+					}
+				} else {
+					// 짧은거
+					if (isLong) {
+						setMemoBgSize(dHeight*shortMemoSize/100);
+						isLong = false;
+					}
+
+				}
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+		});
+	}
+	
+	private void setMemoColor(int pColor){
+		
 	}
 }
