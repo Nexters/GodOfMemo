@@ -351,7 +351,4 @@ public class Memo {
 			return super.equals(o);
 		}
 	}
-	
-	
-	
 }

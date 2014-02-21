@@ -26,14 +26,13 @@ import com.nexters.godofmemo.util.Util;
 public class GroupActivity extends ActionBarActivity implements
 		OnClickListener, OnSeekBarChangeListener {
 	Intent intent;
-	EditText input_group_et;
 
 	private SeekBar bar;
 	private TextView seekBarAction;
 	private int width, height;
 	private View group; // ImageView는 안된다
 	private View groupImgArea;
-	private View groupTitleInput;
+	private EditText groupTitleInput;
 
 	private String groupId;
 	private String groupTitle;
@@ -55,21 +54,14 @@ public class GroupActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		// Load the layout
 		setContentView(R.layout.activity_group);
-		
+
 		//유틸 초기화
 		Util.init(getApplicationContext());
 
-		// get Intent
-		intent = getIntent();
-		// When you update the group's status.
-		// TODO Handling tab event that user select Group!
-		groupId = intent.getStringExtra("selectedGroupId");
-		groupTitle = intent.getStringExtra("selectedTitle");
-		groupColor = intent.getIntExtra("selectedColor", Group.DEFAULT_GROUP_COLOR);
 		group = findViewById(R.id.group_img);
-		groupTitleInput = findViewById(R.id.group_name_text);
+		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
 		groupImgArea = findViewById(R.id.group_img_area);
-		input_group_et = (EditText) findViewById(R.id.group_name_text);
+		
 
 		
 		// 커스텀 액션바
@@ -105,41 +97,55 @@ public class GroupActivity extends ActionBarActivity implements
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 		ImageView trash_can = (ImageView) findViewById(R.id.trash_can);
 		trash_can.setOnClickListener(this);
+		
+		// get Intent
+		intent = getIntent();
+		// When you update the group's status.
+		//TODO Handling tab event that user select Group!
+		groupId = intent.getStringExtra("selectedGroupId");
+		groupTitle = intent.getStringExtra("selectedGroupTitle");
+		groupColor = intent.getIntExtra("selectedGroupColor", Group.DEFAULT_GROUP_COLOR);
+			
+		if(groupTitle==null){
+			trash_can.setVisibility(View.GONE);
+		}else{
+			groupTitleInput.setText(groupTitle);
+			//TODO set groupColor
+		}
 	}
 
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_finish:
 			createGroup();
-			finish();
 			break;
 		case R.id.btn_back:
 			moveToBack();
-			finish();
 			break;
 		case R.id.trash_can:
 			deleteGroup();
-			finish();
 			break;
 		}
 	}
 
 	private void createGroup() {
-		// case status update
-		intent.putExtra("selectedGroupId", groupId);
-		intent.putExtra("selectedGroupTitle", groupTitle);
-		intent.putExtra("selectedGroupColor", groupColor);
 		// case group create
-		String input_group_title_text = "";
-		if (input_group_et == null) {
+		String groupTitleInputText = "";
+		if (groupTitleInput == null) {
 			System.out.println("Didn't get text");
 		} else {
-			input_group_title_text = input_group_et.getText().toString();
+			groupTitleInputText = groupTitleInput.getText().toString();
 		}
-
-		intent.putExtra("newGroupTitle", input_group_title_text);
+		intent.putExtra("newGroupTitle", groupTitleInputText);
+		
+		String updateGroupTitle = groupTitleInputText;
+				//case status update
+		intent.putExtra("selectedGroupId", groupId);
+		//TODO You must write code selecting color. 
+		intent.putExtra("selectedGroupColor", groupColor);
+		intent.putExtra("selectedGroupTitle", updateGroupTitle);
 		// TODO You must write code selecting color.
-
+		
 		setResult(RESULT_OK, intent);
 		finish();
 	}

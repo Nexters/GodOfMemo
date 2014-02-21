@@ -363,5 +363,4 @@ public class Group {
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
 	}
-	
 }
