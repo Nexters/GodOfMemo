@@ -40,6 +40,6 @@
         android:layout_alignRight="@+id/memo_img_background"
         
         android:layout_marginTop="180dp"
-        android:background="@drawable/trashcan_btn_selector" />
+        android:background="@drawable/btn_trashcan" />
 
 </RelativeLayout>

@@ -22,16 +22,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/group_center"
-            android:textColor="@android:color/white"
             android:ems="10"
-            android:hint="그룹이름을 여기에 적으세요" />
+            android:hint="그룹이름을 여기에 적으세요"
+            android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/group_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/group_red"
-            android:alpha="0.8" />
+            android:alpha="0.8"
+            android:background="@drawable/group_red" />
     </FrameLayout>
 
     <!-- Seek bar -->
@@ -46,18 +46,33 @@
         android:max="100" />
 
     <ImageView
-        android:id="@+id/trash_can"
-        android:layout_below="@id/seekBar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/trashcan_btn_selector" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/selectable_yellow" />
 
-    
-    <ImageView android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/selectable_red" />
+
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/circleselect_blue"/>
+        android:src="@drawable/circleselect_blue" />
+
+    <ImageView
+        android:id="@+id/trash_can"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/btn_trashcan" />
 
 </RelativeLayout>
