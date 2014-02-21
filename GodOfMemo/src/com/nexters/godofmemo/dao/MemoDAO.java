@@ -129,8 +129,8 @@ public class MemoDAO {
 		ContentValues values = new ContentValues();
 		
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
-		values.put(AllSQL.COL_MEMO_DATE, "");
-		values.put(AllSQL.COL_MEMO_TIME, "");
+		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
+		values.put(AllSQL.COL_MEMO_TIME, Util.getTime());
 		
 		values.put(AllSQL.COL_MEMO_X, memo.getX());
 		values.put(AllSQL.COL_MEMO_Y, memo.getY());

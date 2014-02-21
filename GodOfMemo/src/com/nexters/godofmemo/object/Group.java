@@ -39,7 +39,10 @@ public class Group {
 	// Symbol 에 대한 논의도 필요. 
 	private String groupDate;
 	private String groupTime;	
-	public static final int DEFAULT_GROUP_COLOR=0;
+	//public static final int DEFAULT_GROUP_COLOR=0;
+	public static final int GROUP_COLOR_RED=0;
+	public static final int GROUP_COLOR_BLUE=1;
+	public static final int GROUP_COLOR_YELLOW=2;
 	//위치, 크기정보
 	private float x;
 	private float y;
@@ -270,9 +273,17 @@ public class Group {
 		this.groupColor = groupColor;
 		
 		switch(groupColor){
-		case DEFAULT_GROUP_COLOR:
+		case GROUP_COLOR_RED:
 			//creating bitmap that containing a title of group.
-			this.textBitmapId = R.drawable.whitememo_128;
+			this.textBitmapId = R.drawable.circle_red;
+			break;
+		case GROUP_COLOR_BLUE:
+			//creating bitmap that containing a title of group.
+			this.textBitmapId = R.drawable.circle_blue;
+			break;
+		case GROUP_COLOR_YELLOW:
+			//creating bitmap that containing a title of group.
+			this.textBitmapId = R.drawable.circle_yellow;
 			break;
 		}
 		
@@ -363,5 +374,4 @@ public class Group {
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
 	}
-	
 }

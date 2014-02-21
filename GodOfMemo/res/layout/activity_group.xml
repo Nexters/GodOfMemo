@@ -4,7 +4,8 @@
     android:layout_height="fill_parent"
     android:background="@drawable/memedit_background"
     tools:context=".MemoActivity" >
-
+    
+    
     <!-- 그룹 이미지 -->
 
     <FrameLayout
@@ -45,26 +46,6 @@
         android:layout_marginRight="30dp"
         android:max="100" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/selectable_yellow" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/selectable_red" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/circleselect_blue" />
 
     <ImageView
         android:id="@+id/trash_can"
@@ -74,5 +55,33 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="200dp"
         android:background="@drawable/btn_trashcan" />
+    
+    <LinearLayout
+        android:id="@+id/group_color_selection_area"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/group_colorselect_blue"
+        android:orientation="horizontal" >
 
+        <View
+            android:id="@+id/group_color_select_red"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/group_color_select_blue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/group_color_select_yellow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+    
+    
 </RelativeLayout>

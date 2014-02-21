@@ -5,41 +5,74 @@
     android:background="@drawable/memedit_background"
     tools:context=".MemoActivity" >
 
+    <LinearLayout
+        android:id="@+id/memo_color_selection_area"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/writememo_colorselect_blue"
+        android:orientation="horizontal" >
+
+        <View
+            android:id="@+id/memo_color_select_red"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/memo_color_select_blue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/memo_color_select_yellow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
     <RelativeLayout
-        
         android:id="@+id/memo_img_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/memo_color_selection_area"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/whitememo_view"
-        android:gravity="top"
+        android:background="@drawable/memo_blue"
         android:orientation="horizontal" >
 
         <EditText
             android:id="@+id/short_text"
-            android:layout_width="160dp"
-            android:layout_height="80dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
             android:inputType="textMultiLine"
             android:lineSpacingExtra="6dp"
-            android:maxLines="2"
-            android:maxWidth="40sp"
-            android:padding="7dp"
+            android:padding="15dp"
             android:textColor="@android:color/black"
             android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/memo_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:alpha="0.5"
+            android:text="2014년 02월 15일 오후 02:00"
+            android:textSize="9sp" />
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/trash_can"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/memo_img_background"
-        
-        android:layout_marginTop="180dp"
-        android:background="@drawable/btn_trashcan" />
+        android:layout_below="@id/memo_img_background"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/trashcan_grey" />
 
 </RelativeLayout>

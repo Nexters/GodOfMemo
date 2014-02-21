@@ -17,16 +17,18 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import android.os.Build;
 import android.util.Log;
 
 public class TextureHelper {
 	private static final String TAG = "TextureHelper";
-	
+
 	private static Map<Integer, ByteBuffer> bitmapCache = new HashMap<Integer, ByteBuffer>();
 
 	/**
@@ -50,17 +52,22 @@ public class TextureHelper {
 
 		return texture;
 	}
-	
+
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다.
 	 * 
 	 * @param bitmap
 	 * @return
 	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
 	public static int loadBitmpTexture(Bitmap bitmap) {
-		return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+			return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		} else {
+			return loadBitmpTextureNoAlpha(bitmap);
+		}
 	}
-	
+
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다. 캐쉬사용.
 	 * 
@@ -71,86 +78,86 @@ public class TextureHelper {
 	public static int loadBitmpTexture(Bitmap bitmap, int id) {
 		final int[] textureObjectIds = new int[1];
 		glGenTextures(1, textureObjectIds, 0);
-		
+
 		if (textureObjectIds[0] == 0) {
 			if (LoggerConfig.ON) {
 				Log.w(TAG, "Could not generate a new OpenGL texture object.");
 			}
 			return 0;
 		}
-		
+
 		if (bitmap == null) {
 			glDeleteTextures(1, textureObjectIds, 0);
 			return 0;
 		}
-		
+
 		ByteBuffer byteBuffer;
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
-		
-		if(bitmapCache.containsKey(id)){
+
+		if (bitmapCache.containsKey(id)) {
 			byteBuffer = bitmapCache.get(id);
-			//System.out.println("cached!!");
-		}else{
-			byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
+			// System.out.println("cached!!");
+		} else {
+			byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight
+					* 4);
 			byteBuffer.order(ByteOrder.BIG_ENDIAN);
 			IntBuffer ib = byteBuffer.asIntBuffer();
-			
+
 			int[] pixels = new int[bitmapWidth * bitmapHeight];
-			bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-			for(int i=0; i<pixels.length; i++){
-			    ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+			bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth,
+					bitmapHeight);
+			for (int i = 0; i < pixels.length; i++) {
+				ib.put(pixels[i] << 8 | pixels[i] >>> 24);
 			}
 			bitmapCache.put(id, byteBuffer);
 		}
-		
-		//bitmap.recycle();
-		
-		byteBuffer.position(0);
-		
-		/*int[] pixels = new int[bitmapWidth * bitmapHeight];
-        bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-        for(int i=0; i<pixels.length; i++){
-            ib.put(pixels[i] << 8 | pixels[i] >>> 24);
-        }
-        
-		byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4];
-		for ( int y = 0; y < bitmapHeight; y++ )
-		    for ( int x = 0; x < bitmapWidth; x++ )
-		    {
-		        int pixel = bitmap.getPixel(x, y);
-		        buffer[(y * bitmapWidth + x) * 4 + 0] = (byte)((pixel >> 16) & 0xFF);
-		        buffer[(y * bitmapWidth + x) * 4 + 1] = (byte)((pixel >> 8) & 0xFF);
-		        buffer[(y * bitmapWidth + x) * 4 + 2] = (byte)((pixel >> 0) & 0xFF);
-		        buffer[(y * bitmapWidth + x) * 4 + 3] = (byte)((pixel >> 24) & 0xFF);
-		    }
-		
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight * 4);
-	    byteBuffer.put(buffer).position(0);*/
 
+		// bitmap.recycle();
+
+		byteBuffer.position(0);
+
+		/*
+		 * int[] pixels = new int[bitmapWidth * bitmapHeight];
+		 * bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth,
+		 * bitmapHeight); for(int i=0; i<pixels.length; i++){ ib.put(pixels[i]
+		 * << 8 | pixels[i] >>> 24); }
+		 * 
+		 * byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4]; for ( int y
+		 * = 0; y < bitmapHeight; y++ ) for ( int x = 0; x < bitmapWidth; x++ )
+		 * { int pixel = bitmap.getPixel(x, y); buffer[(y * bitmapWidth + x) * 4
+		 * + 0] = (byte)((pixel >> 16) & 0xFF); buffer[(y * bitmapWidth + x) * 4
+		 * + 1] = (byte)((pixel >> 8) & 0xFF); buffer[(y * bitmapWidth + x) * 4
+		 * + 2] = (byte)((pixel >> 0) & 0xFF); buffer[(y * bitmapWidth + x) * 4
+		 * + 3] = (byte)((pixel >> 24) & 0xFF); }
+		 * 
+		 * ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth *
+		 * bitmapHeight * 4); byteBuffer.put(buffer).position(0);
+		 */
 
 		// Bind to the texture in OpenGL
 		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
 
-	    //alpha 주기위한 옵션
+		// alpha 주기위한 옵션
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		GLES20.glEnable(GLES20.GL_BLEND); 
-		
+		GLES20.glEnable(GLES20.GL_BLEND);
+
 		// Set filtering: a default must be set, or the texture will be
 		// black.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT );
-	    
-	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT );
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
+				GLES20.GL_REPEAT);
 
-	    
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
+				GLES20.GL_REPEAT);
+
 		// Load the bitmap into the bound texture.
-		GLES20.glTexImage2D ( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmapWidth, bitmapHeight, 0, 
-                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, byteBuffer );
-
+		GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
+				bitmapWidth, bitmapHeight, 0, GLES20.GL_RGBA,
+				GLES20.GL_UNSIGNED_BYTE, byteBuffer);
 
 		// Note: Following code may cause an error to be reported in the
 		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
@@ -164,55 +171,56 @@ public class TextureHelper {
 
 		// Recycle the bitmap, since its data has been loaded into
 		// OpenGL.
-		//TODO 임시로 막아놓음..
-		//bitmap.recycle();
+		// TODO 임시로 막아놓음..
+		// bitmap.recycle();
 
 		// Unbind from the texture.
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return textureObjectIds[0];
 	}
-	
+
 	/**
 	 * 알파정보 없는 텍스쳐를 불러온다.
+	 * 
 	 * @param bitmap
 	 * @return
 	 */
 	public static int loadBitmpTextureNoAlpha(Bitmap bitmap) {
 		final int[] textureObjectIds = new int[1];
 		glGenTextures(1, textureObjectIds, 0);
-		
+
 		if (textureObjectIds[0] == 0) {
 			if (LoggerConfig.ON) {
 				Log.w(TAG, "Could not generate a new OpenGL texture object.");
 			}
 			return 0;
 		}
-		
+
 		if (bitmap == null) {
 			glDeleteTextures(1, textureObjectIds, 0);
 			return 0;
 		}
-				
-		//bitmap.recycle();
-		
+
+		// bitmap.recycle();
+
 		// Bind to the texture in OpenGL
 		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
-	
+
 		// Set filtering: a default must be set, or the texture will be
 		// black.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT );
-	    
-	    GLES20.glTexParameteri ( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT );
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
+				GLES20.GL_REPEAT);
 
-	    
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
+				GLES20.GL_REPEAT);
+
 		// Load the bitmap into the bound texture.
-	    GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
-
+		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
 
 		// Note: Following code may cause an error to be reported in the
 		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
@@ -226,21 +234,22 @@ public class TextureHelper {
 
 		// Recycle the bitmap, since its data has been loaded into
 		// OpenGL.
-		//TODO 임시로 막아놓음..
-		//bitmap.recycle();
+		// TODO 임시로 막아놓음..
+		// bitmap.recycle();
 
 		// Unbind from the texture.
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return textureObjectIds[0];
 	}
-	
+
 	/**
 	 * 텍스트 텍스쳐
+	 * 
 	 * @param text
 	 * @return
 	 */
-	public static int loadTextBitmpTexture(String text){
+	public static int loadTextBitmpTexture(String text) {
 		Bitmap bitmap = BitmapHelper.drawTextToBitmap(text);
 		return loadBitmpTextureNoAlpha(bitmap);
 	}

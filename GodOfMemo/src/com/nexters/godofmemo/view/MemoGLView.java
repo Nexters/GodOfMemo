@@ -42,7 +42,7 @@ public class MemoGLView extends GLSurfaceView {
         setRenderer(mr);
 
         // Render the view only when there is a change in the drawing data
-        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         
         //진동 초기화
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

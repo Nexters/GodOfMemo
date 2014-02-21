@@ -174,6 +174,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getBooleanExtra("delete", false)){
 				Memo deleteMemo =  memoDao.getMemoInfo(memoId);
 				memoDao.delMemo(deleteMemo);
+				removeMemo(deleteMemo);
 				createToast("메모 삭제");
 				return;
 			}
@@ -194,7 +195,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			// You need to check whether write code in Group Activity.
 			groupTitle = data.getStringExtra("newGroupTitle");
-			groupColor = data.getIntExtra("newGroupColor", Group.DEFAULT_GROUP_COLOR);
+			groupColor = data.getIntExtra("newGroupColor", Group.GROUP_COLOR_BLUE);
 			
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
@@ -218,6 +219,31 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			break;
 		// TODO Please write Update logic @Subin
 		case UPDATE_GROUP_RESULT:
+			if(data.getIntExtra("checkBack",0)!=0) return;
+			
+			groupTitle = data.getStringExtra("selectedGroupTitle");
+			groupId = data.getStringExtra("selectedGroupId");
+			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			
+			// 휴지통 버튼을 눌렀는지 체크
+			if(data.getBooleanExtra("delete", false)){
+				Group deleteGroup =  groupDao.getGroupInfo(groupId);
+				groupDao.delGroup(deleteGroup);
+				removeGroup(deleteGroup);
+				createToast("그룹 삭제");
+				return;
+			}
+			
+			// 수정된 메모 정보를 갱신한다.
+			Group updateGroup = groupDao.getGroupInfo(groupId);
+			updateGroup.setProdTime(System.currentTimeMillis());
+			updateGroup.setGroupTitle(groupTitle);
+			groupDao.updateGroup(updateGroup);
+			
+			
+			//새로 그리기 위해.
+			removeGroup(updateGroup);
+			glSurfaceView.mr.groupList.add(updateGroup);
 			break;
 		}
 		
@@ -227,7 +253,22 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 * renderer의 memoList안에 있는 memo를 지우는 로직을 메서드화.
 	 */
 	private void removeMemo(Memo updateMemo){
-		glSurfaceView.mr.memoList.remove(updateMemo);
+		for(Memo memo: glSurfaceView.mr.memoList){
+			if(memo.getMemoId().equals(updateMemo.getMemoId())){
+				glSurfaceView.mr.memoList.remove(memo);
+			}
+		}
+	}
+	
+	/**
+	 * ....
+	 */
+	private void removeGroup(Group updateGroup){
+		for(Group group: glSurfaceView.mr.groupList){
+			if(group.getGroupId().equals(updateGroup.getGroupId())){
+				glSurfaceView.mr.groupList.remove(group);
+			}
+		}	
 	}
 	
 	/**

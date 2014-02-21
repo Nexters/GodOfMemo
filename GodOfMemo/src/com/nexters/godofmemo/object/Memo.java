@@ -254,7 +254,11 @@ public class Memo {
 	//##############
 
 	public String getMemoId() {
-		return memoId;
+		if(memoId == null){
+			return "";
+		}else{
+			return memoId;
+		}
 	}
 
 	public void setMemoId(String memoId) {
@@ -333,5 +337,18 @@ public class Memo {
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Memo){
+			Memo t = (Memo)o;
+			if(this.getMemoId().equals(t.getMemoId())){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return super.equals(o);
+		}
+	}
 }

@@ -83,7 +83,6 @@ public class MemoRenderer implements Renderer {
         
         for(Group group: groupList){
         	group.setTexture();
-        	System.out.println("onCreated"+group.getGroupTitle());
         }
         
         for(Memo memo: memoList){
@@ -147,7 +146,6 @@ public class MemoRenderer implements Renderer {
 
             textureProgram.setUniforms(mvpMatrix, group.textTexture);
             group.drawTitle(textureProgram);
-            System.out.println("onDrawFrame"+group.getGroupTitle());
         }
         
         long maxMemoTime = 0;
