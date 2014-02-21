@@ -69,6 +69,7 @@
         android:layout_height="200dp"
         android:layout_alignLeft="@+id/seekBarAction"
         android:layout_below="@+id/seekBar"
+        android:layout_marginTop="32dp"
         android:background="@drawable/group_red"
         android:gravity="top"
         android:orientation="horizontal" >
