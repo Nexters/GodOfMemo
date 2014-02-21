@@ -2,9 +2,12 @@ package com.nexters.godofmemo;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -20,6 +23,12 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	
 	private String memoContent;
 	private String memoId;
+	
+	//memo background
+	private View memoBg;
+	//
+	private Drawable shortTextDrawable;
+	private Drawable longTextDrawable;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,7 +41,37 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		
 		setContentView(R.layout.activity_memo);
 
+		//memo backgroudn control
+		memoBg = findViewById(R.id.memo_img_background);
+		shortTextDrawable = getResources().getDrawable(R.drawable.bluememo);
+		longTextDrawable = getResources().getDrawable(R.drawable.whitememo);
 		short_et = (EditText) findViewById(R.id.short_text);
+		short_et.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+				int textLength = s.length();
+
+				if (textLength > 40) {
+					// 긴거
+					if (memoBg.getBackground() != longTextDrawable) {
+						memoBg.setBackgroundResource(R.drawable.whitememo);
+					}
+				} else {
+					// 짧은거
+					if (memoBg.getBackground() != longTextDrawable) {
+						memoBg.setBackgroundResource(R.drawable.bluememo);
+					}
+
+				}
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+		});
 		
 		intent = getIntent();
 		memoContent = intent.getStringExtra("selectedMemoContent");

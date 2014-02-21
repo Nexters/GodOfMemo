@@ -4,75 +4,94 @@ package com.nexters.godofmemo;
 import com.nexters.godofmemo.object.Group;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Display;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.nexters.godofmemo.util.Util;
+
 @SuppressLint("NewApi")
 public class GroupActivity extends ActionBarActivity implements
 		OnClickListener, OnSeekBarChangeListener {
 	Intent intent;
-	EditText input_group_et;
-	
+
 	private SeekBar bar;
 	private TextView seekBarAction;
 	private int width, height;
-	RelativeLayout group; //ImageView는 안된다 
-	
+	private View group; // ImageView는 안된다
+	private View groupImgArea;
+	private EditText groupTitleInput;
+
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
 	
 	private final int BACK = 3;
+	
+	//그룹 영역 크기
+	int dHeight = 0;
+	//그룹 중심 위치
+	int centerPosition = 50;
+	//그룹 최소 크기(%)
+	int minGroupSize = 30;
+	//그룹 최대 크기(%)
+	int maxGroupSize = 80;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Load the layout
 		setContentView(R.layout.activity_group);
+
+		//유틸 초기화
+		Util.init(getApplicationContext());
+
+		group = findViewById(R.id.group_img);
+		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
+		groupImgArea = findViewById(R.id.group_img_area);
 		
-		
-		input_group_et = (EditText) findViewById(R.id.group_name_text);
+
 		
 		// 커스텀 액션바
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		getSupportActionBar().setCustomView(R.layout.actionbar_group);
 
-		//화면 넓이와 높이 구하기 
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		width = size.x;
-		height = size.y;
+
+		//그룹 이미지 배경 레이아웃 위치설정?!
+
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		dHeight = metrics.heightPixels;
+		dHeight = dHeight * centerPosition / 100;
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+				dHeight);
+		groupImgArea.setLayoutParams(lp);
 		
+		//그룹 크기 초기값
+		int initSize = dHeight * minGroupSize / 100;
+		// 그룹이미지를 위치한다
+		Util.setPosition(group, initSize, initSize, 50, centerPosition/2);
+		// 그룹제목 위치
+		Util.setPosition(groupTitleInput, 50, centerPosition/2);
 		
-		//그룹이미지를 위치한다 
-		group = (RelativeLayout) findViewById(R.id.group_img);
-		//group.setX(width/10);
-		//group.setY(height/10);
-		
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width/10, height/10);
-		layoutParams.addRule(RelativeLayout.BELOW, R.id.seekBar);
-		layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, R.id.seekBarAction);
-		//layoutParams.addRule(RelativeLayout.m, anchor)
-		//layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, R.id.seekBarAction);
-		group.setLayoutParams(layoutParams);
-		
+		groupTitleInput.bringToFront();
+
 		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
 		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
 		// since we are using this class as the listener the class is "this"
 
 		// make text label for seekBarAction value
-		seekBarAction = (TextView) findViewById(R.id.seekBarAction);
 
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
@@ -90,7 +109,7 @@ public class GroupActivity extends ActionBarActivity implements
 		if(groupTitle==null){
 			trash_can.setVisibility(View.GONE);
 		}else{
-			input_group_et.setText(groupTitle);
+			groupTitleInput.setText(groupTitle);
 			//TODO set groupColor
 		}
 	}
@@ -108,36 +127,37 @@ public class GroupActivity extends ActionBarActivity implements
 			break;
 		}
 	}
-	
-	private void createGroup(){
-		
+
+	private void createGroup() {
 		// case group create
-		String input_group_title_text = "";
-		if(input_group_et == null){
+		String groupTitleInputText = "";
+		if (groupTitleInput == null) {
 			System.out.println("Didn't get text");
-		}else{
-			input_group_title_text = input_group_et.getText().toString();
+		} else {
+			groupTitleInputText = groupTitleInput.getText().toString();
 		}
-		intent.putExtra("newGroupTitle", input_group_title_text);
+		intent.putExtra("newGroupTitle", groupTitleInputText);
 		
-		String updateGroupTitle = input_group_title_text;
+		String updateGroupTitle = groupTitleInputText;
 				//case status update
 		intent.putExtra("selectedGroupId", groupId);
 		//TODO You must write code selecting color. 
 		intent.putExtra("selectedGroupColor", groupColor);
 		intent.putExtra("selectedGroupTitle", updateGroupTitle);
+		// TODO You must write code selecting color.
+		
 		setResult(RESULT_OK, intent);
 		finish();
 	}
-	
-	private void deleteGroup(){
+
+	private void deleteGroup() {
 		intent.putExtra("selectedGroupId", groupId);
 		intent.putExtra("delete", true);
 		setResult(RESULT_OK, intent);
 		finish();
 	}
-	
-	private void moveToBack(){
+
+	private void moveToBack() {
 		intent.putExtra("checkBack", BACK);
 		setResult(RESULT_OK, intent);
 		finish();
@@ -145,13 +165,14 @@ public class GroupActivity extends ActionBarActivity implements
 
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
-		seekBarAction.setText(progress + "% 움직였습니다." + width);
 		// TODO int progress 받아와서 그룹이미지 크기 조정
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-				100 + (progress * 10), 100 + (progress * 10)); //parameter(x, y)
-		layoutParams.addRule(RelativeLayout.BELOW, R.id.seekBar);
-		layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, R.id.seekBarAction);
-		group.setLayoutParams(layoutParams);
+		int p = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
+		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
+		
+		Util.setPosition(group, p, p, 50, centerPosition/2);
+		
+		groupTitleInput.bringToFront();
+		
 	}
 
 	// 지금 필요없음
