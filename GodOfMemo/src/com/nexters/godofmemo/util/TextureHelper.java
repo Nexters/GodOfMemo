@@ -58,7 +58,8 @@ public class TextureHelper {
 	 * @return
 	 */
 	public static int loadBitmpTexture(Bitmap bitmap) {
-		return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		//return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		return loadBitmpTextureNoAlpha(bitmap);
 	}
 	
 	/**

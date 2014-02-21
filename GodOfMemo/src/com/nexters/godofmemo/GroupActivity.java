@@ -1,5 +1,7 @@
 package com.nexters.godofmemo;
 
+import com.nexters.godofmemo.object.Group;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -11,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GroupActivity extends ActionBarActivity implements
 		OnClickListener, OnSeekBarChangeListener {
@@ -24,7 +25,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
-	private final int DEFAULT_COLOR = 0;
+	
 	private final int BACK = 3;
 	
 	@Override
@@ -39,7 +40,7 @@ public class GroupActivity extends ActionBarActivity implements
 		//TODO Handling tab event that user select Group!
 		groupId = intent.getStringExtra("selectedGroupId");
 		groupTitle = intent.getStringExtra("selectedTitle");
-		groupColor = intent.getIntExtra("selectedColor", DEFAULT_COLOR);
+		groupColor = intent.getIntExtra("selectedColor", Group.DEFAULT_GROUP_COLOR);
 	
 		input_group_et = (EditText) findViewById(R.id.group_name_text);
 		
@@ -64,17 +65,14 @@ public class GroupActivity extends ActionBarActivity implements
 		switch (v.getId()) {
 		case R.id.btn_finish:
 			createGroup();
-			createToast("완료하셨습니다~");
 			finish();
 			break;
 		case R.id.btn_back:
 			moveToBack();
-			createToast("뒤로가기 하셨습니다~");
 			finish();
 			break;
 		case R.id.trash_can:
 			deleteGroup();
-			createToast("휴지통 눌렀어요~");
 			finish();
 			break;
 		}
@@ -111,17 +109,6 @@ public class GroupActivity extends ActionBarActivity implements
 		intent.putExtra("checkBack", BACK);
 		setResult(RESULT_OK, intent);
 		finish();
-	}
-
-	/**
-	 * 토스트를 굽는다.
-	 * 
-	 * @param text
-	 */
-	private void createToast(String text) {
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(this, text, duration);
-		toast.show();
 	}
 
 	@Override
