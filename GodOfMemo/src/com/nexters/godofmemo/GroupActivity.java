@@ -40,14 +40,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// Load the layout
 		setContentView(R.layout.activity_group);
 		
-		// get Intent
-		intent = getIntent();
-		// When you update the group's status.
-		//TODO Handling tab event that user select Group!
-		groupId = intent.getStringExtra("selectedGroupId");
-		groupTitle = intent.getStringExtra("selectedTitle");
-		groupColor = intent.getIntExtra("selectedColor", Group.DEFAULT_GROUP_COLOR);
-	
+		
 		input_group_et = (EditText) findViewById(R.id.group_name_text);
 		
 		// 커스텀 액션바
@@ -85,30 +78,39 @@ public class GroupActivity extends ActionBarActivity implements
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 		ImageView trash_can = (ImageView) findViewById(R.id.trash_can);
 		trash_can.setOnClickListener(this);
+		
+		// get Intent
+		intent = getIntent();
+		// When you update the group's status.
+		//TODO Handling tab event that user select Group!
+		groupId = intent.getStringExtra("selectedGroupId");
+		groupTitle = intent.getStringExtra("selectedGroupTitle");
+		groupColor = intent.getIntExtra("selectedGroupColor", Group.DEFAULT_GROUP_COLOR);
+			
+		if(groupTitle==null){
+			trash_can.setVisibility(View.GONE);
+		}else{
+			input_group_et.setText(groupTitle);
+			//TODO set groupColor
+		}
 	}
 
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_finish:
 			createGroup();
-			finish();
 			break;
 		case R.id.btn_back:
 			moveToBack();
-			finish();
 			break;
 		case R.id.trash_can:
 			deleteGroup();
-			finish();
 			break;
 		}
 	}
 	
 	private void createGroup(){
-		//case status update
-		intent.putExtra("selectedGroupId", groupId);
-		intent.putExtra("selectedGroupTitle", groupTitle);
-		intent.putExtra("selectedGroupColor", groupColor);
+		
 		// case group create
 		String input_group_title_text = "";
 		if(input_group_et == null){
@@ -116,10 +118,14 @@ public class GroupActivity extends ActionBarActivity implements
 		}else{
 			input_group_title_text = input_group_et.getText().toString();
 		}
-
 		intent.putExtra("newGroupTitle", input_group_title_text);
-		//TODO You must write code selecting color. 
 		
+		String updateGroupTitle = input_group_title_text;
+				//case status update
+		intent.putExtra("selectedGroupId", groupId);
+		//TODO You must write code selecting color. 
+		intent.putExtra("selectedGroupColor", groupColor);
+		intent.putExtra("selectedGroupTitle", updateGroupTitle);
 		setResult(RESULT_OK, intent);
 		finish();
 	}

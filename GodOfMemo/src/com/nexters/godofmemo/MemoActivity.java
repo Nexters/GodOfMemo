@@ -46,7 +46,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		if(memoContent==null){
 			trash_can.setVisibility(View.GONE);
 		}else{
-			
 			short_et.setText(memoContent);
 		}
 	}

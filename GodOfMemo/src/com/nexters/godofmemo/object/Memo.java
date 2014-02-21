@@ -332,6 +332,5 @@ public class Memo {
 
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
-	}
-	
+	}	
 }
