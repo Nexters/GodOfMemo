@@ -17,11 +17,13 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import android.os.Build;
 import android.util.Log;
 
 public class TextureHelper {
@@ -57,8 +59,13 @@ public class TextureHelper {
 	 * @param bitmap
 	 * @return
 	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
 	public static int loadBitmpTexture(Bitmap bitmap) {
-		return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+			return loadBitmpTexture(bitmap, bitmap.getGenerationId());
+		}else{
+			return loadBitmpTextureNoAlpha(bitmap);
+		}
 	}
 	
 	/**
