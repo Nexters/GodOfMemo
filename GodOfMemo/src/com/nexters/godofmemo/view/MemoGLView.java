@@ -164,7 +164,7 @@ public class MemoGLView extends GLSurfaceView {
 						//보기, 수정 화면으로 넘어가기. 
 						intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
 						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
-						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_RESULT);
+						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
 					}
 				}
 			}

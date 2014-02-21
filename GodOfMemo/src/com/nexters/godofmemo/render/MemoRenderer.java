@@ -18,8 +18,10 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.nexters.godofmemo.R;
+import com.nexters.godofmemo.dao.GroupDAO;
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Background;
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.Constants;
@@ -33,6 +35,7 @@ public class MemoRenderer implements Renderer {
     private final float[] mvpMatrix = new float[16];
 
     public ConcurrentLinkedQueue<Memo> memoList;
+    public ConcurrentLinkedQueue<Group> groupList;
     private Background background;
     
     private TextureShaderProgram textureProgram;
@@ -53,7 +56,10 @@ public class MemoRenderer implements Renderer {
 
     public MemoRenderer(Context context) {
         this.context = context;
-
+        
+        GroupDAO groupDao = new GroupDAO(context);
+        //TODO fix SQL bugs
+        groupList = groupDao.getGroupList();
         MemoDAO memoDao = new MemoDAO(context);
         memoList = memoDao.getMemoList();
         
@@ -80,6 +86,7 @@ public class MemoRenderer implements Renderer {
             // 텍스쳐를 입힌다.
         	memo.setTexture();
         }
+        
         
         textureProgram = new TextureShaderProgram(context);
     }

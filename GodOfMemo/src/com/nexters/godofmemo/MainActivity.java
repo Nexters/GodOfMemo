@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.nexters.godofmemo.dao.GroupDAO;
 import com.nexters.godofmemo.dao.MemoDAO;
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.view.MemoGLView;
 
@@ -24,12 +26,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
-	public static final int CREATE_RESULT= 0;
-	public static final int UPDATE_RESULT= 1;
-	public static final int CREATE_GROUP= 2;
+	public static final int CREATE_MEMO_RESULT= 0;
+	public static final int UPDATE_MEMO_RESULT= 1;
+	public static final int CREATE_GROUP_RESULT= 2;
 	private String memoContent;
 	private String memoId;
+	private String groupId;
+	private String groupTitle;
+	private int groupColor;
+	private final int DEFAULT_COLOR = 0;
 	private MemoDAO memoDao;
+	private GroupDAO groupDao;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +125,16 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		memoDao = new MemoDAO(getApplicationContext());
+		groupDao = new GroupDAO(getApplicationContext());
+		long groupIdL;
+		long curr;
+		long memoIdL;
 		//비정상종료면?
 		if(resultCode != Activity.RESULT_OK) return;
 		
 		// 또 다른 액티비티를 사용하고 나서 결과 값으로 생성화면과 수정화면을 구분한다.
 		switch(requestCode){
-		case CREATE_RESULT:
+		case CREATE_MEMO_RESULT:
 			//뒤로가기 버튼을 눌렀는지 체크
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			memoContent = data.getStringExtra("short_txt");
@@ -132,12 +143,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			//메모를 저장한다.
 			Memo newMemo = new Memo(getApplicationContext(), memoContent, glSurfaceView);
 			//지금 시간을 구한다
-			long curr = System.currentTimeMillis();
+			curr = System.currentTimeMillis();
 			//setter
 			newMemo.setProdTime(curr);
 			
 			//새로 생성한 메모에 아이디를 설정. 
-			long memoIdL = memoDao.insertMemo(newMemo);
+			memoIdL = memoDao.insertMemo(newMemo);
 			memoId = String.valueOf(memoIdL);
 			newMemo.setMemoId(memoId);
 			
@@ -149,12 +160,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			glSurfaceView.mr.memoList.add(newMemo);
 			break;
 			
-		case UPDATE_RESULT:
+		case UPDATE_MEMO_RESULT:
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			
 			memoContent = data.getStringExtra("short_txt");
 			memoId = data.getStringExtra("selectedMemoId");
-			
 			
 			// 휴지통 버튼을 눌렀는지 체크
 			if(data.getBooleanExtra("delete", false)){
@@ -176,9 +186,34 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 
 			break;
 			
-		case CREATE_GROUP:
-			System.out.println("Group activity");
+		case CREATE_GROUP_RESULT:
+			//뒤로가기 버튼을 눌렀는지 체크
+			if(data.getIntExtra("checkBack",0)!=0) return;
+			// You need to check whether write code in Group Activity.
+			groupTitle = data.getStringExtra("newGroupTitle");
+			groupColor = data.getIntExtra("newGroupColor", DEFAULT_COLOR);
+			
+			//TODO 새 메모 체크하기 
+			//메모를 저장한다.
+			Group newGroup = new Group(getApplicationContext(),groupTitle , groupColor, glSurfaceView);
+			//지금 시간을 구한다
+			curr = System.currentTimeMillis();
+			//setter
+			newGroup.setProdTime(curr);
+			
+			//새로 생성한 메모에 아이디를 설정. 
+			groupIdL = groupDao.insertGroup(newGroup);
+			groupId = String.valueOf(groupIdL);
+			newGroup.setGroupId(groupId);
+			
+			//새 메모가 생겼을때 토스트
+			newText = "새 그룹!";
+			createToast(newText);
+			
+			//화면에 그릴 목록에 추가
+			//glSurfaceView.mr.groupList.add(newGroup);
 			break;
+		// TODO Please write Update logic @Subin
 		}
 		
 	}
@@ -202,15 +237,16 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch (v.getId()) {
 		case R.id.action_write:
-			Intent intent = new Intent(this, MemoActivity.class);
-			startActivityForResult(intent, CREATE_RESULT);
+			intent = new Intent(this, MemoActivity.class);
+			startActivityForResult(intent, CREATE_MEMO_RESULT);
 			break;
 			
 		case R.id.action_group:
-			Intent groupIntent = new Intent(this, GroupActivity.class);
-			startActivityForResult(groupIntent, CREATE_GROUP);
+			intent = new Intent(this, GroupActivity.class);
+			startActivityForResult(intent, CREATE_GROUP_RESULT);
 			break;
 		}
 		

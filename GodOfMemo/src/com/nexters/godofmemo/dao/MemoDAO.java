@@ -9,7 +9,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.nexters.godofmemo.db.MemoDBHelper;
+import com.nexters.godofmemo.db.AllDBHelper;
+import com.nexters.godofmemo.db.AllSQL;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.util.Util;
 
@@ -27,20 +28,20 @@ public class MemoDAO {
 	 *  Database fields
 	 */
 	private SQLiteDatabase database;
-	private MemoDBHelper dbHelper;
-	private String[] allColumns = { MemoDBHelper.COL_MEMO_ID,
-			MemoDBHelper.COL_MEMO_CONTENT, MemoDBHelper.COL_MEMO_DATE,
-			MemoDBHelper.COL_MEMO_TIME, MemoDBHelper.COL_MEMO_X,
-			MemoDBHelper.COL_MEMO_Y, MemoDBHelper.COL_MEMO_WIDTH,
-			MemoDBHelper.COL_MEMO_HEIGHT };
+	private AllDBHelper dbHelper;
+	private String[] allColumns = { AllSQL.COL_MEMO_ID,
+			AllSQL.COL_MEMO_CONTENT, AllSQL.COL_MEMO_DATE,
+			AllSQL.COL_MEMO_TIME, AllSQL.COL_MEMO_X,
+			AllSQL.COL_MEMO_Y, AllSQL.COL_MEMO_WIDTH,
+			AllSQL.COL_MEMO_HEIGHT };
 
 	/**
 	 * 생성할때 dbHelper 초기화
 	 * @param context
 	 */
 	public MemoDAO(Context context) {
-		this.context = context; 
-		dbHelper = new MemoDBHelper(context);
+		this.context = context;
+		this.dbHelper = new AllDBHelper(context);
 	}
 
 	/**
@@ -51,9 +52,9 @@ public class MemoDAO {
 		database = dbHelper.getReadableDatabase();
 		ConcurrentLinkedQueue<Memo> memoList = new ConcurrentLinkedQueue<Memo>();
 
-		Cursor cursor = database.query(MemoDBHelper.TABLE_MEMO_INFO,
-				allColumns, null, null, null, null, MemoDBHelper.COL_MEMO_DATE
-						+ " ASC, " + MemoDBHelper.COL_MEMO_TIME + " ASC");
+		Cursor cursor = database.query(AllSQL.TABLE_MEMO_INFO,
+				allColumns, null, null, null, null, AllSQL.COL_MEMO_DATE
+						+ " ASC, " + AllSQL.COL_MEMO_TIME + " ASC");
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -76,8 +77,8 @@ public class MemoDAO {
 	 */
 	public Memo getMemoInfo(String memoId) {
 		database = dbHelper.getReadableDatabase();
-		Cursor cur = database.query(MemoDBHelper.TABLE_MEMO_INFO,
-				allColumns, MemoDBHelper.COL_MEMO_ID + " = " + memoId, null, null,
+		Cursor cur = database.query(AllSQL.TABLE_MEMO_INFO,
+				allColumns, AllSQL.COL_MEMO_ID + " = " + memoId, null, null,
 				null, null);
 		cur.moveToFirst(); // 커서 처음으로
 
@@ -99,16 +100,16 @@ public class MemoDAO {
 		database = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		
-		values.put(MemoDBHelper.COL_MEMO_CONTENT, memo.getMemoContent());
-		values.put(MemoDBHelper.COL_MEMO_DATE, Util.getDate());
-		values.put(MemoDBHelper.COL_MEMO_TIME, Util.getTime());
+		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
+		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
+		values.put(AllSQL.COL_MEMO_TIME, Util.getTime());
 		
-		values.put(MemoDBHelper.COL_MEMO_X, memo.getX());
-		values.put(MemoDBHelper.COL_MEMO_Y, memo.getY());
-		values.put(MemoDBHelper.COL_MEMO_WIDTH, memo.getWidth());
-		values.put(MemoDBHelper.COL_MEMO_HEIGHT, memo.getHeight());
+		values.put(AllSQL.COL_MEMO_X, memo.getX());
+		values.put(AllSQL.COL_MEMO_Y, memo.getY());
+		values.put(AllSQL.COL_MEMO_WIDTH, memo.getWidth());
+		values.put(AllSQL.COL_MEMO_HEIGHT, memo.getHeight());
 		
-		long insertedId = database.insert(MemoDBHelper.TABLE_MEMO_INFO,
+		long insertedId = database.insert(AllSQL.TABLE_MEMO_INFO,
 				null, values);
 		database.close();
 		
@@ -127,17 +128,17 @@ public class MemoDAO {
 		String memoId = memo.getMemoId();
 		ContentValues values = new ContentValues();
 		
-		values.put(MemoDBHelper.COL_MEMO_CONTENT, memo.getMemoContent());
-		values.put(MemoDBHelper.COL_MEMO_DATE, "");
-		values.put(MemoDBHelper.COL_MEMO_TIME, "");
+		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
+		values.put(AllSQL.COL_MEMO_DATE, "");
+		values.put(AllSQL.COL_MEMO_TIME, "");
 		
-		values.put(MemoDBHelper.COL_MEMO_X, memo.getX());
-		values.put(MemoDBHelper.COL_MEMO_Y, memo.getY());
-		values.put(MemoDBHelper.COL_MEMO_WIDTH, memo.getWidth());
-		values.put(MemoDBHelper.COL_MEMO_HEIGHT, memo.getHeight());
+		values.put(AllSQL.COL_MEMO_X, memo.getX());
+		values.put(AllSQL.COL_MEMO_Y, memo.getY());
+		values.put(AllSQL.COL_MEMO_WIDTH, memo.getWidth());
+		values.put(AllSQL.COL_MEMO_HEIGHT, memo.getHeight());
 		
-		int rtn = database.update(MemoDBHelper.TABLE_MEMO_INFO, values,
-				MemoDBHelper.COL_MEMO_ID + " = " + memoId, null);
+		int rtn = database.update(AllSQL.TABLE_MEMO_INFO, values,
+				AllSQL.COL_MEMO_ID + " = " + memoId, null);
 		database.close();
 		
 		//Log.i("memo is updated",String.valueOf(rtn));
@@ -155,8 +156,8 @@ public class MemoDAO {
 	public Integer delMemo(Memo memo) {
 		database = dbHelper.getWritableDatabase();
 		String memoId = memo.getMemoId();
-		int rtn = database.delete(MemoDBHelper.TABLE_MEMO_INFO,
-				MemoDBHelper.COL_MEMO_ID + " = " + memoId, null);
+		int rtn = database.delete(AllSQL.TABLE_MEMO_INFO,
+				AllSQL.COL_MEMO_ID + " = " + memoId, null);
 		database.close();
 		
 		//Log.i("memo is deleted",String.valueOf(rtn));

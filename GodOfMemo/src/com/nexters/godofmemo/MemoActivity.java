@@ -51,33 +51,42 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		}
 	}
 	
-	public void makeText() {
-		String short_txt = short_et.getText().toString();
-		intent.putExtra("short_txt", short_txt);
-		setResult(RESULT_OK, intent);
-	}
-
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_finish:
 			makeText();
-			intent.putExtra("selectedMemoId", memoId);
-			finish();
 	        break;
 		case R.id.btn_back:
-			intent.putExtra("checkBack", BACK);
-			setResult(RESULT_OK, intent);
-			finish();
+			moveToBack();
 			break;
 		case R.id.trash_can:
-			intent.putExtra("selectedMemoId", memoId);
-			intent.putExtra("delete", true);
-			setResult(RESULT_OK, intent);
-			finish();
+			deleteMemo();
 			break;
 		}
 	}
-
+	
+	private void makeText() {
+		String short_txt = short_et.getText().toString();
+		intent.putExtra("short_txt", short_txt);
+		// if this case is when you tab create button, memoId's value is null.
+		// and maybe you don't use it.
+		intent.putExtra("selectedMemoId", memoId);
+		setResult(RESULT_OK, intent);
+		finish();
+	}
+	
+	private void deleteMemo(){
+		intent.putExtra("selectedMemoId", memoId);
+		intent.putExtra("delete", true);
+		setResult(RESULT_OK, intent);
+		finish();
+	}
+	
+	private void moveToBack(){
+		intent.putExtra("checkBack", BACK);
+		setResult(RESULT_OK, intent);
+		finish();
+	}
 }
