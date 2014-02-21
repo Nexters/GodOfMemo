@@ -39,7 +39,7 @@ public class Group {
 	// Symbol 에 대한 논의도 필요. 
 	private String groupDate;
 	private String groupTime;	
-	//public static final int DEFAULT_GROUP_COLOR=0;
+	//색깔 
 	public static final int GROUP_COLOR_RED=0;
 	public static final int GROUP_COLOR_BLUE=1;
 	public static final int GROUP_COLOR_YELLOW=2;

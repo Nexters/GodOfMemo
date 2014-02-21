@@ -132,19 +132,22 @@ public class GroupActivity extends ActionBarActivity implements
 		case R.id.group_color_select_red:
 			findViewById(R.id.group_img).setBackgroundResource(R.drawable.circle_red);
 			findViewById(R.id.group_color_selection_area).setBackgroundResource(R.drawable.group_colorselect_red);
-			groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_RED);
+			//groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_RED);
+			groupColor = Group.GROUP_COLOR_RED;
 			break;
 
 		case R.id.group_color_select_blue:
 			findViewById(R.id.group_img).setBackgroundResource(R.drawable.circle_blue);
 			findViewById(R.id.group_color_selection_area).setBackgroundResource(R.drawable.group_colorselect_blue);
-			groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			//groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			groupColor = Group.GROUP_COLOR_BLUE;
 			break;
 
 		case R.id.group_color_select_yellow:
 			findViewById(R.id.group_img).setBackgroundResource(R.drawable.circle_yellow);
 			findViewById(R.id.group_color_selection_area).setBackgroundResource(R.drawable.group_colorselect_yellow);
-			groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_YELLOW);
+			//groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_YELLOW);
+			groupColor = Group.GROUP_COLOR_YELLOW;
 			break;
 		}
 	}

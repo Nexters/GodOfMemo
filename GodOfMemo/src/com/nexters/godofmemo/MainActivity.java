@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			// You need to check whether write code in Group Activity.
 			groupTitle = data.getStringExtra("newGroupTitle");
-			groupColor = data.getIntExtra("newGroupColor", Group.GROUP_COLOR_BLUE);
+			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 			
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
@@ -238,6 +238,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			Group updateGroup = groupDao.getGroupInfo(groupId);
 			updateGroup.setProdTime(System.currentTimeMillis());
 			updateGroup.setGroupTitle(groupTitle);
+			updateGroup.setGroupColor(groupColor);
 			groupDao.updateGroup(updateGroup);
 			
 			
