@@ -1,6 +1,5 @@
 Mind Paper
-
-
+==============
 This android application helps you organize your notes, memos and thoughts.
 
 Are you the person who puts stuff in certain places that only you can remember but everyone else thinks you are messy?
