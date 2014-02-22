@@ -173,6 +173,7 @@ public class MemoGLView extends GLSurfaceView {
 						intent.putExtra("selectedGroupTitle", selectedGroup.getGroupTitle());
 						intent.putExtra("selectedGroupId", selectedGroup.getGroupId());
 						intent.putExtra("selectedGroupColor", selectedGroup.getGroupColor());
+						intent.putExtra("selectedGroupSize", selectedGroup.getWidth());
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_GROUP_RESULT);
 					}
 					tabMode= TAB;

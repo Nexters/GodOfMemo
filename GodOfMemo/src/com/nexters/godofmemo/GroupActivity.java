@@ -41,6 +41,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
+	private float groupSize;
 	
 	private final int BACK = 3;
 	
@@ -84,6 +85,7 @@ public class GroupActivity extends ActionBarActivity implements
 		dHeight = dHeight * centerPosition / 100;
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 				dHeight);
+		lp.addRule(RelativeLayout.ABOVE, R.id.seekBar);
 		groupImgArea.setLayoutParams(lp);
 		
 		// 레이아웃에서 그룹 크기 초기값
@@ -116,10 +118,16 @@ public class GroupActivity extends ActionBarActivity implements
 		groupId = intent.getStringExtra("selectedGroupId");
 		groupTitle = intent.getStringExtra("selectedGroupTitle");
 		groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
-			
+		groupSize  = intent.getFloatExtra("selectedGroupSize", initGroupSize);
+		System.out.println("groupSize : "+groupSize);
+		
+		//그룹 사이즈 조절
 		if(groupTitle==null){
-			trash_can.setVisibility(View.GONE);
+			trash_can.setVisibility(View.INVISIBLE);
 		}else{
+			float dSize = changeGroupSize2P(groupSize);
+			//그룹 크기 조절
+			Util.setPosition(group, (int)dSize, (int)dSize, 50, centerPosition/2);
 			// set groupTitle
 			groupTitleInput.setText(groupTitle);
 			// set groupColor
@@ -217,12 +225,21 @@ public class GroupActivity extends ActionBarActivity implements
 	}
 	/**
 	 * group size로 넘어오는 값을 MainActivity 
-	 * @param p
+	 * @param groupSize2
 	 * @return
 	 */
-	private float changePtoGroupSize(int p){
-		int max = dHeight * maxGroupSize / 100;
-		return (float) (1.5*(p*1.5f)/max);
+	private float changePtoGroupSize(float p) {
+		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
+		float rtn = ((p * 1.5f) / max);
+		System.out.println("changePtoGroupSize : "+rtn);
+		return rtn;
+	}
+	
+	private float changeGroupSize2P(float groupSize) {
+		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
+		float rtn = ((groupSize * max) /1.5f);
+		System.out.println("changeGroupSize2P : "+rtn);
+		return rtn;
 	}
 	
 	@Override
