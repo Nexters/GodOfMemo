@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group_activiy_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/memedit_background"
@@ -59,7 +60,7 @@
     <LinearLayout
         android:id="@+id/group_color_selection_area"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="143dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/group_colorselect_blue"
         android:orientation="horizontal" >

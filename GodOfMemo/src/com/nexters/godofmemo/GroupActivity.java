@@ -1,25 +1,25 @@
 package com.nexters.godofmemo;
 
 
-import com.nexters.godofmemo.object.Group;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.util.Util;
 
 @SuppressLint("NewApi")
@@ -35,6 +35,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private View group; // ImageView는 안된다
 	private View groupImgArea;
 	private View groupSelectionLayout;
+	private View background;
 	private EditText groupTitleInput;
 
 	private String groupId;
@@ -96,11 +97,13 @@ public class GroupActivity extends ActionBarActivity implements
 		groupTitleInput.bringToFront();
 
 		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
+		background = findViewById(R.id.group_activiy_background);
+		
+		background.setOnClickListener(this);
+		// set listener
 		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
 		// since we are using this class as the listener the class is "this"
-
 		// make text label for seekBarAction value
-
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 		ImageView trash_can = (ImageView) findViewById(R.id.trash_can);
@@ -170,6 +173,10 @@ public class GroupActivity extends ActionBarActivity implements
 			findViewById(R.id.group_color_selection_area).setBackgroundResource(R.drawable.group_colorselect_yellow);
 			//groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_YELLOW);
 			groupColor = Group.GROUP_COLOR_YELLOW;
+			break;
+		case R.id.group_activiy_background:
+			 InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 			break;
 		}
 	}
