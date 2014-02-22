@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/btn_write01" />
+            android:background="@drawable/group_open" />
 
         <TextView
             android:layout_width="0dp"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/btn_write03" />
+            android:background="@drawable/memo_open" />
     </LinearLayout>
 
     <LinearLayout

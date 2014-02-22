@@ -191,7 +191,8 @@ public interface AllSQL {
 	 */
 	//기본정보
 	public static final String COL_MEMO_ID = "memo_id";
-	public static final String COL_MEMO_CONTENT = "memo_content";	
+	public static final String COL_MEMO_CONTENT = "memo_content";
+	public static final String COL_MEMO_COLOR = "memo_color";
 	public static final String COL_MEMO_DATE = "memo_date";
 	public static final String COL_MEMO_TIME = "memo_time";
 	
@@ -214,6 +215,8 @@ public interface AllSQL {
 				.append( " integer primary key autoincrement, ")
 				.append(COL_MEMO_CONTENT)
 				.append( " text, ")
+				.append(COL_MEMO_COLOR)
+				.append( " integer, ")
 				.append(COL_MEMO_DATE)
 				.append( " text, ")
 				.append(COL_MEMO_TIME)
@@ -241,6 +244,8 @@ public interface AllSQL {
 				.append( " integer primary key, ")
 				.append(COL_MEMO_CONTENT)
 				.append( " text, ")
+				.append(COL_MEMO_COLOR)
+				.append( " integer, ")
 				.append(COL_MEMO_DATE)
 				.append( " text, ")
 				.append(COL_MEMO_TIME)
@@ -265,6 +270,8 @@ public interface AllSQL {
 				.append( ", ")
 				.append(COL_MEMO_CONTENT)
 				.append( ", ")
+				.append(COL_MEMO_COLOR)
+				.append( ", ")
 				.append(COL_MEMO_DATE)
 				.append( ", ")
 				.append(COL_MEMO_TIME)
@@ -281,6 +288,8 @@ public interface AllSQL {
 				.append(COL_MEMO_ID)
 				.append( ", ")
 				.append(COL_MEMO_CONTENT)
+				.append( ", ")
+				.append(COL_MEMO_COLOR)
 				.append( ", ")
 				.append(COL_MEMO_DATE)
 				.append( ", ")
@@ -306,6 +315,8 @@ public interface AllSQL {
 				.append( ", ")
 				.append(COL_MEMO_CONTENT)
 				.append( ", ")
+				.append(COL_MEMO_COLOR)
+				.append( ", ")
 				.append(COL_MEMO_DATE)
 				.append( ", ")
 				.append(COL_MEMO_TIME)
@@ -322,6 +333,8 @@ public interface AllSQL {
 					.append(COL_MEMO_ID)
 					.append( ", ")
 					.append(COL_MEMO_CONTENT)
+					.append( ", ")
+					.append(COL_MEMO_COLOR)
 					.append( ", ")
 					.append(COL_MEMO_DATE)
 					.append( ", ")

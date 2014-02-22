@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	public static final int UPDATE_GROUP_RESULT= 3;
 	private String memoContent;
 	private String memoId;
+	private int memoColor;
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
@@ -143,10 +144,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			//뒤로가기 버튼을 눌렀는지 체크
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			memoContent = data.getStringExtra("short_txt");
-			
+			memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
+			System.out.println("MainActivity: "+memoColor);
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
-			Memo newMemo = new Memo(getApplicationContext(), memoContent, glSurfaceView);
+			Memo newMemo = new Memo(getApplicationContext(), memoContent, memoColor , glSurfaceView);
 			//지금 시간을 구한다
 			curr = System.currentTimeMillis();
 			//setter
@@ -170,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			
 			memoContent = data.getStringExtra("short_txt");
 			memoId = data.getStringExtra("selectedMemoId");
+			memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
 			
 			// 휴지통 버튼을 눌렀는지 체크
 			if(data.getBooleanExtra("delete", false)){
@@ -184,6 +187,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			Memo updateMemo = memoDao.getMemoInfo(memoId);
 			updateMemo.setProdTime(System.currentTimeMillis());
 			updateMemo.setMemoContent(memoContent);
+			updateMemo.setMemoColor(memoColor);
 			memoDao.updateMemo(updateMemo);
 			
 			//새로 그리기 위해.

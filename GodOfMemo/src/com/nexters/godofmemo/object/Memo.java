@@ -31,12 +31,18 @@ public class Memo {
 	private String memoContent;
 	private String memoDate;
 	private String memoTime;
+	private int memoColor;
 	
 	//위치, 크기정보
 	private float x;
 	private float y;
 	private float width;
 	private float height;
+	
+	//색깔 
+	public static final int MEMO_COLOR_RED=0;
+	public static final int MEMO_COLOR_BLUE=1;
+	public static final int MEMO_COLOR_YELLOW=2;
 	
 	//생성시
 	private long prodTime=0;
@@ -196,10 +202,11 @@ public class Memo {
 	}
 	
 	//신규입력시
-	public Memo(Context context, String text, MemoGLView memoGLView ) {
+	public Memo(Context context, String text, int memoColor, MemoGLView memoGLView ) {
 		this.context = context;
 		//내용 채우고
 		setMemoContent(text);
+		setMemoColor(memoColor);
 		
 		//위치와 크기
 		setWidth(0.8f);
@@ -272,12 +279,7 @@ public class Memo {
 	public void setMemoContent(String memoContent) {
 		if(memoContent == null){
 			memoContent = "test";
-		}
-
-		//메모내용을 담은 비트맵 생성
-		this.textBitmapId = R.drawable.whitememo;
-		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
-		
+		}		
 		this.memoContent = memoContent;
 	}
 
@@ -336,6 +338,27 @@ public class Memo {
 
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
+	}
+
+	public int getMemoColor() {
+		return memoColor;
+	}
+
+	public void setMemoColor(int memoColor) {
+		this.memoColor = memoColor;
+		//메모내용을 담은 비트맵 생성
+		switch(memoColor){
+		case MEMO_COLOR_BLUE:
+			this.textBitmapId = R.drawable.memo_blue;
+			break;
+		case MEMO_COLOR_RED:
+			this.textBitmapId = R.drawable.memo_red;
+			break;
+		case MEMO_COLOR_YELLOW:
+			this.textBitmapId = R.drawable.memo_yellow;
+			break;
+		}
+		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
 	}
 
 	@Override

@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.8"
-            android:background="@drawable/group_red" />
+            android:background="@drawable/circle_blue" />
     </FrameLayout>
 
     <!-- Seek bar -->

@@ -30,10 +30,10 @@ public class MemoDAO {
 	private SQLiteDatabase database;
 	private AllDBHelper dbHelper;
 	private String[] allColumns = { AllSQL.COL_MEMO_ID,
-			AllSQL.COL_MEMO_CONTENT, AllSQL.COL_MEMO_DATE,
-			AllSQL.COL_MEMO_TIME, AllSQL.COL_MEMO_X,
-			AllSQL.COL_MEMO_Y, AllSQL.COL_MEMO_WIDTH,
-			AllSQL.COL_MEMO_HEIGHT };
+			AllSQL.COL_MEMO_CONTENT, AllSQL.COL_MEMO_COLOR,
+			AllSQL.COL_MEMO_DATE, AllSQL.COL_MEMO_TIME,
+			AllSQL.COL_MEMO_X, AllSQL.COL_MEMO_Y,
+			AllSQL.COL_MEMO_WIDTH, AllSQL.COL_MEMO_HEIGHT };
 
 	/**
 	 * 생성할때 dbHelper 초기화
@@ -101,6 +101,7 @@ public class MemoDAO {
 		ContentValues values = new ContentValues();
 		
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
+		values.put(AllSQL.COL_MEMO_COLOR, memo.getMemoColor());
 		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
 		values.put(AllSQL.COL_MEMO_TIME, Util.getTime());
 		
@@ -129,6 +130,7 @@ public class MemoDAO {
 		ContentValues values = new ContentValues();
 		
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
+		values.put(AllSQL.COL_MEMO_COLOR, memo.getMemoColor());
 		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
 		values.put(AllSQL.COL_MEMO_TIME, Util.getTime());
 		
@@ -181,14 +183,15 @@ public class MemoDAO {
 		//기본정보
 		memo.setMemoId(cursor.getString(0));
 		memo.setMemoContent(cursor.getString(1));
-		memo.setMemoDate(cursor.getString(2));
-		memo.setMemoTime(cursor.getString(3));
+		memo.setMemoColor(cursor.getInt(2));
+		memo.setMemoDate(cursor.getString(3));
+		memo.setMemoTime(cursor.getString(4));
 		
 		//위치 크기
-		memo.setX(cursor.getFloat(4));
-		memo.setY(cursor.getFloat(5));
-		memo.setWidth(cursor.getFloat(6));
-		memo.setHeight(cursor.getFloat(7));
+		memo.setX(cursor.getFloat(5));
+		memo.setY(cursor.getFloat(6));
+		memo.setWidth(cursor.getFloat(7));
+		memo.setHeight(cursor.getFloat(8));
 		
 		//좌표설정
 		memo.setVertices();

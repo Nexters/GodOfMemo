@@ -1,6 +1,7 @@
 package com.nexters.godofmemo;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -10,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,9 +31,12 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	
 	private String memoContent;
 	private String memoId;
+	private int memoColor;
 	
 	//memo background
 	private View memoBg;
+	private View background;
+
 	//
 	int dWidth = 0;
 	int dHeight = 0;
@@ -82,9 +87,14 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		
 		//memo time
 		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
+		//background touchevent
+		background = findViewById(R.id.memo_activiy_background);
+		
+		background.setOnClickListener(this);
 		
 		intent = getIntent();
 		memoContent = intent.getStringExtra("selectedMemoContent");
+		memoColor = intent.getIntExtra("selectedMemoColor",Memo.MEMO_COLOR_BLUE);
 		memoId = intent.getStringExtra("selectedMemoId");
 		//System.out.println("memoId: "+ memoId);
 		findViewById(R.id.btn_back).setOnClickListener(this);
@@ -113,7 +123,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_finish:
-			makeText();
+			createMemo();
 	        break;
 		case R.id.btn_back:
 			moveToBack();
@@ -124,26 +134,34 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		case R.id.memo_color_select_red:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_red);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_red);
+			memoColor = Memo.MEMO_COLOR_RED;
 			break;
 
 		case R.id.memo_color_select_blue:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_blue);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_blue);
+			memoColor = Memo.MEMO_COLOR_BLUE;
 			break;
 
 		case R.id.memo_color_select_yellow:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_yellow);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_yellow);
+			memoColor = Memo.MEMO_COLOR_YELLOW;
+			break;
+		case R.id.group_activiy_background:
+			 InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 			break;
 		}
 	}
 	
-	private void makeText() {
+	private void createMemo() {
 		String short_txt = short_et.getText().toString();
 		intent.putExtra("short_txt", short_txt);
 		// if this case is when you tab create button, memoId's value is null.
 		// and maybe you don't use it.
 		intent.putExtra("selectedMemoId", memoId);
+		intent.putExtra("selectedMemoColor", memoColor);
 		setResult(RESULT_OK, intent);
 		finish();
 	}
