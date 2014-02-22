@@ -227,7 +227,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			groupId = data.getStringExtra("selectedGroupId");
 			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 			groupSize = data.getFloatExtra("groupSize", Group.GROUP_DEFAULT_SIZE);
-			
+
+			System.out.println("MainActivity  UPDATE_GROUP_RESULT " +groupSize);
 			// 휴지통 버튼을 눌렀는지 체크
 			if(data.getBooleanExtra("delete", false)){
 				Group deleteGroup =  groupDao.getGroupInfo(groupId);
@@ -244,6 +245,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			updateGroup.setGroupColor(groupColor);
 			updateGroup.setWidth(groupSize);
 			updateGroup.setHeight(groupSize);
+			updateGroup.setVertices();
 			groupDao.updateGroup(updateGroup);
 			
 			

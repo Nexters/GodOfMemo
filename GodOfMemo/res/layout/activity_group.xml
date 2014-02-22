@@ -5,63 +5,13 @@
     android:layout_height="fill_parent"
     android:background="@drawable/memedit_background"
     tools:context=".MemoActivity" >
-    
-    
-    <!-- 그룹 이미지 -->
 
-    <FrameLayout
-        android:id="@+id/group_img_area"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="32dp"
-        android:gravity="top"
-        android:orientation="horizontal" >
+    <!-- 색상 선택 -->
 
-        <!-- 그룹 이름 수정하는 곳 -->
-
-        <EditText
-            android:id="@+id/group_name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/group_center"
-            android:ems="10"
-            android:hint="그룹이름을 여기에 적으세요"
-            android:textColor="@android:color/white" />
-
-        <ImageView
-            android:id="@+id/group_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.8"
-            android:background="@drawable/group_red" />
-    </FrameLayout>
-
-    <!-- Seek bar -->
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/group_img_area"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:max="100" />
-
-
-    <ImageView
-        android:id="@+id/trash_can"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
-        android:background="@drawable/btn_trashcan" />
-    
     <LinearLayout
         android:id="@+id/group_color_selection_area"
         android:layout_width="fill_parent"
         android:layout_height="143dp"
-        android:layout_alignParentBottom="true"
         android:background="@drawable/group_colorselect_blue"
         android:orientation="horizontal" >
 
@@ -83,6 +33,56 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
-    
-    
+
+    <!-- 삭제버튼 -->
+
+    <ImageView
+        android:id="@+id/trash_can"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_trashcan" />
+
+    <!-- Seek bar -->
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/trash_can"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:max="100" />
+
+    <!-- 그룹 이미지 -->
+
+    <FrameLayout
+        android:id="@+id/group_img_area"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_above="@id/seekBar"
+        android:orientation="horizontal" >
+
+        <!-- 그룹 이름 수정하는 곳 -->
+
+        <EditText
+            android:id="@+id/group_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/group_center"
+            android:ems="10"
+            android:hint="그룹이름을 여기에 적으세요"
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/group_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.8"
+            android:background="@drawable/group_red" />
+    </FrameLayout>
+
 </RelativeLayout>
