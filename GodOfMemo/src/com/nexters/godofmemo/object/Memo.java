@@ -349,13 +349,13 @@ public class Memo {
 		//메모내용을 담은 비트맵 생성
 		switch(memoColor){
 		case MEMO_COLOR_BLUE:
-			this.textBitmapId = R.drawable.memo_blue;
+			this.textBitmapId = R.drawable.memo_onboard_blue;
 			break;
 		case MEMO_COLOR_RED:
-			this.textBitmapId = R.drawable.memo_red;
+			this.textBitmapId = R.drawable.memo_onboard_red;
 			break;
 		case MEMO_COLOR_YELLOW:
-			this.textBitmapId = R.drawable.memo_yellow;
+			this.textBitmapId = R.drawable.memo_onboard_yellow;
 			break;
 		}
 		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);

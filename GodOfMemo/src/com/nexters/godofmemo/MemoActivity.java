@@ -3,6 +3,7 @@ package com.nexters.godofmemo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -103,7 +104,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		trash_can.setOnClickListener(this);
 		
 		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
-		if(memoContent==null){
+		if(memoId==null){
 			//입력모드
 			trash_can.setVisibility(View.GONE);
 			String memoDate = Util.getDate();
@@ -224,4 +225,21 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	private void setMemoColor(int pColor){
 		
 	}
+	
+
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
+		if(memoId==null){
+			((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 입력");
+		}else{
+			((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 수정");
+		}
+		/*
+		Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/telegrafico.ttf");
+		((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);*/
+	}
+	
 }
