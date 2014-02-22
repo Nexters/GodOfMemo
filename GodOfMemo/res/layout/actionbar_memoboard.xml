@@ -9,70 +9,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="메모 보드"
+        android:text="Mind Paper"
         android:textColor="#414141"
         android:textSize="22dp" />
 
-    <LinearLayout
-        android:id="@+id/action_write"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
-        android:padding="5dp" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/group_open" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_write02"
-            android:gravity="center_vertical"
-            android:paddingLeft="12sp"
-            android:text="메모 쓰기"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/memo_open" />
-    </LinearLayout>
-
-    <LinearLayout
+    <ImageView
         android:id="@+id/action_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
-        android:padding="5dp" >
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/group_open" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_write01" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_write02"
-            android:gravity="center_vertical"
-            android:paddingLeft="12sp"
-            android:text="그룹 쓰기"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_write03" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/action_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/memo_open" />
 
 </FrameLayout>

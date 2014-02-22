@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.GroupDAO;
@@ -309,4 +310,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		}
 		
 	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/telegrafico.ttf");
+		((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);
+	}
+	
+	
 }
