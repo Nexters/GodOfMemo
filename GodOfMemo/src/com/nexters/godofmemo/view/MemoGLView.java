@@ -456,7 +456,7 @@ public class MemoGLView extends GLSurfaceView {
 			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
 			
 			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
-			if(chkX <= 0.9f && chkY <= 0.5f){
+			if(chkX <= group.getWidth()*1.2 && chkY <= group.getHeight()*1.2){
 				//선택됨
 				selectedGroup = group;
 				return true;

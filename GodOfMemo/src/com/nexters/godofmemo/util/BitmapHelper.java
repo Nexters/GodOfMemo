@@ -156,6 +156,7 @@ public class BitmapHelper {
 		String[] dividedTextArray = dividedText.split("\n");
 
 		// draw text to the Canvas center
+		// TODO memo에 적합한 로직.
 		int x = (int) (width * Memo.ratioW / 2);
 		int y = (int) (height * Memo.ratioH / 2);
 

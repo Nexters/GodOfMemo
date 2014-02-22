@@ -37,6 +37,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	private String groupId;
 	private String groupTitle;
 	private int groupColor;
+	private float groupSize;
 	private MemoDAO memoDao;
 	private GroupDAO groupDao;
 	
@@ -194,12 +195,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			//뒤로가기 버튼을 눌렀는지 체크
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			// You need to check whether write code in Group Activity.
-			groupTitle = data.getStringExtra("newGroupTitle");
+			groupTitle = data.getStringExtra("groupTitle");
 			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
-			
+			groupSize = data.getFloatExtra("groupSize", Group.GROUP_DEFAULT_SIZE);
 			//TODO 새 메모 체크하기 
 			//메모를 저장한다.
-			Group newGroup = new Group(getApplicationContext(),groupTitle , groupColor, glSurfaceView);
+			System.out.println("MainActivity  " +groupSize);
+			Group newGroup = new Group(getApplicationContext(),groupTitle , groupColor, groupSize, glSurfaceView);
 			//지금 시간을 구한다
 			curr = System.currentTimeMillis();
 			//setter
@@ -221,9 +223,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		case UPDATE_GROUP_RESULT:
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			
-			groupTitle = data.getStringExtra("selectedGroupTitle");
+			groupTitle = data.getStringExtra("groupTitle");
 			groupId = data.getStringExtra("selectedGroupId");
 			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			groupSize = data.getFloatExtra("groupSize", Group.GROUP_DEFAULT_SIZE);
 			
 			// 휴지통 버튼을 눌렀는지 체크
 			if(data.getBooleanExtra("delete", false)){
@@ -239,6 +242,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			updateGroup.setProdTime(System.currentTimeMillis());
 			updateGroup.setGroupTitle(groupTitle);
 			updateGroup.setGroupColor(groupColor);
+			updateGroup.setWidth(groupSize);
+			updateGroup.setHeight(groupSize);
 			groupDao.updateGroup(updateGroup);
 			
 			

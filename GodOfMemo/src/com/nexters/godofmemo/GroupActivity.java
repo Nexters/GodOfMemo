@@ -30,8 +30,10 @@ public class GroupActivity extends ActionBarActivity implements
 	private SeekBar bar;
 	private TextView seekBarAction;
 	private int width, height;
+	private int tmpGroupSize;
 	private View group; // ImageView는 안된다
 	private View groupImgArea;
+	private View groupSelectionLayout;
 	private EditText groupTitleInput;
 
 	private String groupId;
@@ -61,6 +63,7 @@ public class GroupActivity extends ActionBarActivity implements
 		group = findViewById(R.id.group_img);
 		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
 		groupImgArea = findViewById(R.id.group_img_area);
+		groupSelectionLayout = findViewById(R.id.group_color_selection_area);
 		
 		//메모 색깔 버튼 선택 이벤트
 		findViewById(R.id.group_color_select_red).setOnClickListener(this);
@@ -74,7 +77,6 @@ public class GroupActivity extends ActionBarActivity implements
 
 
 		//그룹 이미지 배경 레이아웃 위치설정?!
-
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		dHeight = metrics.heightPixels;
 		dHeight = dHeight * centerPosition / 100;
@@ -82,10 +84,10 @@ public class GroupActivity extends ActionBarActivity implements
 				dHeight);
 		groupImgArea.setLayoutParams(lp);
 		
-		//그룹 크기 초기값
-		int initSize = dHeight * minGroupSize / 100;
+		// 레이아웃에서 그룹 크기 초기값
+		tmpGroupSize = dHeight * minGroupSize / 100;
 		// 그룹이미지를 위치한다
-		Util.setPosition(group, initSize, initSize, 50, centerPosition/2);
+		Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
 		// 그룹제목 위치
 		Util.setPosition(groupTitleInput, 50, centerPosition/2);
 		
@@ -108,13 +110,31 @@ public class GroupActivity extends ActionBarActivity implements
 		//TODO Handling tab event that user select Group!
 		groupId = intent.getStringExtra("selectedGroupId");
 		groupTitle = intent.getStringExtra("selectedGroupTitle");
-		//groupColor = intent.getIntExtra("selectedGroupColor", Group.DEFAULT_GROUP_COLOR);
+		groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 			
 		if(groupTitle==null){
 			trash_can.setVisibility(View.GONE);
 		}else{
+			// set groupTitle
 			groupTitleInput.setText(groupTitle);
-			//TODO set groupColor
+			// set groupColor
+			switch (groupColor) {
+			case Group.GROUP_COLOR_BLUE:
+				group.setBackgroundResource(R.drawable.circle_blue);
+				groupSelectionLayout.setBackgroundResource(R.drawable.group_colorselect_blue);
+				break;
+			case Group.GROUP_COLOR_RED:
+				group.setBackgroundResource(R.drawable.circle_red);
+				groupSelectionLayout.setBackgroundResource(R.drawable.group_colorselect_red);
+				break;
+			case Group.GROUP_COLOR_YELLOW:
+				group.setBackgroundResource(R.drawable.circle_yellow);
+				groupSelectionLayout.setBackgroundResource(R.drawable.group_colorselect_yellow);
+				break;
+			default:
+				break;
+			}
+			
 		}
 	}
 
@@ -154,22 +174,22 @@ public class GroupActivity extends ActionBarActivity implements
 
 	private void createGroup() {
 		// case group create
-		String groupTitleInputText = "";
+		// because group's title and size is common element 
+		// key of Extra write group- as prefix.
+		String inputGroupTitle = "";
 		if (groupTitleInput == null) {
 			System.out.println("Didn't get text");
 		} else {
-			groupTitleInputText = groupTitleInput.getText().toString();
+			inputGroupTitle = groupTitleInput.getText().toString();
 		}
-		intent.putExtra("newGroupTitle", groupTitleInputText);
+		intent.putExtra("groupTitle", inputGroupTitle);
+		System.out.println("set groupSize: "+tmpGroupSize + "change : "+ changePtoGroupSize(tmpGroupSize) +"  "+((tmpGroupSize*0.8f)/minGroupSize) );
+		intent.putExtra("groupSize", changePtoGroupSize(tmpGroupSize));
 		
-		String updateGroupTitle = groupTitleInputText;
-				//case status update
+		//case group update
 		intent.putExtra("selectedGroupId", groupId);
 		//TODO You must write code selecting color. 
 		intent.putExtra("selectedGroupColor", groupColor);
-		intent.putExtra("selectedGroupTitle", updateGroupTitle);
-		// TODO You must write code selecting color.
-		
 		setResult(RESULT_OK, intent);
 		finish();
 	}
@@ -186,17 +206,24 @@ public class GroupActivity extends ActionBarActivity implements
 		setResult(RESULT_OK, intent);
 		finish();
 	}
-
+	/**
+	 * group size로 넘어오는 값을 MainActivity 
+	 * @param p
+	 * @return
+	 */
+	private float changePtoGroupSize(int p){
+		int max = dHeight * maxGroupSize / 100;
+		return (float) (1.5*(p*1.5f)/max);
+	}
+	
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		// TODO int progress 받아와서 그룹이미지 크기 조정
-		int p = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
+		tmpGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
 		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
-		
-		Util.setPosition(group, p, p, 50, centerPosition/2);
+		Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
 		
 		groupTitleInput.bringToFront();
-		
 	}
 
 	// 지금 필요없음

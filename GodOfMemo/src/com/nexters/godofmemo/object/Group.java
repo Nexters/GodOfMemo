@@ -43,6 +43,8 @@ public class Group {
 	public static final int GROUP_COLOR_RED=0;
 	public static final int GROUP_COLOR_BLUE=1;
 	public static final int GROUP_COLOR_YELLOW=2;
+	//크기 기본값
+	public static final float GROUP_DEFAULT_SIZE = 0.8f;
 	//위치, 크기정보
 	private float x;
 	private float y;
@@ -203,7 +205,7 @@ public class Group {
 	}
 	
 	//신규입력시
-	public Group(Context context, String text, int colorMarker, MemoGLView memoGLView ) {
+	public Group(Context context, String text, int colorMarker, float groupSize, MemoGLView memoGLView ) {
 		this.context = context;
 		//input title and color
 		setGroupTitle(text);
@@ -211,8 +213,8 @@ public class Group {
 		// TODO Need a selecting logic that finds appropriate color.
 		
 		//위치와 크기
-		setWidth(0.8f);
-		setHeight(0.8f);
+		setWidth(groupSize);
+		setHeight(groupSize);
 		
 		float tempX = (memoGLView.mr.width)/2; //폰의 보여지는 width 값 
 		float tempY = (memoGLView.mr.height)/2;

@@ -121,8 +121,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		case R.id.trash_can:
 			deleteMemo();
 			break;
-			
-
 		case R.id.memo_color_select_red:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_red);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_red);
