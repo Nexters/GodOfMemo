@@ -31,6 +31,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private TextView seekBarAction;
 	private int width, height;
 	private int tmpGroupSize;
+	private int initGroupSize;
 	private View group; // ImageView는 안된다
 	private View groupImgArea;
 	private View groupSelectionLayout;
@@ -85,9 +86,10 @@ public class GroupActivity extends ActionBarActivity implements
 		groupImgArea.setLayoutParams(lp);
 		
 		// 레이아웃에서 그룹 크기 초기값
-		tmpGroupSize = dHeight * minGroupSize / 100;
+		initGroupSize = dHeight * minGroupSize / 100;
+		tmpGroupSize = initGroupSize;
 		// 그룹이미지를 위치한다
-		Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
+		Util.setPosition(group, initGroupSize, initGroupSize, 50, centerPosition/2);
 		// 그룹제목 위치
 		Util.setPosition(groupTitleInput, 50, centerPosition/2);
 		
@@ -221,7 +223,9 @@ public class GroupActivity extends ActionBarActivity implements
 		// TODO int progress 받아와서 그룹이미지 크기 조정
 		tmpGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
 		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
-		Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
+		if(tmpGroupSize > initGroupSize){
+			Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
+		}
 		
 		groupTitleInput.bringToFront();
 	}
