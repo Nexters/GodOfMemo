@@ -1,4 +1,5 @@
-== Mind Paper
+Mind Paper
+============================================================================
 
 This android application helps you organize your notes, memos and thoughts.
 
