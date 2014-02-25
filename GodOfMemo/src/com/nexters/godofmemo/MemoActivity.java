@@ -90,14 +90,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
 		//background touchevent
 		background = findViewById(R.id.memo_activiy_background);
-		
 		background.setOnClickListener(this);
 		
 		intent = getIntent();
 		memoContent = intent.getStringExtra("selectedMemoContent");
 		memoColor = intent.getIntExtra("selectedMemoColor",Memo.MEMO_COLOR_BLUE);
 		memoId = intent.getStringExtra("selectedMemoId");
-		//System.out.println("memoId: "+ memoId);
+	
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 		ImageView trash_can =  (ImageView)findViewById(R.id.trash_can);
@@ -150,8 +149,8 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 			memoColor = Memo.MEMO_COLOR_YELLOW;
 			break;
 		case R.id.group_activiy_background:
-			 InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-		        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+			InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 			break;
 		}
 	}

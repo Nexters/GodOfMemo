@@ -97,12 +97,12 @@ public class GroupActivity extends ActionBarActivity implements
 		Util.setPosition(groupTitleInput, 50, centerPosition/2);
 		
 		groupTitleInput.bringToFront();
-
-		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
-		background = findViewById(R.id.group_activiy_background);
 		
+		// To handling click event on background 
+		background = findViewById(R.id.group_activiy_background);
 		background.setOnClickListener(this);
-		// set listener
+				
+		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
 		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
 		// since we are using this class as the listener the class is "this"
 		// make text label for seekBarAction value
@@ -119,10 +119,9 @@ public class GroupActivity extends ActionBarActivity implements
 		groupTitle = intent.getStringExtra("selectedGroupTitle");
 		groupColor = intent.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 		groupSize  = intent.getFloatExtra("selectedGroupSize", initGroupSize);
-		System.out.println("groupSize : "+groupSize);
 		
-		//그룹 사이즈 조절
-		if(groupTitle==null){
+		// Setting values likes size or color of the group;
+		if(groupId==null){
 			trash_can.setVisibility(View.INVISIBLE);
 		}else{
 			float dSize = changeGroupSize2P(groupSize);
@@ -261,5 +260,19 @@ public class GroupActivity extends ActionBarActivity implements
 
 	@Override
 	public void onStopTrackingTouch(SeekBar arg0) {
+	}
+	
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
+		if(groupId==null){
+			((TextView)findViewById(R.id.groupBoardTitle)).setText("그룹 생성");
+		}else{
+			((TextView)findViewById(R.id.groupBoardTitle)).setText("그룹 수정");
+		}
+		/*
+		Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/telegrafico.ttf");
+		((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);*/
 	}
 }

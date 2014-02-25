@@ -5,11 +5,15 @@ import static android.opengl.GLES20.glDrawArrays;
 import static com.nexters.godofmemo.util.Constants.BYTES_PER_FLOAT;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.BitmapHelper;
+import com.nexters.godofmemo.util.Font;
 import com.nexters.godofmemo.util.TextureHelper;
 import com.nexters.godofmemo.view.MemoGLView;
 
@@ -25,6 +29,9 @@ public class Memo {
 	//텍스트 입력을 위한 정보
 	private static float[] VERTEX_DATA_TEXT;
 	private VertexArray vertexArrayText;
+	
+	//TODO 최대 줄 개수는 임시값.
+	private static final int maxLine= 3;	
 	
 	//기본정보
 	private String memoId;
@@ -188,8 +195,76 @@ public class Memo {
 		} else if (textBitmap != null) {
 			// 비트맵이 있으면 비트맵 텍스쳐를 입힌다.
 			this.texture = TextureHelper.loadBitmpTexture(textBitmap, textBitmapId);
-			this.textTexture = TextureHelper.loadTextBitmpTexture(memoContent);
+			this.textTexture = TextureHelper.loadTextBitmpTexture(this);
 		}
+	}
+	
+	/**
+	 * 텍스트만 그리는 함수
+	 * @param gContext
+	 * @param gResId
+	 * @param gText
+	 * @return
+	 */
+	public static Bitmap drawTextToBitmap(String gText) {
+		
+		int width = 512;
+		int height = 512;
+
+		// Read in the resource
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		// Canvas
+		Canvas canvas = new Canvas(bitmap);
+		// new antialised Paint
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// text color - #3D3D3D
+		paint.setColor(Color.rgb(61, 61, 61));
+		// text size in pixels
+		int textSize = (int) (32);
+		paint.setTextSize(textSize);
+		// text shadow
+		//paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+		
+		//##########
+		//텍스트 여러줄 처리
+		//##########
+		String dividedText = BitmapHelper.getDividedText(gText);
+		
+		//텍스트를 줄바꿈 단위로 쪼갠다.
+		String[] dividedTextArray = dividedText.split("\n");
+
+		// draw text to the Canvas center
+		// TODO memo에 적합한 로직.
+		int x = (int) (width * ratioW / 2);
+		int y = (int) (height * ratioH / 2);
+
+		int loopCnt = 0;
+		int textOffsetY = 0;
+		int margin = 3;
+		int offset = (textSize + margin)/1;
+		
+		//몇번 포문을 수행할지 결정
+		if(dividedTextArray.length < maxLine){
+			loopCnt = dividedTextArray.length;
+		}else{
+			loopCnt = maxLine;
+		}
+		
+		//시작 높이 위치 정하기
+		textOffsetY = y - (offset/2)*(loopCnt-1) + margin;
+		
+		//폰트 설정
+		paint.setTypeface(Font.getTf());
+		
+		//여러줄 출력하기
+		for(int i=0; i<loopCnt; i++){
+			String text = dividedTextArray[i];
+			int px = x - (text.length() * textSize)/2;
+			int py = textOffsetY + (i*offset);
+			canvas.drawText(text, px, py, paint);
+		}
+		
+		return bitmap;
 	}
 
 	/**

@@ -26,6 +26,9 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
+import com.nexters.godofmemo.object.Group;
+import com.nexters.godofmemo.object.Memo;
+
 public class TextureHelper {
 	private static final String TAG = "TextureHelper";
 
@@ -249,8 +252,18 @@ public class TextureHelper {
 	 * @param text
 	 * @return
 	 */
-	public static int loadTextBitmpTexture(String text) {
-		Bitmap bitmap = BitmapHelper.drawTextToBitmap(text);
+	public static int loadTextBitmpTexture(Object o) {
+		Bitmap bitmap = null;
+		// null pointer exception 처리 해야하나?
+		if(o instanceof Memo){
+			Memo memo = (Memo)o;
+			// 꼭 static 써야 하나?
+			bitmap = Memo.drawTextToBitmap(memo.getMemoContent());
+		}else if (o instanceof Group){
+			Group group = (Group)o;
+			bitmap = Group.drawTextToBitmap(group.getGroupTitle());
+		}
+		
 		return loadBitmpTextureNoAlpha(bitmap);
 	}
 }

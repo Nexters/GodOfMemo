@@ -8,11 +8,15 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.BitmapHelper;
+import com.nexters.godofmemo.util.Font;
 import com.nexters.godofmemo.util.TextureHelper;
 import com.nexters.godofmemo.view.MemoGLView;
 
@@ -51,6 +55,9 @@ public class Group {
 	private float width;
 	private float height;
 	
+	//TODO 최대 줄 개수는 임시값.
+	private static final int maxLine= 3;	
+	
 	//생성시
 	private long prodTime=0;
 	
@@ -69,6 +76,10 @@ public class Group {
 	
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
+	
+	//텍스트가 들어갈 상자의 비율
+	public static float ratioW = 8f / 10f;
+	public static float ratioH = 6f / 10f;
 	
 	/**
 	 * 위치와 크기를 지정한다
@@ -135,50 +146,50 @@ public class Group {
 		float width = this.width;
 		float height = this.height;
 
-		width = width * 8 / 10;
-		height = height * 6 / 10;
+		width = width * ratioW;
+		height = height * ratioH;
 
 		// 중심. 
 		int s = 0;
 		VERTEX_DATA_TEXT[0] = x; // x
 		VERTEX_DATA_TEXT[1] = y; // y
-		VERTEX_DATA_TEXT[2] = 0.5f; // S
-		VERTEX_DATA_TEXT[3] = 0.5f; // T
+		VERTEX_DATA_TEXT[2] = 0.5f * ratioW;// S
+		VERTEX_DATA_TEXT[3] = 0.5f * ratioH; // T
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
 
 		// 오른쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f * ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
 
 		// 오른쪽 위에 
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f * ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f * ratioH; // z
 
 		// 왼쪽 위에
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f * ratioH; // z
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
 
 		vertexArrayText = new VertexArray(VERTEX_DATA_TEXT);
 	}
@@ -191,9 +202,79 @@ public class Group {
 		} else if (textBitmap != null) {
 			// 비트맵이 있으면 비트맵 텍스쳐를 입힌다.
 			this.texture = TextureHelper.loadBitmpTexture(textBitmap, textBitmapId);
-			this.textTexture = TextureHelper.loadTextBitmpTexture(groupTitle);
+			this.textTexture = TextureHelper.loadTextBitmpTexture(this);
 		}
 	}
+	
+	/**
+	 * 텍스트만 그리는 함수
+	 * @param gContext
+	 * @param gResId
+	 * @param gText
+	 * @return
+	 */
+	public static Bitmap drawTextToBitmap(String gText) {
+		
+		int width = 512;
+		int height = 512;
+
+		// Read in the resource
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		// Canvas
+		Canvas canvas = new Canvas(bitmap);
+		// new antialised Paint
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// text color - #3D3D3D
+		paint.setColor(Color.rgb(61, 61, 61));
+		// text size in pixels
+		int textSize = (int) (32);
+		paint.setTextSize(textSize);
+		// text shadow
+		//paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+		
+		//##########
+		//텍스트 여러줄 처리
+		//##########
+		String dividedText = BitmapHelper.getDividedText(gText);
+		
+		//텍스트를 줄바꿈 단위로 쪼갠다.
+		String[] dividedTextArray = dividedText.split("\n");
+
+		// draw text to the Canvas center
+		// TODO memo에 적합한 로직.
+		int x = (int) (width * ratioW / 2);
+		int y = (int) (height * ratioH / 2);
+
+		int loopCnt = 0;
+		int textoffsetYY = 0;
+		int marginY = 4;
+		int marginX = 10;
+		int offsetY = (textSize + marginY)/1;
+		
+		//몇번 포문을 수행할지 결정
+		if(dividedTextArray.length < maxLine){
+			loopCnt = dividedTextArray.length;
+		}else{
+			loopCnt = maxLine;
+		}
+		
+		//시작 높이 위치 정하기
+		textoffsetYY = y - (offsetY/2)*(loopCnt-1) + marginY;
+		
+		//폰트 설정
+		paint.setTypeface(Font.getTf());
+		
+		//여러줄 출력하기
+		for(int i=0; i<loopCnt; i++){
+			String text = dividedTextArray[i];
+			int px = x - (text.length() * textSize)/2 + marginX;
+			int py = textoffsetYY + (i*offsetY);
+			canvas.drawText(text, px, py, paint);
+		}
+		
+		return bitmap;
+	}
+
 
 	/**
 	 * 생성자
