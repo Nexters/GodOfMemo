@@ -241,7 +241,7 @@ public class Group {
 		String[] dividedTextArray = dividedText.split("\n");
 
 		// draw text to the Canvas center
-		// TODO memo에 적합한 로직.
+		// TODO group에 적합하도록. 
 		int x = (int) (width * ratioW / 2);
 		int y = (int) (height * ratioH / 2);
 

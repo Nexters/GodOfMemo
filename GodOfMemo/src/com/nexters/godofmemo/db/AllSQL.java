@@ -195,6 +195,7 @@ public interface AllSQL {
 	public static final String COL_MEMO_COLOR = "memo_color";
 	public static final String COL_MEMO_DATE = "memo_date";
 	public static final String COL_MEMO_TIME = "memo_time";
+	public static final String COL_MEMO_GROUP_ID = "group_id";
 	
 	//위치정보
 	public static final String COL_MEMO_X = "memo_x";
@@ -220,6 +221,8 @@ public interface AllSQL {
 				.append(COL_MEMO_DATE)
 				.append( " text, ")
 				.append(COL_MEMO_TIME)
+				.append( " text, ")
+				.append(COL_MEMO_GROUP_ID)
 				.append( " text, ")
 				
 				.append(COL_MEMO_X)
@@ -250,6 +253,8 @@ public interface AllSQL {
 				.append( " text, ")
 				.append(COL_MEMO_TIME)
 				.append( " text, ")
+				.append(COL_MEMO_GROUP_ID)
+				.append( " text, ")
 				
 				.append(COL_MEMO_X)
 				.append( " real, ")
@@ -275,7 +280,9 @@ public interface AllSQL {
 				.append(COL_MEMO_DATE)
 				.append( ", ")
 				.append(COL_MEMO_TIME)
-				.append( ", ")					
+				.append( ", ")
+				.append(COL_MEMO_GROUP_ID)
+				.append( ", ")
 				.append(COL_MEMO_X)
 				.append( ", ")
 				.append(COL_MEMO_Y)
@@ -294,7 +301,9 @@ public interface AllSQL {
 				.append(COL_MEMO_DATE)
 				.append( ", ")
 				.append(COL_MEMO_TIME)
-				.append( ", ")					
+				.append( ", ")
+				.append(COL_MEMO_GROUP_ID)
+				.append( ", ")
 				.append(COL_MEMO_X)
 				.append( ", ")
 				.append(COL_MEMO_Y)
@@ -320,7 +329,9 @@ public interface AllSQL {
 				.append(COL_MEMO_DATE)
 				.append( ", ")
 				.append(COL_MEMO_TIME)
-				.append( ", ")					
+				.append( ", ")		
+				.append(COL_MEMO_GROUP_ID)
+				.append( ", ")
 				.append(COL_MEMO_X)
 				.append( ", ")
 				.append(COL_MEMO_Y)
@@ -339,7 +350,9 @@ public interface AllSQL {
 					.append(COL_MEMO_DATE)
 					.append( ", ")
 					.append(COL_MEMO_TIME)
-					.append( ", ")					
+					.append( ", ")
+					.append(COL_MEMO_GROUP_ID)
+					.append( ", ")
 					.append(COL_MEMO_X)
 					.append( ", ")
 					.append(COL_MEMO_Y)

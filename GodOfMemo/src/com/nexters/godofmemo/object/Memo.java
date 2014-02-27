@@ -39,6 +39,7 @@ public class Memo {
 	private String memoDate;
 	private String memoTime;
 	private int memoColor;
+	private String groupId;
 	
 	//위치, 크기정보
 	private float x;
@@ -74,6 +75,9 @@ public class Memo {
 	public static float ratioW = 8f / 10f;
 	public static float ratioH = 6f / 10f;
 	
+	public static final float ratioMarginTop = 150f / 512f;
+	public static final float ratioMarginBottom = 160f / 512f;
+	public static final float ratioMarginLeft = 15f/512f;
 	/**
 	 * 위치와 크기를 지정한다
 	 */
@@ -372,6 +376,14 @@ public class Memo {
 
 	public void setMemoTime(String memoTime) {
 		this.memoTime = memoTime;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public float getX() {
