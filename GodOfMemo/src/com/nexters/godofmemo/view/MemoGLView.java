@@ -257,6 +257,21 @@ public class MemoGLView extends GLSurfaceView {
 					selectedMemo.setY(ny);
 					selectedMemo.setVertices();
 				}else if(selectedGroup != null && tabMode == LONGTAB){
+					float movedDistanceX =  nx -selectedGroup.getX();
+					float movedDistanceY =  ny -selectedGroup.getY();
+					
+					//그룹에 속해있는 메모 이동. 
+					for(Memo memo: mr.memoList){
+						if(memo.getGroupId() == null){
+							System.out.println("groupId is null");
+						}else{
+							if(memo.getGroupId().equals(selectedGroup.getGroupId())){
+								memo.setX(memo.getX() + movedDistanceX);
+								memo.setY(memo.getY() + movedDistanceY);
+								memo.setVertices();
+							}	
+						}
+					}
 					//그룹이동
 					selectedGroup.setX(nx);
 					selectedGroup.setY(ny);
