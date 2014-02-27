@@ -22,15 +22,16 @@ import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MultisampleConfigChooser;
+import com.nexters.godofmemo.util.PositionCheckHelper;
 
 public class MemoGLView extends GLSurfaceView {
 	
     public MemoRenderer mr;
     private Context context;
+    public PositionCheckHelper positionCheckHelper;
 	
 	public MemoGLView(Context context) {
 		super(context);
-		
 		this.context = context;		
 		
 		// Create an OpenGL ES 2.0 context.
@@ -38,14 +39,23 @@ public class MemoGLView extends GLSurfaceView {
 
         // Set the Renderer for drawing on the GLSurfaceView
         mr = new MemoRenderer(context);
+        // Set the Helper for checking object's position.
+        positionCheckHelper = new PositionCheckHelper(context, mr);
         setEGLConfigChooser(new MultisampleConfigChooser());
+       
         setRenderer(mr);
-
+        
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         
         //진동 초기화
-        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);  
+        
+        //memo 초기화 
+        //memo 들을 돌면서 그룹안에 있는지 체크 .
+        for(Memo memo: mr.memoList){
+        	positionCheckHelper.updateSpecificMemoForSetGroupId(memo);
+        }
 	}
 
 	private static final String TAG = "MemoGLView";
@@ -161,13 +171,15 @@ public class MemoGLView extends GLSurfaceView {
 				if(dMilliSecond < clickEventLimit){
 					//Seperate what you got!
 					Intent intent;
-					if(isMemoChecked(nx, ny)){
+					selectedMemo = positionCheckHelper.isMemoChecked(nx, ny);
+					selectedGroup = positionCheckHelper.isGroupChecked(nx, ny);
+					if(selectedMemo != null){
 						intent = new Intent(context, MemoActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
 						intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
 						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
-					}else if(isGroupChecked(nx, ny)){
+					}else if(selectedGroup!=null){
 						intent = new Intent(context, GroupActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
 						intent.putExtra("selectedGroupTitle", selectedGroup.getGroupTitle());
@@ -182,31 +194,11 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//메모의 이동이 끝나고 손가락을 떼었을 때 최종 위치를 저장. 
 			if(selectedMemo != null){
-				for(Group group : mr.groupList){
-					if(isInGroup(selectedMemo, group)){
-						selectedMemo.setGroupId(group.getGroupId());
-						System.out.println("Save groupId.");
-					}else{
-						selectedMemo.setGroupId(null);
-						System.out.println("not saved");
-					}
-				}
-				
-				//이동한 정보를 DB에 입력한다.
-				MemoDAO memoDao = new MemoDAO(context);
-				memoDao.updateMemo(selectedMemo);
+				positionCheckHelper.updateSpecificMemoForSetGroupId(selectedMemo);
 			}
 
 			if(selectedGroup != null){
-				MemoDAO memoDao = new MemoDAO(context);
-				//현재 그룹안에 있는 것만 업데이트 
-				for(Memo memo : mr.memoList){
-					if(isInGroup(memo, selectedGroup)){
-						memo.setGroupId(selectedGroup.getGroupId());
-						memoDao.updateMemo(memo);
-						System.out.println("Save groupId.");
-					}
-				}
+				positionCheckHelper.updateAllMemosInsideSpecificGroupForSetGroupId();
 				
 				//이동한 정보를 DB에 입력한다.
 				GroupDAO groupDao = new GroupDAO(context);
@@ -455,147 +447,6 @@ public class MemoGLView extends GLSurfaceView {
 	}
 	
 	/**
-	 * FILO 를 구현하기 위해서 queue를 deque로 변경.
-	 * 
-	 * chkX 탭을 한 위치와 메모의 중심(x) 사이의 차이를 구한다.
-	 * chkY 탭을 한 위치와 메모의 중심(y) 사이의 차이를 구한다. 
-	 * @param nx
-	 * @param ny
-	 * @return
-	 */
-	private boolean isMemoChecked(float nx, float ny){
-		Deque<Memo> deque = new LinkedBlockingDeque<Memo>(mr.memoList); 
-		
-		while(deque.size()>0){
-			Memo memo = deque.pollLast();
-	
-			float chkX = Math.abs(nx-memo.getX())/(memo.getWidth()/2);
-			float chkY = Math.abs(ny-memo.getY())/(memo.getHeight()/2);
-
-			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
-			
-			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
-			if(chkX <= 0.9f && chkY <= 0.5f){
-				//선택됨
-				selectedMemo = memo;
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isGroupChecked(float nx, float ny){
-		Deque<Group> deque = new LinkedBlockingDeque<Group>(mr.groupList);
-		
-		while(deque.size()>0){
-			Group group = deque.pollLast();
-	
-			float chkX = Math.abs(nx-group.getX())/(group.getWidth()/2);
-			float chkY = Math.abs(ny-group.getY())/(group.getHeight()/2);
-
-			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
-			
-			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
-			//절대적인 값 vs 상대적인 값. 고민을 해야겠다.
-			if(chkX <= group.getWidth()*1.2 && chkY <= group.getHeight()*1.2){
-				//선택됨
-				selectedGroup = group;
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * How to find that selected memo exist in group boundary? 
-	 * 그룹 리스트의 모든 그룹 x,y값을 찾아 경계 안에 있는 지 
-	 * 
-	 * @param selectedMemo
-	 * @author skyler.shin
-	 * @return
-	 */
-	private boolean isInGroup(Memo selectedMemo, Group group){
-		float distanceX = Math.abs(selectedMemo.getX() - group.getX()); 
-		float distanceY = Math.abs(selectedMemo.getY()-group.getY());	
-		// 중심점 사이의 거리 
-		float distance = (float)Math.sqrt(Math.pow((double)distanceX, 2.0)+Math.pow((double)distanceY, 2.0));
-		
-		float memoTexturePaddingBottom = selectedMemo.getHeight()/2 - selectedMemo.getHeight()*selectedMemo.ratioMarginBottom;
-		float memoTexturePaddingTop = selectedMemo.getHeight()/2 - selectedMemo.getHeight()*selectedMemo.ratioMarginTop;
-		float memoTexturePaddingLeft = selectedMemo.getWidth()/2 - selectedMemo.getWidth()*selectedMemo.ratioMarginLeft;
-		
-		float memoLeftTopVertexX = selectedMemo.getX() - selectedMemo.getWidth()/2;
-		float memoLeftTopVertexY = selectedMemo.getY() + memoTexturePaddingTop;
-		float memoLeftBottomVertexX = selectedMemo.getX() - selectedMemo.getWidth()/2;
-		float memoLeftBottomVertexY = selectedMemo.getY() - memoTexturePaddingBottom;
-		float memoRightTopVertexX = selectedMemo.getX() + selectedMemo.getWidth()/2;
-		float memoRightTopVertexY = selectedMemo.getY() + memoTexturePaddingTop;
-		float memoRightBottomVertexX = selectedMemo.getX() + selectedMemo.getWidth()/2;
-		float memoRightBottomVertexY = selectedMemo.getY() - memoTexturePaddingBottom;
-		
-		float distanceBetweenGroupCenterAndMemoLeftTopVertex = (float)Math.sqrt(Math.pow((double)(group.getX() - memoLeftTopVertexX) , 2.0)+Math.pow((double)(group.getY() - memoLeftTopVertexY), 2.0));
-		float distanceBetweenGroupCenterAndMemoRightTopVertex = (float)Math.sqrt(Math.pow((double)(group.getX() - memoRightTopVertexX) , 2.0)+Math.pow((double)(group.getY() - memoRightTopVertexY), 2.0));
-		float distanceBetweenGroupCenterAndMemoLeftBottomVertex = (float)Math.sqrt(Math.pow((double)(group.getX() - memoLeftBottomVertexX) , 2.0)+Math.pow((double)(group.getY() - memoLeftBottomVertexY), 2.0));
-		float distanceBetweenGroupCenterAndMemoRightBottomVertex = (float)Math.sqrt(Math.pow((double)(group.getX() - memoRightBottomVertexX) , 2.0)+Math.pow((double)(group.getY() - memoRightBottomVertexY), 2.0));
-		
-		
-		if(group.getX() < selectedMemo.getX() && group.getY() > selectedMemo.getY() && distanceBetweenGroupCenterAndMemoLeftTopVertex > group.getWidth()/2 ){
-			//오른쪽 하단 모서리
-			System.out.println("isInGroup memo is located on the right bottom side of group");
-			return false;
-		}else if(group.getX() < selectedMemo.getX() && group.getY() < selectedMemo.getY() &&distanceBetweenGroupCenterAndMemoLeftBottomVertex > group.getWidth()/2){
-			//오른쪽 상단 모서리 
-			System.out.println("isInGroup memo is located on the right top side of group");
-			return false;
-		}else if(group.getX() > selectedMemo.getX() && group.getY() > selectedMemo.getY() && distanceBetweenGroupCenterAndMemoRightTopVertex > group.getWidth()/2){
-			//왼쪽 하단 모서리 
-			System.out.println("isInGroup memo is located on the left bottom side of group"+ distanceBetweenGroupCenterAndMemoRightTopVertex);
-			return false;
-		}else if(group.getX() > selectedMemo.getX() && group.getY() < selectedMemo.getY() && distanceBetweenGroupCenterAndMemoRightBottomVertex > group.getWidth()/2){
-			//왼쪽 상단 모서리
-			System.out.println("isInGroup memo is located on the left top side of group");
-			return false;
-		}
-		/**
-		if(distanceX>distanceY && memoTexturePaddingLeft+group.getWidth()/2 > distanceX){
-			//X축의 차이가 Y축보다 클 때는 X축을 기준으로 계산. 
-			System.out.println("isInGroup memo is located on the right side of group");
-			result = true;
-		}else if(distanceX>distanceY && selectedMemo.getWidth()/2+group.getWidth()/2 > distanceX){
-			//메모가 왼쪽에.
-			System.out.println("isInGroup memo is located on the left side of group");
-			result = true;
-		}else if(distanceX<distanceY && memoTexturePaddingBottom+group.getHeight()/2 > distanceY){
-			//X축의 차이가 Y축보다 작을 때는 Y축을 기준으로 계산. 
-			System.out.println("isInGroup memo is located on the top side of group");
-			result = true;
-		}else if(distanceX<distanceY && memoTexturePaddingTop+group.getHeight()/2 > distanceY){
-			//X축의 차이가 Y축보다 작을 때는 Y축을 기준으로 계산. 
-			System.out.println("isInGroup memo is located on the bottom side of group");
-			result = true;
-		}
-		**/	
-		/**
-		 * 정보 출력 확인. 
-		System.out.println("memo_x"+selectedMemo.getX());
-		System.out.println("group_x"+group.getX());
-		System.out.println("distance: "+distance);
-		System.out.println("distanceX: "+distanceX);
-		System.out.println("distanceY: "+distanceY);
-		System.out.println("memoTexturePaddingLeft: "+memoTexturePaddingLeft+"marginLeft: "+selectedMemo.ratioMarginLeft*selectedMemo.getWidth());
-		System.out.println("memoTexturePaddingBottom: "+memoTexturePaddingBottom+"marginBottom: "+selectedMemo.ratioMarginBottom*selectedMemo.getHeight());
-		System.out.println("group_height_half: "+ group.getHeight()/2);
-		System.out.println("group_width_half: "+ group.getWidth()/2);
-		System.out.println("group_width"+group.getWidth()+"group_height"+group.getHeight());
-		System.out.println("selectedMemo_width"+selectedMemo.getWidth()+"selected_height"+selectedMemo.getHeight());
-		System.out.println("selectedMemo_x"+selectedMemo.getX()+"group_x"+group.getX());
-		System.out.println("selectedMemo_y"+selectedMemo.getY()+"group_y"+group.getY());	
-		 **/		
-		 
-		return true;
-	}
-	
-	/**
 	 * LongClick이벤트를 처리하는 클래스
 	 * @author lifenjoy51
 	 *
@@ -616,15 +467,16 @@ public class MemoGLView extends GLSurfaceView {
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
 	    	float ny = getNormalizedY(y);
-	    	
+	    	selectedMemo = positionCheckHelper.isMemoChecked(nx, ny);
+	    	selectedGroup = positionCheckHelper.isGroupChecked(nx, ny);
 	    	//선택된 원을 확인
-			if(isMemoChecked(nx, ny)){
+			if(selectedMemo!=null){
 				//선택된걸 상위로
 				setLongTab();
 				mr.memoList.remove(selectedMemo);
 				mr.memoList.add(selectedMemo);
 				return;
-			}else if(isGroupChecked(nx, ny)){
+			}else if(selectedGroup != null){
 				//선택된걸 상위로
 				setLongTab();
 				mr.groupList.remove(selectedGroup);
