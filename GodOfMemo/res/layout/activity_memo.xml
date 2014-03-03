@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/memo_color_selection_area"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/memo_onboard_blue"
+        android:background="@drawable/memo_blue"
         android:orientation="horizontal" >
 
         <EditText
