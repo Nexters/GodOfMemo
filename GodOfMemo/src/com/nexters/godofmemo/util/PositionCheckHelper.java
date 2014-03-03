@@ -108,19 +108,19 @@ public class PositionCheckHelper {
 		
 		if(group.getX() < selectedMemo.getX() && group.getY() > selectedMemo.getY() && distanceBetweenGroupCenterAndMemoLeftTopVertex > group.getWidth()/2 ){
 			//오른쪽 하단 모서리
-			System.out.println("isInGroup memo is located on the right bottom side of group");
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right bottom side of"+ group.getGroupTitle());
 			return false;
 		}else if(group.getX() < selectedMemo.getX() && group.getY() < selectedMemo.getY() &&distanceBetweenGroupCenterAndMemoLeftBottomVertex > group.getWidth()/2){
 			//오른쪽 상단 모서리 
-			System.out.println("isInGroup memo is located on the right top side of group");
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right top side of"+ group.getGroupTitle());
 			return false;
 		}else if(group.getX() > selectedMemo.getX() && group.getY() > selectedMemo.getY() && distanceBetweenGroupCenterAndMemoRightTopVertex > group.getWidth()/2){
 			//왼쪽 하단 모서리 
-			System.out.println("isInGroup memo is located on the left bottom side of group"+ distanceBetweenGroupCenterAndMemoRightTopVertex);
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left bottom side of"+ group.getGroupTitle());
 			return false;
 		}else if(group.getX() > selectedMemo.getX() && group.getY() < selectedMemo.getY() && distanceBetweenGroupCenterAndMemoRightBottomVertex > group.getWidth()/2){
 			//왼쪽 상단 모서리
-			System.out.println("isInGroup memo is located on the left top side of group");
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left top side of"+ group.getGroupTitle());
 			return false;
 		}
 		/**
@@ -161,12 +161,23 @@ public class PositionCheckHelper {
 		 
 		return true;
 	}
-	
+	/**
+	 * 화면에 그려지는 모든 그룹의 위치를 계산. 
+	 * => 메모에 아이디가 있다면, (보증을 할려면 가까이 있는 순서부터 체크. 그럼 순서개념이 정립되어야 합니다.)
+	 * 리스트에는 먼저 생성된 순서 + 마지막 선택하는 것. 
+	 * @param memo
+	 */
 	public void updateSpecificMemoForSetGroupId(Memo memo){
+		String tempGroupId = null;
 		for(Group group : mr.groupList){
 			if(isInGroup(memo, group)){
+				// 그룹에 있는 지 체크하는 로직. 
+				tempGroupId = group.getGroupId();
 				memo.setGroupId(group.getGroupId());
-			}else{
+			}
+			// 이전에 한 번이라도 세팅이 되었다면 다음에 검사할 때 넘어갈 수 있도록. 
+			// 기존에 메모에 Id가 저장되어 있을 수 도 있으니 새로운 변수를 만들고 저장하는 게 좋은 방법 일 듯. 
+			if(tempGroupId == null){
 				memo.setGroupId(null);
 			}
 		}

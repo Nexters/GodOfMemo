@@ -1,8 +1,5 @@
 package com.nexters.godofmemo.view;
 
-import java.util.Deque;
-import java.util.concurrent.LinkedBlockingDeque;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +13,6 @@ import com.nexters.godofmemo.GroupActivity;
 import com.nexters.godofmemo.MainActivity;
 import com.nexters.godofmemo.MemoActivity;
 import com.nexters.godofmemo.dao.GroupDAO;
-import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
@@ -255,7 +251,6 @@ public class MemoGLView extends GLSurfaceView {
 					//그룹에 속해있는 메모 이동. 
 					for(Memo memo: mr.memoList){
 						if(memo.getGroupId() == null){
-							System.out.println("groupId is null");
 						}else{
 							if(memo.getGroupId().equals(selectedGroup.getGroupId())){
 								memo.setX(memo.getX() + movedDistanceX);
