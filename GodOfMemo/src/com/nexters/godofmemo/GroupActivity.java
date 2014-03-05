@@ -30,7 +30,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private SeekBar bar;
 	private TextView seekBarAction;
 	private int width, height;
-	private int tmpGroupSize;
+	private int changedGroupSize;
 	private int initGroupSize;
 	private View group; // ImageView는 안된다
 	private View groupImgArea;
@@ -90,7 +90,7 @@ public class GroupActivity extends ActionBarActivity implements
 		
 		// 레이아웃에서 그룹 크기 초기값
 		initGroupSize = dHeight * minGroupSize / 100;
-		tmpGroupSize = initGroupSize;
+		changedGroupSize = initGroupSize;
 		// 그룹이미지를 위치한다
 		Util.setPosition(group, initGroupSize, initGroupSize, 50, centerPosition/2);
 		// 그룹제목 위치
@@ -124,9 +124,12 @@ public class GroupActivity extends ActionBarActivity implements
 		if(groupId==null){
 			trash_can.setVisibility(View.INVISIBLE);
 		}else{
-			float dSize = changeGroupSize2P(groupSize);
+			float dSize = adjustGroupSize(groupSize);
 			//그룹 크기 조절
 			Util.setPosition(group, (int)dSize, (int)dSize, 50, centerPosition/2);
+			// set progress of the seekbar 
+			int progress = adjustProgress((int)dSize);
+			bar.setProgress(progress);
 			// set groupTitle
 			groupTitleInput.setText(groupTitle);
 			// set groupColor
@@ -199,12 +202,10 @@ public class GroupActivity extends ActionBarActivity implements
 			inputGroupTitle = groupTitleInput.getText().toString();
 		}
 		intent.putExtra("groupTitle", inputGroupTitle);
-		System.out.println("set groupSize: "+tmpGroupSize + "change : "+ changePtoGroupSize(tmpGroupSize) +"  "+((tmpGroupSize*0.8f)/minGroupSize) );
-		intent.putExtra("groupSize", changePtoGroupSize(tmpGroupSize));
+		intent.putExtra("groupSize", changePtoGroupSize(changedGroupSize));
 		
 		//case group update
 		intent.putExtra("selectedGroupId", groupId);
-		//TODO You must write code selecting color. 
 		intent.putExtra("selectedGroupColor", groupColor);
 		setResult(RESULT_OK, intent);
 		finish();
@@ -223,31 +224,48 @@ public class GroupActivity extends ActionBarActivity implements
 		finish();
 	}
 	/**
-	 * group size로 넘어오는 값을 MainActivity 
+	 * group size로 넘어오는 값을 MainActivity에 맞게 계산. 
 	 * @param groupSize2
 	 * @return
 	 */
 	private float changePtoGroupSize(float p) {
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
-		float rtn = ((p * 1.5f) / max);
-		System.out.println("changePtoGroupSize : "+rtn);
-		return rtn;
+		float result = ((p * 1.5f) / max);
+		System.out.println("changePtoGroupSize : "+result);
+		return result;
 	}
 	
-	private float changeGroupSize2P(float groupSize) {
+	/**
+	 * Adjust group size to Group Activity layout
+	 * max group size : 2
+	 * max result : 448 <= as adjusting size to group layout
+	 * @param groupSize
+	 * @return
+	 */
+	private float adjustGroupSize(float groupSize) {
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
-		float rtn = ((groupSize * max) /1.5f);
-		System.out.println("changeGroupSize2P : "+rtn);
-		return rtn;
+		float result = ((groupSize * max) /1.5f);
+		return result;
 	}
-	
+	/**
+	 * in onProgressChanged method, there is expression how to calculate group size. 
+	 * this method is calculating progress value using above expression.
+	 * max progress : 100
+	 * @param size
+	 * @return
+	 */
+	private int adjustProgress(int size){
+		System.out.println("before size adjust progress "+size);
+		int result = (((size* 100/dHeight)-20)*100)/(maxGroupSize - minGroupSize);
+		return result;
+	}
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		// TODO int progress 받아와서 그룹이미지 크기 조정
-		tmpGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
+		changedGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
 		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
-		if(tmpGroupSize > initGroupSize){
-			Util.setPosition(group, tmpGroupSize, tmpGroupSize, 50, centerPosition/2);
+		if(changedGroupSize > initGroupSize){
+			Util.setPosition(group, changedGroupSize, changedGroupSize, 50, centerPosition/2);
 		}
 		
 		groupTitleInput.bringToFront();
