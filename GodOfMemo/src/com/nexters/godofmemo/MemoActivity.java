@@ -148,7 +148,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_yellow);
 			memoColor = Memo.MEMO_COLOR_YELLOW;
 			break;
-		case R.id.group_activiy_background:
+		case R.id.memo_activiy_background:
 			InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
 		    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 			break;
