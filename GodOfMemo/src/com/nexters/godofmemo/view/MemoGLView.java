@@ -18,13 +18,13 @@ import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MultisampleConfigChooser;
-import com.nexters.godofmemo.util.PositionCheckHelper;
+import com.nexters.godofmemo.util.PositionHelper;
 
 public class MemoGLView extends GLSurfaceView {
 	
     public MemoRenderer mr;
     private Context context;
-    public PositionCheckHelper positionCheckHelper;
+    public PositionHelper positionHelper;
 	
 	public MemoGLView(Context context) {
 		super(context);
@@ -36,7 +36,7 @@ public class MemoGLView extends GLSurfaceView {
         // Set the Renderer for drawing on the GLSurfaceView
         mr = new MemoRenderer(context);
         // Set the Helper for checking object's position.
-        positionCheckHelper = new PositionCheckHelper(context, mr);
+        positionHelper = new PositionHelper(context, mr);
         setEGLConfigChooser(new MultisampleConfigChooser());
        
         setRenderer(mr);
@@ -50,7 +50,7 @@ public class MemoGLView extends GLSurfaceView {
         //memo 초기화 
         //memo 들을 돌면서 그룹안에 있는지 체크 .
         for(Memo memo: mr.memoList){
-        	positionCheckHelper.updateSpecificMemoForSetGroupId(memo);
+        	positionHelper.updateSpecificMemoForSetGroupId(memo);
         }
 	}
 
@@ -167,8 +167,8 @@ public class MemoGLView extends GLSurfaceView {
 				if(dMilliSecond < clickEventLimit){
 					//Seperate what you got!
 					Intent intent;
-					selectedMemo = positionCheckHelper.isMemoChecked(nx, ny);
-					selectedGroup = positionCheckHelper.isGroupChecked(nx, ny);
+					selectedMemo = positionHelper.isMemoChecked(nx, ny);
+					selectedGroup = positionHelper.isGroupChecked(nx, ny);
 					if(selectedMemo != null){
 						intent = new Intent(context, MemoActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
@@ -190,11 +190,13 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//메모의 이동이 끝나고 손가락을 떼었을 때 최종 위치를 저장. 
 			if(selectedMemo != null){
-				positionCheckHelper.updateSpecificMemoForSetGroupId(selectedMemo);
+				positionHelper.checkMemoCollision(selectedMemo);
+				positionHelper.updateSpecificMemoForSetGroupId(selectedMemo);
 			}
 
 			if(selectedGroup != null){
-				positionCheckHelper.updateAllMemosInsideSpecificGroupForSetGroupId();
+				positionHelper.checkGroupCollision(selectedGroup);
+				positionHelper.updateAllMemosInsideSpecificGroupForSetGroupId();
 				
 				//이동한 정보를 DB에 입력한다.
 				GroupDAO groupDao = new GroupDAO(context);
@@ -241,28 +243,13 @@ public class MemoGLView extends GLSurfaceView {
 				// 객체가 선택된 상태+ 롱탭일 때는 객체를 이동시킨다.
 				if(selectedMemo != null && tabMode == LONGTAB){
 					//메모 이동
-					selectedMemo.setX(nx);
-					selectedMemo.setY(ny);
-					selectedMemo.setVertices();
+					positionHelper.moveMemo(selectedMemo, nx, ny);
 				}else if(selectedGroup != null && tabMode == LONGTAB){
 					float movedDistanceX =  nx -selectedGroup.getX();
 					float movedDistanceY =  ny -selectedGroup.getY();
-					
-					//그룹에 속해있는 메모 이동. 
-					for(Memo memo: mr.memoList){
-						if(memo.getGroupId() == null){
-						}else{
-							if(memo.getGroupId().equals(selectedGroup.getGroupId())){
-								memo.setX(memo.getX() + movedDistanceX);
-								memo.setY(memo.getY() + movedDistanceY);
-								memo.setVertices();
-							}	
-						}
-					}
+					positionHelper.moveMemoInGroup(movedDistanceX, movedDistanceY);
 					//그룹이동
-					selectedGroup.setX(nx);
-					selectedGroup.setY(ny);
-					selectedGroup.setVertices();
+					positionHelper.moveGroup(selectedGroup, nx, ny);
 				}else{
 					//여기는 2
 					//화면 이동
@@ -462,8 +449,8 @@ public class MemoGLView extends GLSurfaceView {
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
 	    	float ny = getNormalizedY(y);
-	    	selectedMemo = positionCheckHelper.isMemoChecked(nx, ny);
-	    	selectedGroup = positionCheckHelper.isGroupChecked(nx, ny);
+	    	selectedMemo = positionHelper.isMemoChecked(nx, ny);
+	    	selectedGroup = positionHelper.isGroupChecked(nx, ny);
 	    	//선택된 원을 확인
 			if(selectedMemo!=null){
 				//선택된걸 상위로

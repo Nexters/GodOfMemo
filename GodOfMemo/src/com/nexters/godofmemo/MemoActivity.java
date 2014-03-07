@@ -190,7 +190,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	}
 	
 	private void onTextChanged(){
-
 		short_et.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 				int textLength = s.length();
@@ -221,12 +220,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		});
 	}
 	
-	private void setMemoColor(int pColor){
-		
-	}
-	
-
-
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
