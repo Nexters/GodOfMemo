@@ -266,6 +266,7 @@ public class MemoGLView extends GLSurfaceView {
 					tempY += +(dy*dM);
 					
 					//화면이 넘어가는지 확인한다.
+					// TODO 버그 수정. 
 					if(!isOutOfBoundary(tempX, tempY, mr.zoom)){
 						mr.px = tempX;
 						mr.py = tempY;
@@ -416,11 +417,6 @@ public class MemoGLView extends GLSurfaceView {
 		return ((-(((y/mr.height)*2)-1))*mr.zoom*mr.fov)+mr.py;
 	}
 	
-	/**
-	 * 
-	 * @param x
-	 * @return
-	 */
 	public float getNormalizedX(float x, float px, float py, float zoom){
 		return ((((x/mr.width)* 2)-1)*zoom*mr.width/mr.height*mr.fov)+px;
 	}

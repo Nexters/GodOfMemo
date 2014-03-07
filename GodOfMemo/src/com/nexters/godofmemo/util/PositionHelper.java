@@ -57,20 +57,23 @@ public class PositionHelper {
 		return null;
 	}
 	
+	/**
+	 * 문제점 : 메모 선택 로직이랑 동일하다.
+	 * 
+	 * nx, ny : tab한 좌표를 정규화한 것.
+	 * chkX, chkY : 반지름에 대한 중점과의 거리 비율. 
+	 * 선택 여부를 판단하기 위한 로직: chkX값이 그룹의 지름의 곱하기 1.2 보다 작다?
+	 * @param nx
+	 * @param ny
+	 * @return
+	 */
 	public Group isGroupChecked(float nx, float ny){
 		Deque<Group> deque = new LinkedBlockingDeque<Group>(mr.groupList);
 		
 		while(deque.size()>0){
 			Group group = deque.pollLast();
 	
-			float chkX = Math.abs(nx-group.getX())/(group.getWidth()/2);
-			float chkY = Math.abs(ny-group.getY())/(group.getHeight()/2);
-
-			////System.out.format(" nx ny chkX chkY%f %f %f %f \n", nx, ny, chkX, chkY);
-			
-			//이미지 여백을 고려하여 클릭 이벤트를 적용한다.
-			//절대적인 값 vs 상대적인 값. 고민을 해야겠다.
-			if(chkX <= group.getWidth()*1.2 && chkY <= group.getHeight()*1.2){
+			if(distanceBetweenCenters(nx, ny, group.getX(), group.getY()) <= group.getWidth()/2){
 				//선택됨
 				selectedGroup = group;
 				return selectedGroup;
