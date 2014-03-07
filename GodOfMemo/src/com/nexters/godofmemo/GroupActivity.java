@@ -262,7 +262,10 @@ public class GroupActivity extends ActionBarActivity implements
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		// TODO int progress 받아와서 그룹이미지 크기 조정
-		changedGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + 20)/100;
+		// dHeight *  (50 * progress /100 +20)  /100
+		// progress / 100 : 진행사항. 
+		// dHeight *  (30) /100
+		changedGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + minGroupSize)/100;
 		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
 		if(changedGroupSize > initGroupSize){
 			Util.setPosition(group, changedGroupSize, changedGroupSize, 50, centerPosition/2);
