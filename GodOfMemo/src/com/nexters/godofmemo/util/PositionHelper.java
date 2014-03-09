@@ -110,21 +110,21 @@ public class PositionHelper {
 		float distanceBetweenGroupCenterAndMemoRightBottomVertex = (float)Math.sqrt(Math.pow((double)(group.getX() - memoRightBottomVertexX) , 2.0)+Math.pow((double)(group.getY() - memoRightBottomVertexY), 2.0));
 		
 		
-		if(relativeDirection(group.getX(), selectedMemo.getX(),group.getY(),selectedMemo.getY()) == LeftBottom && distanceBetweenGroupCenterAndMemoLeftTopVertex > group.getWidth()/2 ){
+		if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == LeftBottom && distanceBetweenGroupCenterAndMemoRightTopVertex > group.getWidth()/2 ){
 			//오른쪽 하단 모서리
-			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right bottom side of"+ group.getGroupTitle());
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left bottom side of"+ group.getGroupTitle());
 			return false;
-		}else if(relativeDirection(group.getX(), selectedMemo.getX(),group.getY(),selectedMemo.getY()) == LeftTop &&distanceBetweenGroupCenterAndMemoLeftBottomVertex > group.getWidth()/2){
+		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == LeftTop &&distanceBetweenGroupCenterAndMemoRightBottomVertex > group.getWidth()/2){
 			//오른쪽 상단 모서리 
-			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right top side of"+ group.getGroupTitle());
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left top side of"+ group.getGroupTitle());
 			return false;
-		}else if(relativeDirection(group.getX(), selectedMemo.getX(),group.getY(),selectedMemo.getY()) == RightBottom && distanceBetweenGroupCenterAndMemoRightTopVertex > group.getWidth()/2){
+		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == RightBottom && distanceBetweenGroupCenterAndMemoLeftTopVertex > group.getWidth()/2){
 			//왼쪽 하단 모서리 
-			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left bottom side of"+ group.getGroupTitle());
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right bottom side of"+ group.getGroupTitle());
 			return false;
-		}else if(relativeDirection(group.getX(), selectedMemo.getX(),group.getY(),selectedMemo.getY()) == RightTop && distanceBetweenGroupCenterAndMemoRightBottomVertex > group.getWidth()/2){
+		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == RightTop && distanceBetweenGroupCenterAndMemoLeftBottomVertex > group.getWidth()/2){
 			//왼쪽 상단 모서리
-			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left top side of"+ group.getGroupTitle());
+			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right top side of"+ group.getGroupTitle());
 			return false;
 		}
 		/**
@@ -321,22 +321,22 @@ public class PositionHelper {
 			if(memo.getGroupId() == null){
 			}else{
 				if(memo.getGroupId().equals(selectedGroup.getGroupId())){
-					memo.setX(memo.getX() + movedDistanceX);
-					memo.setY(memo.getY() + movedDistanceY);
-					memo.setVertices();
+					moveMemo(memo, movedDistanceX, movedDistanceY);
 				}	
 			}
 		}
 	}
 	
 	public void moveGroup(Group group, float movedDistanceX, float movedDistanceY){
-		group.setX(movedDistanceX);
-		group.setY(movedDistanceY);
+		//로직: nx와 nPrex의 차이를 그냥 중점에 더합니다. 
+		group.setX(group.getX() + movedDistanceX);
+		group.setY(group.getY() + movedDistanceY);
 		group.setVertices();
 	}
+	
 	public void moveMemo(Memo memo, float movedDistanceX, float movedDistanceY){
-		memo.setX(movedDistanceX);
-		memo.setY(movedDistanceY);
+		memo.setX(memo.getX()+movedDistanceX);
+		memo.setY(memo.getY()+movedDistanceY);
 		memo.setVertices();
 	}
 	

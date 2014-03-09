@@ -83,6 +83,7 @@ public class MemoGLView extends GLSurfaceView {
 	// 위치정보 기억!!
 	PointF start = new PointF();
 	PointF pre = new PointF();
+	PointF nPre = new PointF();
 	float oldDist = 1f;
 	
 	//줌관련 변수
@@ -108,6 +109,10 @@ public class MemoGLView extends GLSurfaceView {
     	float ny = getNormalizedY(y);
     	////////System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
     	
+    	//이동한 다음의 차이.
+    	float movedDistanceX =  0;
+		float movedDistanceY =  0;
+		
 		// Handle touch events here...
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		
@@ -127,6 +132,7 @@ public class MemoGLView extends GLSurfaceView {
 			//드래그에서 사용하기 위해 초기값으로 세팅
 			start.set(x, y);
 			pre.set(x, y);
+			nPre.set(nx, ny);
 			mode = DRAG;
 			
 			//위치표시
@@ -188,7 +194,7 @@ public class MemoGLView extends GLSurfaceView {
 				}
 			}
 			
-			//메모의 이동이 끝나고 손가락을 떼었을 때 최종 위치를 저장. 
+			//오브젝트가 이동을 끝내고 주변 오브젝트들 간의 관계를 설정한다.
 			if(selectedMemo != null){
 				positionHelper.checkMemoCollision(selectedMemo);
 				positionHelper.updateSpecificMemoForSetGroupId(selectedMemo);
@@ -197,8 +203,6 @@ public class MemoGLView extends GLSurfaceView {
 			if(selectedGroup != null){
 				positionHelper.checkGroupCollision(selectedGroup);
 				positionHelper.updateAllMemosInsideSpecificGroupForSetGroupId();
-				
-				//이동한 정보를 DB에 입력한다.
 				GroupDAO groupDao = new GroupDAO(context);
 				groupDao.updateGroup(selectedGroup);	
 			}
@@ -228,13 +232,15 @@ public class MemoGLView extends GLSurfaceView {
 			if (mode == DRAG) {
 				//Log.d(TAG, "DRAG");
 				//////System.out.println(tabMode);
-				dx= x - pre.x;
+				dx = x - pre.x;
 				dy = y - pre.y;
 				pre.set(x,y);
 				
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함
-				float dLimit = 10f;
-				if(Math.abs(dx)>dLimit || Math.abs(dy)> dLimit){
+				moveLimit = 10f;
+				isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
+
+				if(isMoved){
 					handler.removeCallbacks(mLongPressed);
 
 				}
@@ -242,14 +248,25 @@ public class MemoGLView extends GLSurfaceView {
 				// 여기가 1번 
 				// 객체가 선택된 상태+ 롱탭일 때는 객체를 이동시킨다.
 				if(selectedMemo != null && tabMode == LONGTAB){
-					//메모 이동
-					positionHelper.moveMemo(selectedMemo, nx, ny);
+					//메모 이동 
+					//처음 탭했을 때의 위치와 바로다음의 위치 사이거리를 계산하고 중점도 그 만큼 이동하도록 설정한다.
+					
+					//TODO dx와 movedDistanceX 와의 차이를 생각해보기.
+					movedDistanceX =  nx - nPre.x;
+					movedDistanceY =  ny - nPre.y;
+					positionHelper.moveMemo(selectedMemo, movedDistanceX, movedDistanceY);
+					
+					//바로 이전 위치롤 setting을 해주어야 한다.
+					nPre.set(nx, ny);
 				}else if(selectedGroup != null && tabMode == LONGTAB){
-					float movedDistanceX =  nx -selectedGroup.getX();
-					float movedDistanceY =  ny -selectedGroup.getY();
+					movedDistanceX =  nx -nPre.x;
+					movedDistanceY =  ny -nPre.y;
 					positionHelper.moveMemoInGroup(movedDistanceX, movedDistanceY);
 					//그룹이동
-					positionHelper.moveGroup(selectedGroup, nx, ny);
+					positionHelper.moveGroup(selectedGroup, movedDistanceX, movedDistanceY);
+					
+					//바로 이전 위치롤 setting을 해주어야 한다.
+					nPre.set(nx, ny);
 				}else{
 					//여기는 2
 					//화면 이동
@@ -441,10 +458,10 @@ public class MemoGLView extends GLSurfaceView {
 
 		@Override
 		public void run() {
-			
 			//정규화된 좌표
 			float nx = getNormalizedX(x);
 	    	float ny = getNormalizedY(y);
+	    	
 	    	selectedMemo = positionHelper.isMemoChecked(nx, ny);
 	    	selectedGroup = positionHelper.isGroupChecked(nx, ny);
 	    	//선택된 원을 확인
