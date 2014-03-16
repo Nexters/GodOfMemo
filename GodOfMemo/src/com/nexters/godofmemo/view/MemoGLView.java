@@ -160,7 +160,7 @@ public class MemoGLView extends GLSurfaceView {
 		case MotionEvent.ACTION_UP:
 			handler.removeCallbacks(mLongPressed);
 			
-			////System.out.format("x y preX preY %f %f %f %f \n",x, y,start.x ,start.y);
+			//System.out.format("x y preX preY %f %f %f %f \n",x, y,start.x ,start.y);
 			
 			float dx = x - start.x;
 			float dy = y - start.y;
@@ -202,7 +202,9 @@ public class MemoGLView extends GLSurfaceView {
 			
 			//오브젝트가 이동을 끝내고 주변 오브젝트들 간의 관계를 설정한다.
 			if(selectedMemo != null){
+				System.out.println("before position"+selectedMemo.getX()+", "+selectedMemo.getY());
 				positionHelper.checkMemoCollision(selectedMemo);
+				System.out.println("after position"+selectedMemo.getX()+", "+selectedMemo.getY());
 				positionHelper.updateSpecificMemoForSetGroupId(selectedMemo);
 			}
 
@@ -212,6 +214,8 @@ public class MemoGLView extends GLSurfaceView {
 				GroupDAO groupDao = new GroupDAO(context);
 				groupDao.updateGroup(selectedGroup);	
 			}
+			//화면에 그리기
+			requestRender();
 			
 			//손가락을 떼면 선택 해제.
 			selectedGroup = null;
@@ -473,6 +477,7 @@ public class MemoGLView extends GLSurfaceView {
 	    	//선택된 원을 확인
 			if(selectedMemo!=null){
 				//선택된걸 상위로
+				System.out.println("long");
 				setLongTab();
 				mr.memoList.remove(selectedMemo);
 				mr.memoList.add(selectedMemo);
@@ -489,6 +494,7 @@ public class MemoGLView extends GLSurfaceView {
 		private void setLongTab(){
 			tabMode=LONGTAB;
 			//선택시 진동
+			System.out.println("long");
 			vibrator.vibrate(100);
 		}	
 	}

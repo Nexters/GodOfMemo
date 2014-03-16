@@ -231,7 +231,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private float changeGroupSizeSuitableMain(float groupSize ) {
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * 1.5f) / max);
-		System.out.println("changeGroupSizeSuitableMain : "+result);
+		//System.out.println("changeGroupSizeSuitableMain : "+result);
 		return result;
 	}
 	
@@ -244,10 +244,10 @@ public class GroupActivity extends ActionBarActivity implements
 	 */
 	private float adjustGroupSize(float groupSize) {
 		// 1.125
-		System.out.println("before adjust group size :"+groupSize);
+		//System.out.println("before adjust group size :"+groupSize);
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * max) /1.5f);
-		System.out.println("adjustGroupSize :"+result);
+		//System.out.println("adjustGroupSize :"+result);
 		return result;
 	}
 	/**
@@ -260,9 +260,9 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @return
 	 */
 	private int adjustProgress(int size){
-		System.out.println("before size adjust progress "+size);
+		//System.out.println("before size adjust progress "+size);
 		int result = (((size* 100/dHeight)-minGroupSize)*100)/(maxGroupSize - minGroupSize);
-		System.out.println("after adjust progress "+result);
+		//System.out.println("after adjust progress "+result);
 		return result;
 	}
 	/**

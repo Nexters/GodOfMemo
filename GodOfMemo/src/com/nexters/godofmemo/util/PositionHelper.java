@@ -112,19 +112,19 @@ public class PositionHelper {
 		
 		if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == LeftBottom && distanceBetweenGroupCenterAndMemoRightTopVertex > group.getWidth()/2 ){
 			//오른쪽 하단 모서리
-			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left bottom side of"+ group.getGroupTitle());
+			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left bottom side of"+ group.getGroupTitle());
 			return false;
 		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == LeftTop &&distanceBetweenGroupCenterAndMemoRightBottomVertex > group.getWidth()/2){
 			//오른쪽 상단 모서리 
-			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left top side of"+ group.getGroupTitle());
+			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the left top side of"+ group.getGroupTitle());
 			return false;
 		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == RightBottom && distanceBetweenGroupCenterAndMemoLeftTopVertex > group.getWidth()/2){
 			//왼쪽 하단 모서리 
-			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right bottom side of"+ group.getGroupTitle());
+			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right bottom side of"+ group.getGroupTitle());
 			return false;
 		}else if(relativeDirection(selectedMemo.getX(), selectedMemo.getY(), group.getX(), group.getY()) == RightTop && distanceBetweenGroupCenterAndMemoLeftBottomVertex > group.getWidth()/2){
 			//왼쪽 상단 모서리
-			System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right top side of"+ group.getGroupTitle());
+			//System.out.println(selectedMemo.getMemoContent()+ "isInGroup memo is located on the right top side of"+ group.getGroupTitle());
 			return false;
 		}
 		/**
@@ -200,30 +200,6 @@ public class PositionHelper {
 	}
 	
 	/**
-	 * group안에 있는 것도 일종의 충돌난 경우. 
-	 * 총 4가지 케이스가 있다. 
-	 * 그룹이 그룹위에 있는 경우
-	 * 그룹이 메모위에 있는 경우
-	 * 메모가 그룹위에 있는 경우
-	 * 메모가 메모위에 있는 경우
-	 * 
-	 * 추가되면 좋을 로직.
-	 * 움직인 오브젝트 아래에 있는 것이 그룹인지, 메모인지 구분할 수 있는 방법.
-	 * : 상황을 좀 더 생각해보면, 메모위에 올려져 있고 그룹안에도 속해 있는 경우가 있다. 
-	 * 두개의 상황을 나눌 필요가 없는 듯. if else로 ... 
-	 * 그렇다면 메모에 있는 지도 체크해야하지만 그룹 안에 있는 경우도 체크해야 한다. 
-	 * 
-	 * isInGroup 로직은 메모가 있을 때 모든 그룹과의 거리를 계산해보고
-	 * 반지름보다 거리가 작은 그룹이 있는 지 체크한다. 
-	 * 충돌이 일어남을 다르게 계산한다. 
-	 * 
-	 * 1) 메모를 움직였을 때 
-	 * -메모? 그룹?
-	 * 메모를 움직이고 나서
-	 * 그룹안에 있는 지도 판별하고 
-	 * 메모안에 있는 지도 판뵬. 
-	 * 
-	 * 메모 안에 있는 경우가 문제가 되는 경우는 중신간의 거리가 매우 가까워졌을 때가 문제다. 
 	 * 해결방안. 
 	 * 일단 중심사이의 거리를 구하는 식을 적용하여 
 	 * 계산을 한다. 
@@ -232,7 +208,12 @@ public class PositionHelper {
 	 * ver 2 
 	 * 방향성을 계산. 
 	 * 1. 모든 메모들을 대해서?
-	 * 2. 거리가 0.1f인 메모에 대해서 방향을 계산. 
+	 * 2. 거리가 0.1f인 메모에 대해서 방향을 계산.
+	 * 3. 방향성이 체크 되었으면 충돌이 났을 때 바뀌면 좋을 거리를 정의 한다.
+	 * 
+	 * 지금은 선택된 메모를 원래 있었던 방향으로 0.1f만큼 이동한다. 
+	 * 
+	 * +위아래좌우 로 이동은 어떻게? 추가되면 좋을 로직 더 생각해보기. 
 	 * @param memo
 	 */
 	public void checkMemoCollision(Memo memo){
@@ -243,37 +224,52 @@ public class PositionHelper {
 		float movedDistanceY = 0;
 		int direction = LeftBottom;
 		for(Memo anotherMemo: mr.memoList){
-			distance = distanceBetweenCenters(preX, preY, anotherMemo.getX(), anotherMemo.getY());
-			//direction = relativeDirection(anotherMemo.getX(), anotherMemo.getY(), preX, preY);
-			direction = relativeDirection(preX, preY,anotherMemo.getX(), anotherMemo.getY());
+			//memoList에는 나 자신도 있을 수 있다. 
+			if(memo != anotherMemo){
+				distance = distanceBetweenCenters(preX, preY, anotherMemo.getX(), anotherMemo.getY());
+				direction = relativeDirection(preX, preY,anotherMemo.getX(), anotherMemo.getY());
+			}
 			if(distance < 0.1 && distance > 0) break;
 		}
-		if(distance != 0){
+		if(distance < 0.1 && distance > 0){
 			switch (direction) {
 			case LeftBottom:
-				movedDistanceX = preX-0.1f;
-				movedDistanceY = preY-0.1f;
+				movedDistanceX = -0.1f;
+				movedDistanceY = -0.1f;
+				//System.out.println("movedDistanceX="+movedDistanceX+"movedDistanceY="+movedDistanceY);
 				break;
 			case LeftTop:
-				movedDistanceX = preX-0.1f;
-				movedDistanceY = preY+0.1f;
+				System.out.println("Memo LeftTop");
+				movedDistanceX = -0.1f;
+				movedDistanceY = 0.1f;
+				//System.out.println("movedDistanceX="+movedDistanceX+"movedDistanceY="+movedDistanceY);
 				break;
 			case RightBottom:
-				movedDistanceX = preX+0.1f;
-				movedDistanceY = preY-0.1f;
+				System.out.println("Memo RightBottom");
+				movedDistanceX = 0.1f;
+				movedDistanceY = -0.1f;
+				//System.out.println("movedDistanceX="+movedDistanceX+"movedDistanceY="+movedDistanceY);
 				break;
 			case RightTop:
-				movedDistanceX = preX+0.1f;
-				movedDistanceY = preY+0.1f;
+				System.out.println("Memo RightTop");
+				movedDistanceX = 0.1f;
+				movedDistanceY = 0.1f;
+				//System.out.println("movedDistanceX="+movedDistanceX+"movedDistanceY="+movedDistanceY);
 				break;
 			default:
 				break;
 			}
-			
 			moveMemo(memo, movedDistanceX, movedDistanceY);
 		}
 	}
-	
+	/**
+	 * In group Collision Check case, 
+	 * There are more things we are thinking about that.
+	 * First, group size can be changed. 
+	 * Because of this, the distance that push out group object is dynamically changed. 
+	 * So, we will write code using variable indicating distance.  
+	 * @param group
+	 */
 	public void checkGroupCollision(Group group){
 		float distance = 0;
 		float preX = group.getX();
@@ -283,28 +279,30 @@ public class PositionHelper {
 		float movedDistanceY = 0;
 		
 		for(Group anotherGroup: mr.groupList){
-			distance = distanceBetweenCenters(preX, preY, anotherGroup.getX(), anotherGroup.getY());
-			direction = relativeDirection(preX, preY,anotherGroup.getX(), anotherGroup.getY());
+			if(group != anotherGroup){
+				distance = distanceBetweenCenters(preX, preY, anotherGroup.getX(), anotherGroup.getY());
+				direction = relativeDirection(preX, preY,anotherGroup.getX(), anotherGroup.getY());
+			}
 			if(distance < 0.3 && distance > 0) break;
 		}
 		if(distance != 0){
 			if(distance != 0){
 				switch (direction) {
 				case LeftBottom:
-					movedDistanceX = preX-0.3f;
-					movedDistanceY = preY-0.3f;
+					movedDistanceX = -0.3f;
+					movedDistanceY = -0.3f;
 					break;
 				case LeftTop:
-					movedDistanceX = preX-0.3f;
-					movedDistanceY = preY+0.3f;
+					movedDistanceX = -0.3f;
+					movedDistanceY = 0.3f;
 					break;
 				case RightBottom:
-					movedDistanceX = preX+0.3f;
-					movedDistanceY = preY-0.3f;
+					movedDistanceX = 0.3f;
+					movedDistanceY = -0.3f;
 					break;
 				case RightTop:
-					movedDistanceX = preX+0.3f;
-					movedDistanceY = preY+0.3f;
+					movedDistanceX = 0.3f;
+					movedDistanceY = 0.3f;
 					break;
 				default:
 					break;
