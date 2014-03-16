@@ -202,7 +202,7 @@ public class GroupActivity extends ActionBarActivity implements
 			inputGroupTitle = groupTitleInput.getText().toString();
 		}
 		intent.putExtra("groupTitle", inputGroupTitle);
-		intent.putExtra("groupSize", changePtoGroupSize(changedGroupSize));
+		intent.putExtra("groupSize", changeGroupSizeSuitableMain(changedGroupSize));
 		
 		//case group update
 		intent.putExtra("selectedGroupId", groupId);
@@ -228,10 +228,10 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @param groupSize2
 	 * @return
 	 */
-	private float changePtoGroupSize(float p) {
+	private float changeGroupSizeSuitableMain(float groupSize ) {
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
-		float result = ((p * 1.5f) / max);
-		System.out.println("changePtoGroupSize : "+result);
+		float result = ((groupSize * 1.5f) / max);
+		System.out.println("changeGroupSizeSuitableMain : "+result);
 		return result;
 	}
 	
@@ -243,22 +243,33 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @return
 	 */
 	private float adjustGroupSize(float groupSize) {
+		// 1.125
+		System.out.println("before adjust group size :"+groupSize);
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * max) /1.5f);
+		System.out.println("adjustGroupSize :"+result);
 		return result;
 	}
 	/**
 	 * in onProgressChanged method, there is expression how to calculate group size. 
 	 * this method is calculating progress value using above expression.
 	 * max progress : 100
+	 * max group size : 80
+	 * min group size : 30
 	 * @param size
 	 * @return
 	 */
 	private int adjustProgress(int size){
 		System.out.println("before size adjust progress "+size);
-		int result = (((size* 100/dHeight)-20)*100)/(maxGroupSize - minGroupSize);
+		int result = (((size* 100/dHeight)-minGroupSize)*100)/(maxGroupSize - minGroupSize);
+		System.out.println("after adjust progress "+result);
 		return result;
 	}
+	/**
+	 * This callback method change Group size fit to progress value
+	 * max group size : 80
+	 * min group size : 30 
+	 */
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		// TODO int progress 받아와서 그룹이미지 크기 조정
@@ -267,6 +278,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// dHeight *  (30) /100
 		changedGroupSize = dHeight*(((maxGroupSize - minGroupSize) * progress / 100) + minGroupSize)/100;
 		//조정 가능한 최대 크기 = 최대에서 최소 뺀거.
+		System.out.println("onProgressChanged:" + changedGroupSize);
 		if(changedGroupSize > initGroupSize){
 			Util.setPosition(group, changedGroupSize, changedGroupSize, 50, centerPosition/2);
 		}

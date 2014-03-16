@@ -49,7 +49,13 @@ public class MemoGLView extends GLSurfaceView {
         
         //memo 초기화 
         //memo 들을 돌면서 그룹안에 있는지 체크 .
-        for(Memo memo: mr.memoList){
+        this.initializePosition();
+        
+	}
+
+	public void initializePosition() {
+		// TODO Auto-generated method stub
+		for(Memo memo: mr.memoList){
         	positionHelper.updateSpecificMemoForSetGroupId(memo);
         }
 	}

@@ -260,6 +260,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			break;
 		}
 		
+		//the position of objects initialize
+		glSurfaceView.initializePosition();
 	}
 	
 	/**
