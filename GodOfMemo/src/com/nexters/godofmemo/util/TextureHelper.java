@@ -258,7 +258,7 @@ public class TextureHelper {
 		if(o instanceof Memo){
 			Memo memo = (Memo)o;
 			// 꼭 static 써야 하나?
-			bitmap = Memo.drawTextToBitmap(memo.getMemoContent());
+			bitmap = Memo.drawTextToBitmap(memo.getMemoTitle(), memo.getMemoContent());
 		}else if (o instanceof Group){
 			Group group = (Group)o;
 			bitmap = Group.drawTextToBitmap(group.getGroupTitle());

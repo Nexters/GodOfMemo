@@ -43,7 +43,21 @@
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/short_text"
+            android:id="@+id/memo_title"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
+            android:ems="4"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:lineSpacingExtra="6dp"
+            android:padding="15dp"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+        
+        <EditText
+            android:id="@+id/memo_content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
@@ -68,12 +82,12 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/trash_can"
+        android:id="@+id/btn_finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/memo_img_background"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/trashcan_grey" />
+        android:background="@drawable/donebtn" />
 
 </RelativeLayout>

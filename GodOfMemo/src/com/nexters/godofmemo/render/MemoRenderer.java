@@ -23,6 +23,7 @@ import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Background;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MatrixHelper;
@@ -39,6 +40,7 @@ public class MemoRenderer implements Renderer {
     private Background background;
     
     private TextureShaderProgram textureProgram;
+    private ColorShaderProgram colorProgram;
     
     //바라보는 화면 위치를 저장하는 변수
     public float px = 0f;
@@ -91,6 +93,7 @@ public class MemoRenderer implements Renderer {
         }
         
         textureProgram = new TextureShaderProgram(context);
+        colorProgram = new ColorShaderProgram(context);
     }
 
     @Override
@@ -132,9 +135,13 @@ public class MemoRenderer implements Renderer {
         		0f, 1.0f, 0.0f);
         multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
         
-        textureProgram.useProgram();
-        textureProgram.setUniforms(mvpMatrix, background.texture);
-        background.bindData(textureProgram);
+        //textureProgram.useProgram();
+        //textureProgram.setUniforms(mvpMatrix, background.texture);
+        //background.bindData(textureProgram);
+        
+        colorProgram.useProgram();
+    	colorProgram.setUniforms(mvpMatrix);
+        background.bindData(colorProgram);
         background.draw();
         
         //그룹들을 그린다
@@ -167,10 +174,15 @@ public class MemoRenderer implements Renderer {
         for(Memo memo: memoList){
         	//System.out.println("메모들 아이디는 요거 >> " + memo.getMemoId());
             // Draw the memo.
-            textureProgram.useProgram();
-            textureProgram.setUniforms(mvpMatrix, memo.texture);
-            memo.drawMemo(textureProgram);
+            //textureProgram.useProgram();
+            //textureProgram.setUniforms(mvpMatrix, memo.texture);
+            //memo.drawMemo(textureProgram);
+        	
+        	colorProgram.useProgram();
+        	colorProgram.setUniforms(mvpMatrix);
+        	memo.drawMemo(colorProgram);
 
+        	textureProgram.useProgram();
             textureProgram.setUniforms(mvpMatrix, memo.textTexture);
             memo.drawText(textureProgram);
             
