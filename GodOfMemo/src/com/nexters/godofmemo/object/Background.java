@@ -4,6 +4,7 @@ import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glDrawArrays;
 import static com.nexters.godofmemo.util.Constants.BYTES_PER_FLOAT;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.nexters.godofmemo.data.VertexArray;
@@ -39,6 +40,9 @@ public class Background {
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
 	private VertexArray vertexArrayColor;
+	
+	// 설정 저장소
+	SharedPreferences pref;
 	
 	/**
 	 * 위치와 크기를 지정한다
@@ -85,68 +89,81 @@ public class Background {
 		vertexArray = new VertexArray(VERTEX_DATA);
 		
 		//color vertex
-		setColorVertices(253, 245, 229);
+		setColorVertices();
 	}
 	
 
-	public void setColorVertices(int ri, int gi, int bi){
+	public void setColorVertices(){
+		
+		int ai = 128;
+		int ri = pref.getInt("bg_color_r", 255);
+		int gi = pref.getInt("bg_color_g", 255);
+		int bi = pref.getInt("bg_color_b", 255);
+		
 		//rgb 253, 245, 229
 		//rgb 140, 211, 156
+		float a = ai/255.0f;
 		float r = ri/255.0f;
 		float g = gi/255.0f;
 		float b = bi/255.0f;
 		
-		float[] VERTEX_DATA_COLOR = new float[30];
+		float[] VERTEX_DATA_COLOR = new float[36];
 		
 		// Order of coordinates: X, Y, R, G, B
 
 		// point 1
 		int s = 0;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 2
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 3
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px + pWidth / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px + pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 4
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px + pWidth / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py + pHeight / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px + pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		// point 5
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py + pHeight / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		// point 6
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = b; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		vertexArrayColor = new VertexArray(VERTEX_DATA_COLOR);
 	}
@@ -172,6 +189,8 @@ public class Background {
 		this.pHeight = pHeight;
 		this.textureSource = texture;
 		
+		pref = context.getSharedPreferences("memo", Context.MODE_PRIVATE);
+		
 		setVertices();
 	}
 	
@@ -187,7 +206,7 @@ public class Background {
 	}
 
 	
-    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int COLOR_COMPONENT_COUNT = 4;
     private static final int COLOR_STRIDE = 
         (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) 
         * BYTES_PER_FLOAT;

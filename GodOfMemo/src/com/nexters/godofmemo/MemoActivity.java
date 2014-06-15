@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,7 +40,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	LinearLayout bgColorPicker;
 	List<ColorSelectionView> memoColorSelectionViewList = new ArrayList<ColorSelectionView>();
 	List<ColorSelectionView> bgColorSelectionViewList = new ArrayList<ColorSelectionView>();
-	
 
 	private final int BACK = 3;
 
@@ -58,20 +60,19 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	int dWidth = 0;
 	int dHeight = 0;
 	//
-	private boolean isLong = false;
-	//
-	private int shortMemoSize = 25;
-	private int longMemoSize = 45;
-	//
-	private int textDivisionSize = 20;
-	//
 	private TextView memoTimeTextView;
+
+	// 설정 저장소
+	SharedPreferences pref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+		// 저장소 초기화
+		pref = getSharedPreferences("memo", Context.MODE_PRIVATE);
 
 		// 커스텀 액션바
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -102,10 +103,11 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		// memo time
 		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
-		
+
 		// background touchevent
 		background = findViewById(R.id.memo_activiy_background);
 		background.setOnClickListener(this);
+		initBackground();
 
 		intent = getIntent();
 		memoTitle = intent.getStringExtra("selectedMemoTitle");
@@ -121,6 +123,9 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
+
+		// layout 크기 설정.
+		setLayoutSize();
 
 		// finish
 
@@ -142,15 +147,43 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		}
 	}
 
+	private void setLayoutSize() {
+
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+
+		LinearLayout layoutBody = (LinearLayout) findViewById(R.id.memo_layout_body);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				height / 4, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER_HORIZONTAL);
+		lp.weight = 1;
+		layoutBody.setOrientation(LinearLayout.VERTICAL);
+		layoutBody.setLayoutParams(lp);
+
+	}
+
+	private void initBackground() {
+
+		int r = pref.getInt("bg_color_r", 255);
+		int g = pref.getInt("bg_color_g", 255);
+		int b = pref.getInt("bg_color_b", 255);
+
+		int c = android.graphics.Color.argb(128, r, g, b);
+		background.setBackgroundColor(c);
+
+	}
+
 	/**
 	 * 메모 색 선택 모듈 초기화
 	 */
 	private void initColorPicker() {
 		for (Color c : ColorDB.getInstance().getColorList()) {
-			//memo
-			addColorSelectionView(c, "memo", memoColorSelectionViewList, memoColorPicker); 
-			//bg
-			addColorSelectionView(c, "bg", bgColorSelectionViewList, bgColorPicker);
+			// memo
+			addColorSelectionView(c, "memo", memoColorSelectionViewList,
+					memoColorPicker);
+			// bg
+			addColorSelectionView(c, "bg", bgColorSelectionViewList,
+					bgColorPicker);
 		}
 
 		// 그리기
@@ -159,6 +192,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 	/**
 	 * memo, bg에 따라 색상 선택 뷰를 넣는다.
+	 * 
 	 * @param c
 	 * @param type
 	 * @param list
@@ -166,8 +200,8 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	 */
 	private void addColorSelectionView(Color c, String type,
 			List<ColorSelectionView> list, LinearLayout layout) {
-		ColorSelectionView v = new ColorSelectionView(
-				getApplicationContext(), c, type);
+		ColorSelectionView v = new ColorSelectionView(getApplicationContext(),
+				c, type);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
@@ -178,12 +212,12 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		// onclick listener
 		v.setOnClickListener(this);
-		
-		//add to list
+
+		// add to list
 		list.add(v);
 
 		layout.addView(v);
-		
+
 	}
 
 	@Override
@@ -211,29 +245,52 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		if (v instanceof ColorSelectionView) {
 			if (((ColorSelectionView) v).getType() == 0) {
 				// memo
-				
-				//set non selection state on every view
-				for(ColorSelectionView csv :memoColorSelectionViewList){
-					if(csv.isSelected()){
+
+				// set non selection state on every view
+				for (ColorSelectionView csv : memoColorSelectionViewList) {
+					if (csv.isSelected()) {
 						csv.setSelected(false);
 						csv.invalidate();
 					}
 				}
-				
-				//set current selected view
+
+				// set current selected view
 				v.setSelected(true);
 				v.invalidate();
-				
-				//change memo color
-				memoTitleET.setBackgroundColor(((ColorSelectionView) v).getColorI());
-				memoContentET.setBackgroundColor(((ColorSelectionView) v).getColorI());
-				memoTimeTextView.setBackgroundColor(((ColorSelectionView) v).getColorI());
-				
+
+				// change memo color
+				memoTitleET.setBackgroundColor(((ColorSelectionView) v)
+						.getColorI());
+				memoContentET.setBackgroundColor(((ColorSelectionView) v)
+						.getColorI());
+				memoTimeTextView.setBackgroundColor(((ColorSelectionView) v)
+						.getColorI());
+
+				// save memo color
+				r = ((ColorSelectionView) v).getColor().getR();
+				g = ((ColorSelectionView) v).getColor().getG();
+				b = ((ColorSelectionView) v).getColor().getB();
+
 			} else if (((ColorSelectionView) v).getType() == 1) {
 				// bg
 				// change background
-				background.setBackgroundColor(((ColorSelectionView) v).getColorBG());
-				
+				background.setBackgroundColor(((ColorSelectionView) v)
+						.getColorBG());
+
+				// save bg color
+				pref.edit()
+						.putInt("bg_color_r",
+								((ColorSelectionView) v).getColor().getR())
+						.commit();
+				pref.edit()
+						.putInt("bg_color_g",
+								((ColorSelectionView) v).getColor().getG())
+						.commit();
+				pref.edit()
+						.putInt("bg_color_b",
+								((ColorSelectionView) v).getColor().getB())
+						.commit();
+
 			}
 		}
 	}

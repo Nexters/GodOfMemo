@@ -3,81 +3,133 @@
     android:id="@+id/memo_activiy_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="50dp"
+    android:layout_centerHorizontal="true"
+    android:orientation="horizontal"
     tools:context=".MemoActivity" >
 
-    <EditText
-        android:id="@+id/memo_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <View
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0" />
+
+    <LinearLayout
+        android:id="@+id/memo_layout_body"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:ems="4"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:lineSpacingExtra="6dp"
-        android:padding="15dp"
-        android:textColor="@android:color/black"
-        android:textSize="17sp" />
+        android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/memo_content"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:ems="4"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:lineSpacingExtra="6dp"
-        android:padding="15dp"
-        android:textColor="@android:color/black"
-        android:textSize="17sp" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="45" />
 
-    <TextView
-        android:id="@+id/memo_time"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="2014년 02월 15일 오후 02:00"
-        android:textSize="9sp" />
+        <EditText
+            android:id="@+id/memo_title"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="100"
+            android:background="@android:color/transparent"
+            android:ems="4"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:lineSpacingExtra="6dp"
+            android:padding="15dp"
+            android:textColor="@android:color/black"
+            android:textSize="24sp" />
 
-    <HorizontalScrollView
-        android:id="@+id/memo_color_picker_hsv"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_weight="1" >
+        <EditText
+            android:id="@+id/memo_content"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="250"
+            android:background="@android:color/transparent"
+            android:ems="4"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:lineSpacingExtra="6dp"
+            android:padding="15dp"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
 
-        <LinearLayout
-            android:id="@+id/memo_color_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-        </LinearLayout>
-    </HorizontalScrollView>
+        <TextView
+            android:id="@+id/memo_time"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="50"
+            android:padding="15dp"
+            android:text="2014년 02월 15일 오후 02:00"
+            android:textSize="9sp" />
 
-    <HorizontalScrollView
-        android:id="@+id/bg_color_picker_hsv"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_weight="1" >
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="45" />
 
-        <LinearLayout
-            android:id="@+id/bg_color_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-        </LinearLayout>
-    </HorizontalScrollView>
+        <HorizontalScrollView
+            android:id="@+id/memo_color_picker_hsv"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="65" >
 
-    <ImageView
-        android:id="@+id/btn_finish"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/donebtn" />
+            <LinearLayout
+                android:id="@+id/memo_color_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="50" />
+
+        <HorizontalScrollView
+            android:id="@+id/bg_color_picker_hsv"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="65" >
+
+            <LinearLayout
+                android:id="@+id/bg_color_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="50" />
+
+        <ImageView
+            android:id="@+id/btn_finish"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="135"
+            android:background="@drawable/donebtn" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="45" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" />
 
 </LinearLayout>

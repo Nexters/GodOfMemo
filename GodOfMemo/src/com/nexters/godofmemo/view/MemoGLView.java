@@ -67,14 +67,14 @@ public class MemoGLView extends GLSurfaceView {
 	static final int DRAG = 1;
 	static final int ZOOM = 2;
 	
-	int mode = NONE;	//처음상태는 NONE
+	private int mode = NONE;	//처음상태는 NONE
 	
 	//tab 유형.
 	static final int TAB = 3;
 	static final int DOUBLETAB = 4;
 	static final int LONGTAB = 5;
 	
-	int tabMode = NONE;//처음상태는 NONE 
+	private int tabMode = NONE;//처음상태는 NONE 
 	
 	//롱클릭 이벤트 처리를 위한 변수들
 	private final Handler handler = new Handler(); 
@@ -189,9 +189,9 @@ public class MemoGLView extends GLSurfaceView {
 						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
 						
 						//color
-						intent.putExtra("selectedMemoR", selectedMemo.getRed()*255);
-						intent.putExtra("selectedMemoG", selectedMemo.getGreen()*255);
-						intent.putExtra("selectedMemoB", selectedMemo.getBlue()*255);
+						intent.putExtra("selectedMemoR", (int)selectedMemo.getRed()*255);
+						intent.putExtra("selectedMemoG", (int)selectedMemo.getGreen()*255);
+						intent.putExtra("selectedMemoB", (int)selectedMemo.getBlue()*255);
 						
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
 					}else if(selectedGroup!=null){
@@ -326,8 +326,8 @@ public class MemoGLView extends GLSurfaceView {
 				float scale = newDist / oldDist;	//확대,축소 여부
 
 				float dZ = 0.05f;	//줌가속 변수
-				float min = 1f;	//줌 최소
-				float max = 5f;	//줌최대
+				float min = 1f;	//줌 최대
+				float max = 12f;	//줌 최소
 				
 				float tempZoom = 0;
 				tempZoom = mr.zoom;

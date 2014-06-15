@@ -36,12 +36,13 @@ public class ColorSelectionView extends View {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
 		// size
 		int width = (int) TypedValue.applyDimension(
-				TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
+				TypedValue.COMPLEX_UNIT_DIP, parentHeight/2, getResources()
 						.getDisplayMetrics());
 		int height = (int) TypedValue.applyDimension(
-				TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
+				TypedValue.COMPLEX_UNIT_DIP, parentHeight/2, getResources()
 						.getDisplayMetrics());
 		setMeasuredDimension(width, height);
 

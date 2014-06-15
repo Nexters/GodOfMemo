@@ -51,7 +51,7 @@ public class MemoRenderer implements Renderer {
     public int height;
     
     //줌 배율
-    public float zoom = 1.5f;
+    public float zoom = 3.5f;
     
     //fov
     public float fov = 0.6f;
@@ -79,9 +79,10 @@ public class MemoRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         
         background.setTexture();
+        background.setColorVertices();
         
         for(Group group: groupList){
         	group.setTexture();
@@ -144,7 +145,7 @@ public class MemoRenderer implements Renderer {
         background.bindData(colorProgram);
         background.draw();
         
-        //그룹들을 그린다
+        		//그룹들을 그린다
         for(Group group: groupList){
             // Draw the memo.
             textureProgram.useProgram();
