@@ -7,6 +7,7 @@ import com.nexters.godofmemo.util.Font;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,7 +21,7 @@ public class TutorialActivity extends FragmentActivity {
 	  /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 5;
+    private static final int NUM_PAGES = 4;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -75,6 +76,7 @@ public class TutorialActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+        	Intent intent;
     		switch (position) {
 
     		case 0:
@@ -85,6 +87,11 @@ public class TutorialActivity extends FragmentActivity {
     			
     		case 2:
     			return new SecondTutorialFragment();
+    			
+    		case 3:
+    			//intent = new Intent(getApplicationContext(), MainActivity.class);
+    			//startActivity(intent);
+    			finish();
 
     		default:
     			return new ScreenSlidePageFragment();
