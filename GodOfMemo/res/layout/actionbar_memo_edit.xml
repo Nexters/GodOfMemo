@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
         android:layout_marginLeft="20dp"
-        android:background="@drawable/backbtn320" />
+        android:background="@drawable/backbtn" />
 
     <ImageView
         android:id="@+id/btn_del"

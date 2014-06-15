@@ -143,6 +143,9 @@ public class Group {
 		
 		//글자저장을 위한 저장...
 		setTextVertices();
+		
+		//color
+		setColorVertices();
 	}
 	
 	private void setTextVertices(){
@@ -211,60 +214,71 @@ public class Group {
 		blue = bi/255.0f;
 		
 	}
-	
+
 	public void setColorVertices(){
 		
-		float[] VERTEX_DATA_COLOR = new float[30];
+		int ai = 128;
+		float a = ai/255.0f;
+		//rgb 253, 245, 229
+		//rgb 140, 211, 156
+		
+		float[] VERTEX_DATA_COLOR = new float[36];
 		
 		// Order of coordinates: X, Y, R, G, B
 
 		// point 1
 		int s = 0;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 2
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 3
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x + width / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 
 		// point 4
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x + width / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y + height / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		// point 5
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y + height / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		// point 6
 		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = a; // a
 		
 		vertexArrayColor = new VertexArray(VERTEX_DATA_COLOR);
 	}
@@ -411,7 +425,7 @@ public class Group {
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
 	
-    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int COLOR_COMPONENT_COUNT = 4;
     private static final int COLOR_STRIDE = 
         (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) 
         * BYTES_PER_FLOAT;

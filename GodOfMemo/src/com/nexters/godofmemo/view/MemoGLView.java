@@ -201,6 +201,7 @@ public class MemoGLView extends GLSurfaceView {
 						intent.putExtra("selectedGroupId", selectedGroup.getGroupId());
 						intent.putExtra("selectedGroupColor", selectedGroup.getGroupColor());
 						intent.putExtra("selectedGroupSize", selectedGroup.getWidth());
+						
 
 						//color
 						intent.putExtra("selectedGroupR", selectedGroup.getRed()*255);

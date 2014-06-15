@@ -148,9 +148,11 @@ public class MemoRenderer implements Renderer {
         		//그룹들을 그린다
         for(Group group: groupList){
             // Draw the memo.
-            textureProgram.useProgram();
-            textureProgram.setUniforms(mvpMatrix, group.texture);
-            group.drawGroup(textureProgram);
+            //textureProgram.useProgram();
+            //textureProgram.setUniforms(mvpMatrix, group.texture);
+        	colorProgram.useProgram();
+         	colorProgram.setUniforms(mvpMatrix);
+            group.drawGroup(colorProgram);
 
             textureProgram.setUniforms(mvpMatrix, group.textTexture);
             group.drawTitle(textureProgram);

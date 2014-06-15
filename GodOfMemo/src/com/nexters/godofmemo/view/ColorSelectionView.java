@@ -14,7 +14,7 @@ public class ColorSelectionView extends View {
 	private Context context;
 	private Color color;
 	private boolean isSelected = false;
-	private int type = 0; // memo=0, bg=1;
+	private int type = 0; // memo=0, bg=1, group=2;
 
 	public ColorSelectionView(Context context) {
 		super(context);
@@ -30,6 +30,8 @@ public class ColorSelectionView extends View {
 			this.type = 0;
 		} else if ("bg".equals(type)) {
 			this.type = 1;
+		} else if ("group".equals(type)) {
+			this.type = 2;
 		}
 
 	}

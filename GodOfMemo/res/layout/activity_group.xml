@@ -3,58 +3,8 @@
     android:id="@+id/group_activiy_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/memedit_background"
+    android:orientation="vertical"
     tools:context=".MemoActivity" >
-
-    <!-- 색상 선택 -->
-    <LinearLayout
-        android:id="@+id/group_color_selection_area"
-        android:layout_width="fill_parent"
-        android:layout_height="143dp"
-        android:background="@drawable/group_colorselect_blue"
-        android:orientation="horizontal" >
-
-        <View
-            android:id="@+id/group_color_select_red"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <View
-            android:id="@+id/group_color_select_blue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <View
-            android:id="@+id/group_color_select_yellow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <!-- 삭제버튼 -->
-
-    <ImageView
-        android:id="@+id/trash_can"
-        android:layout_width="200dp"
-        android:layout_height="90dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/donebtn" />
-
-    <!-- Seek bar -->
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/trash_can"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:max="100" />
 
     <!-- 그룹 이미지 -->
 
@@ -62,28 +12,68 @@
         android:id="@+id/group_img_area"
         android:layout_width="fill_parent"
         android:layout_height="200dp"
-        android:layout_above="@id/seekBar"
         android:orientation="horizontal" >
 
         <!-- 그룹 이름 수정하는 곳 -->
 
         <EditText
             android:id="@+id/group_name_text"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/group_center"
+            android:gravity="center"
+            android:background="@android:color/transparent"
             android:ems="10"
             android:hint="그룹이름을 여기에 적으세요"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
 
         <ImageView
             android:id="@+id/group_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.8"
-            android:background="@drawable/circle_blue" />
+            android:layout_height="match_parent" />
     </FrameLayout>
-    
-    
+
+    <!-- 색상선택 -->
+
+    <HorizontalScrollView
+        android:id="@+id/bg_color_picker_hsv"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/group_img_area"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" >
+
+        <LinearLayout
+            android:id="@+id/group_color_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Seek bar -->
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bg_color_picker_hsv"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:max="100"
+        android:progressDrawable="@drawable/slide_bg"
+        android:thumb="@drawable/slide_btn" />
+
+    <!-- done -->
+
+    <ImageView
+        android:id="@+id/btn_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/donebtn" />
 
 </RelativeLayout>
