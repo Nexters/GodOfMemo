@@ -54,6 +54,18 @@
             android:name="com.nexters.godofmemo.GroupActivity"
             android:label="@string/title_activity_group" >
         </activity>
+        <activity
+            android:name="com.nexters.godofmemo.TutorialActivity"
+            android:label="@string/title_activity_tutorial" >
+        </activity>
+        <activity
+            android:name="com.nexters.godofmemo.frg.FirstTutorialFragment"
+            android:label="@string/title_activity_first_tutorial_fragment" >
+        </activity>
+        <activity
+            android:name="com.nexters.godofmemo.frg.SecondTutorialFragment"
+            android:label="@string/title_activity_second_tutorial_fragment" >
+        </activity>
     </application>
 
 </manifest>
