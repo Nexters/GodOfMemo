@@ -1,10 +1,5 @@
 package com.nexters.godofmemo;
 
-import com.nexters.godofmemo.frg.FirstTutorialFragment;
-import com.nexters.godofmemo.frg.ScreenSlidePageFragment;
-import com.nexters.godofmemo.frg.SecondTutorialFragment;
-import com.nexters.godofmemo.util.Font;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.graphics.Typeface;
@@ -15,6 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+
+import com.nexters.godofmemo.frg.FirstTutorialFragment;
+import com.nexters.godofmemo.frg.ScreenSlidePageFragment;
+import com.nexters.godofmemo.frg.SecondTutorialFragment;
+import com.nexters.godofmemo.util.Font;
 
 public class TutorialActivity extends FragmentActivity {
 	  /**
@@ -85,6 +85,12 @@ public class TutorialActivity extends FragmentActivity {
     			
     		case 2:
     			return new SecondTutorialFragment();
+    			
+    		case 3:
+    			return new ScreenSlidePageFragment();
+    			
+    		case 4:
+    			finish();
 
     		default:
     			return new ScreenSlidePageFragment();
