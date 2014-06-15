@@ -59,6 +59,8 @@ public class GroupActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		// Load the layout
 		setContentView(R.layout.activity_group);
+		
+		
 
 		//유틸 초기화
 		Util.init(getApplicationContext());
@@ -106,9 +108,9 @@ public class GroupActivity extends ActionBarActivity implements
 		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
 		// since we are using this class as the listener the class is "this"
 		// make text label for seekBarAction value
-		findViewById(R.id.btn_back).setOnClickListener(this);
-		findViewById(R.id.btn_finish).setOnClickListener(this);
-		ImageView btn_del = (ImageView) findViewById(R.id.btn_del);
+		findViewById(R.id.grp_btn_back).setOnClickListener(this);
+		findViewById(R.id.grp_btn_del).setOnClickListener(this);
+		ImageView btn_del = (ImageView) findViewById(R.id.grp_btn_del);
 		btn_del.setOnClickListener(this);
 		
 		// get Intent
@@ -158,10 +160,10 @@ public class GroupActivity extends ActionBarActivity implements
 		case R.id.btn_finish:
 			createGroup();
 			break;
-		case R.id.btn_back:
+		case R.id.grp_btn_back:
 			moveToBack();
 			break;
-		case R.id.btn_del:
+		case R.id.grp_btn_del:
 			deleteGroup();
 			break;
 		case R.id.group_color_select_red:
@@ -300,9 +302,9 @@ public class GroupActivity extends ActionBarActivity implements
 		super.onPostCreate(savedInstanceState);
 		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
 		if(groupId==null){
-			((TextView)findViewById(R.id.groupBoardTitle)).setText("그룹 생성");
+			//((TextView)findViewById(R.id.memoBoardTitle)).setText("그룹 생성");
 		}else{
-			((TextView)findViewById(R.id.groupBoardTitle)).setText("그룹 수정");
+			//((TextView)findViewById(R.id.memoBoardTitle)).setText("그룹 수정");
 		}
 		/*
 		Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/telegrafico.ttf");
