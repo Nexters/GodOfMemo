@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.nexters.godofmemo.data.VertexArray;
+import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.TextureHelper;
@@ -37,6 +38,7 @@ public class Background {
 	
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
+	private VertexArray vertexArrayColor;
 	
 	/**
 	 * 위치와 크기를 지정한다
@@ -81,6 +83,72 @@ public class Background {
 		VERTEX_DATA[s * 4 + 3] = Constants.DOT_SIZE; // z
 
 		vertexArray = new VertexArray(VERTEX_DATA);
+		
+		//color vertex
+		setColorVertices(253, 245, 229);
+	}
+	
+
+	public void setColorVertices(int ri, int gi, int bi){
+		//rgb 253, 245, 229
+		//rgb 140, 211, 156
+		float r = ri/255.0f;
+		float g = gi/255.0f;
+		float b = bi/255.0f;
+		
+		float[] VERTEX_DATA_COLOR = new float[30];
+		
+		// Order of coordinates: X, Y, R, G, B
+
+		// point 1
+		int s = 0;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+
+		// point 2
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+
+		// point 3
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px + pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+
+		// point 4
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px + pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		
+		// point 5
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py + pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		
+		// point 6
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = px - pWidth / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = py - pHeight / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = r; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = g; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = b; // b
+		
+		vertexArrayColor = new VertexArray(VERTEX_DATA_COLOR);
 	}
 	
 	//텍스쳐 설정
@@ -116,6 +184,23 @@ public class Background {
 		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
 				textureProgram.getTextureCoordinatesAttributeLocation(),
 				TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
+	}
+
+	
+    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int COLOR_STRIDE = 
+        (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) 
+        * BYTES_PER_FLOAT;
+
+	public void bindData(ColorShaderProgram colorProgram) {
+		vertexArrayColor.setVertexAttribPointer(0,
+				colorProgram.getPositionAttributeLocation(),
+				POSITION_COMPONENT_COUNT, COLOR_STRIDE);
+
+		vertexArrayColor.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
+				colorProgram.getColorAttributeLocation(),
+				COLOR_COMPONENT_COUNT, COLOR_STRIDE);
+		
 	}
 
 	public void draw() {

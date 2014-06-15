@@ -184,8 +184,15 @@ public class MemoGLView extends GLSurfaceView {
 					if(selectedMemo != null){
 						intent = new Intent(context, MemoActivity.class);
 						//보기, 수정 화면으로 넘어가기. 
+						intent.putExtra("selectedMemoTitle", selectedMemo.getMemoTitle());
 						intent.putExtra("selectedMemoContent", selectedMemo.getMemoContent());
 						intent.putExtra("selectedMemoId", selectedMemo.getMemoId());
+						
+						//color
+						intent.putExtra("selectedMemoR", selectedMemo.getRed()*255);
+						intent.putExtra("selectedMemoG", selectedMemo.getGreen()*255);
+						intent.putExtra("selectedMemoB", selectedMemo.getBlue()*255);
+						
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
 					}else if(selectedGroup!=null){
 						intent = new Intent(context, GroupActivity.class);
@@ -194,6 +201,12 @@ public class MemoGLView extends GLSurfaceView {
 						intent.putExtra("selectedGroupId", selectedGroup.getGroupId());
 						intent.putExtra("selectedGroupColor", selectedGroup.getGroupColor());
 						intent.putExtra("selectedGroupSize", selectedGroup.getWidth());
+
+						//color
+						intent.putExtra("selectedGroupR", selectedGroup.getRed()*255);
+						intent.putExtra("selectedGroupG", selectedGroup.getGreen()*255);
+						intent.putExtra("selectedGroupB", selectedGroup.getBlue()*255);
+						
 						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_GROUP_RESULT);
 					}
 					tabMode= TAB;

@@ -4,14 +4,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <TextView
+    <ImageView
         android:id="@+id/memoBoardTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Mind Paper"
-        android:textColor="#414141"
-        android:textSize="22dp" />
+        android:background="@drawable/logo"/>
 
     <ImageView
         android:id="@+id/action_group"
@@ -19,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
         android:layout_marginLeft="20dp"
-        android:background="@drawable/group_open" />
+        android:background="@drawable/groupstart" />
 
     <ImageView
         android:id="@+id/action_write"
@@ -27,6 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="20dp"
-        android:background="@drawable/memo_open" />
+        android:background="@drawable/memostart" />
 
 </FrameLayout>

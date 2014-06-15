@@ -30,7 +30,9 @@ public class GroupDAO {
 			AllSQL.COL_GROUP_SYMBOLID, AllSQL.COL_GROUP_DATE,
 			AllSQL.COL_GROUP_TIME, AllSQL.COL_GROUP_X,
 			AllSQL.COL_GROUP_Y, AllSQL.COL_GROUP_WIDTH,
-			AllSQL.COL_GROUP_HEIGHT};
+			AllSQL.COL_GROUP_HEIGHT,
+			AllSQL.COL_GROUP_RED, AllSQL.COL_GROUP_GREEN,
+			AllSQL.COL_GROUP_BLUE};
 	
 	/**
 	 * In constructor, I initiate dbHelper object.
@@ -104,6 +106,10 @@ public class GroupDAO {
 		values.put(AllSQL.COL_GROUP_WIDTH, group.getWidth());
 		values.put(AllSQL.COL_GROUP_HEIGHT, group.getHeight());
 		
+		values.put(AllSQL.COL_GROUP_RED, group.getRed());
+		values.put(AllSQL.COL_GROUP_GREEN, group.getGreen());
+		values.put(AllSQL.COL_GROUP_BLUE, group.getBlue());
+		
 		long insertedId = database.insert(AllSQL.TABLE_GROUP_INFO,
 				null, values);
 		database.close();
@@ -130,6 +136,10 @@ public class GroupDAO {
 		values.put(AllSQL.COL_GROUP_Y , group.getY());
 		values.put(AllSQL.COL_GROUP_WIDTH, group.getWidth());
 		values.put(AllSQL.COL_GROUP_HEIGHT, group.getHeight());
+		
+		values.put(AllSQL.COL_GROUP_RED, group.getRed());
+		values.put(AllSQL.COL_GROUP_GREEN, group.getGreen());
+		values.put(AllSQL.COL_GROUP_BLUE, group.getBlue());
 		
 		int rtn = database.update(AllSQL.TABLE_GROUP_INFO, values,
 				AllSQL.COL_GROUP_ID+" = "+ groupId, null);
@@ -171,6 +181,11 @@ public class GroupDAO {
 		group.setY(cursor.getFloat(7));
 		group.setWidth(cursor.getFloat(8));
 		group.setHeight(cursor.getFloat(9));
+		
+		//color
+		group.setRed(cursor.getFloat(10));
+		group.setGreen(cursor.getFloat(11));
+		group.setBlue(cursor.getFloat(12));
 		
 		group.setVertices();
 		

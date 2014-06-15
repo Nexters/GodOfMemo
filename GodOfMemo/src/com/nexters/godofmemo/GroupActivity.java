@@ -108,8 +108,8 @@ public class GroupActivity extends ActionBarActivity implements
 		// make text label for seekBarAction value
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
-		ImageView trash_can = (ImageView) findViewById(R.id.trash_can);
-		trash_can.setOnClickListener(this);
+		ImageView btn_del = (ImageView) findViewById(R.id.btn_del);
+		btn_del.setOnClickListener(this);
 		
 		// get Intent
 		intent = getIntent();
@@ -122,7 +122,7 @@ public class GroupActivity extends ActionBarActivity implements
 		
 		// Setting values likes size or color of the group;
 		if(groupId==null){
-			trash_can.setVisibility(View.INVISIBLE);
+			btn_del.setVisibility(View.INVISIBLE);
 		}else{
 			float dSize = adjustGroupSize(groupSize);
 			//그룹 크기 조절
@@ -161,7 +161,7 @@ public class GroupActivity extends ActionBarActivity implements
 		case R.id.btn_back:
 			moveToBack();
 			break;
-		case R.id.trash_can:
+		case R.id.btn_del:
 			deleteGroup();
 			break;
 		case R.id.group_color_select_red:

@@ -3,7 +3,7 @@ package com.nexters.godofmemo.db;
 public interface AllSQL {
 	//DB정보
 	public static final String DATABASE_NAME = "memo.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 3;
 	
 	public static final String TABLE_GROUP_INFO = "memo_group"; // Group table name 
 	
@@ -20,6 +20,11 @@ public interface AllSQL {
 	public static final String COL_GROUP_Y = "group_y";
 	public static final String COL_GROUP_WIDTH = "group_width";
 	public static final String COL_GROUP_HEIGHT = "group_height";
+	
+	//group color
+	public static final String COL_GROUP_RED = "group_color_r";
+	public static final String COL_GROUP_GREEN= "group_color_g";
+	public static final String COL_GROUP_BLUE = "group_color_b";
 	
 	/**
 	 *  TABLE 생성문
@@ -48,7 +53,16 @@ public interface AllSQL {
 				.append(COL_GROUP_WIDTH)
 				.append( " real, ")
 				.append(COL_GROUP_HEIGHT)
+				.append( " real, ")
+				
+				.append(COL_GROUP_RED)
+				.append( " real, ")
+				.append(COL_GROUP_GREEN)
+				.append( " real, ")
+				.append(COL_GROUP_BLUE)
 				.append( " real ")
+				
+				
 			.append(");")
 			.toString();
 	/**
@@ -178,6 +192,8 @@ public interface AllSQL {
 				.append( " FROM ")
 					.append(TABLE_GROUP_INFO_TEMP)
 			.toString();
+	
+	
 	/////////////////////////////////////////////////////////
 	////////////////Memo////////////////////////////////////
 	///////////////////////////////////////////////////////
@@ -191,6 +207,7 @@ public interface AllSQL {
 	 */
 	//기본정보
 	public static final String COL_MEMO_ID = "memo_id";
+	public static final String COL_MEMO_TITLE = "memo_title";
 	public static final String COL_MEMO_CONTENT = "memo_content";
 	public static final String COL_MEMO_COLOR = "memo_color";
 	public static final String COL_MEMO_DATE = "memo_date";
@@ -202,7 +219,11 @@ public interface AllSQL {
 	public static final String COL_MEMO_Y = "memo_y";
 	public static final String COL_MEMO_WIDTH = "memo_width";
 	public static final String COL_MEMO_HEIGHT = "memo_height";
-
+	
+	//color
+	public static final String COL_MEMO_RED = "memo_color_r";
+	public static final String COL_MEMO_GREEN= "memo_color_g";
+	public static final String COL_MEMO_BLUE = "memo_color_b";
 	
 
 	/**
@@ -214,6 +235,9 @@ public interface AllSQL {
 			.append("(")
 				.append(COL_MEMO_ID)
 				.append( " integer primary key autoincrement, ")
+				
+				.append(COL_MEMO_TITLE)
+				.append( " text, ")
 				.append(COL_MEMO_CONTENT)
 				.append( " text, ")
 				.append(COL_MEMO_COLOR)
@@ -232,7 +256,16 @@ public interface AllSQL {
 				.append(COL_MEMO_WIDTH)
 				.append( " real, ")
 				.append(COL_MEMO_HEIGHT)
+				.append( " real, ")
+				
+				.append(COL_MEMO_RED)
+				.append( " real, ")
+				.append(COL_MEMO_GREEN)
+				.append( " real, ")
+				.append(COL_MEMO_BLUE)
 				.append( " real ")
+				
+				
 			.append(");")
 			.toString();
 	

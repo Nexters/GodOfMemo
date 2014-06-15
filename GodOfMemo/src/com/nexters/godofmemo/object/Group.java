@@ -14,6 +14,7 @@ import android.graphics.Paint;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
+import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.BitmapHelper;
 import com.nexters.godofmemo.util.Font;
@@ -47,6 +48,12 @@ public class Group {
 	public static final int GROUP_COLOR_RED=0;
 	public static final int GROUP_COLOR_BLUE=1;
 	public static final int GROUP_COLOR_YELLOW=2;
+	
+	//색상정보
+	private float red;
+	private float green;
+	private float blue;
+	
 	//크기 기본값
 	public static final float GROUP_DEFAULT_SIZE = 0.8f;
 	//위치, 크기정보
@@ -76,6 +83,7 @@ public class Group {
 	
 	//텍스쳐 설정에 필요한 변수
 	private Context context;
+	private VertexArray vertexArrayColor;
 	
 	//텍스트가 들어갈 상자의 비율
 	public static float ratioW = 8f / 10f;
@@ -192,6 +200,73 @@ public class Group {
 		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
 
 		vertexArrayText = new VertexArray(VERTEX_DATA_TEXT);
+	}
+	
+	//색깔을 설정한다.
+	public void setColor(int ri, int gi, int bi){
+		//rgb 253, 245, 229
+		//rgb 140, 211, 156
+		red = ri/255.0f;
+		green = gi/255.0f;
+		blue = bi/255.0f;
+		
+	}
+	
+	public void setColorVertices(){
+		
+		float[] VERTEX_DATA_COLOR = new float[30];
+		
+		// Order of coordinates: X, Y, R, G, B
+
+		// point 1
+		int s = 0;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+
+		// point 2
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+
+		// point 3
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+
+		// point 4
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		
+		// point 5
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		
+		// point 6
+		s++;
+		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
+		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
+		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
+		
+		vertexArrayColor = new VertexArray(VERTEX_DATA_COLOR);
 	}
 
 	// 텍스쳐 설정
@@ -336,6 +411,23 @@ public class Group {
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
 	
+    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int COLOR_STRIDE = 
+        (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) 
+        * BYTES_PER_FLOAT;
+	
+	public void drawGroup(ColorShaderProgram colorProgram) {
+		vertexArrayColor.setVertexAttribPointer(0,
+				colorProgram.getPositionAttributeLocation(),
+				POSITION_COMPONENT_COUNT, COLOR_STRIDE);
+
+		vertexArrayColor.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
+				colorProgram.getColorAttributeLocation(),
+				COLOR_COMPONENT_COUNT, COLOR_STRIDE);
+		
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	}
+	
 	//##############
 	// Getter, Setter
 	//##############
@@ -457,4 +549,30 @@ public class Group {
 	public void setProdTime(long prodTime) {
 		this.prodTime = prodTime;
 	}
+
+	public float getRed() {
+		return red;
+	}
+
+	public void setRed(float red) {
+		this.red = red;
+	}
+
+	public float getGreen() {
+		return green;
+	}
+
+	public void setGreen(float green) {
+		this.green = green;
+	}
+
+	public float getBlue() {
+		return blue;
+	}
+
+	public void setBlue(float blue) {
+		this.blue = blue;
+	}
+	
+	
 }

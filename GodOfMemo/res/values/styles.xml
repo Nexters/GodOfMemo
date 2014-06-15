@@ -18,7 +18,8 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <color name="titlecolor">#8ae0f7</color>
+    <!-- 타이틀바 색깔. -->
+    <color name="titlecolor">#75a684</color>
 
     <style name="FullscreenTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowContentOverlay">@null</item>

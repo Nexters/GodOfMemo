@@ -29,11 +29,11 @@ public class MemoDAO {
 	 */
 	private SQLiteDatabase database;
 	private AllDBHelper dbHelper;
-	private String[] allColumns = { AllSQL.COL_MEMO_ID,
+	private String[] allColumns = { AllSQL.COL_MEMO_ID, AllSQL.COL_MEMO_TITLE,
 			AllSQL.COL_MEMO_CONTENT, AllSQL.COL_MEMO_COLOR,
-			AllSQL.COL_MEMO_DATE, AllSQL.COL_MEMO_TIME,
-			AllSQL.COL_MEMO_X, AllSQL.COL_MEMO_Y,
-			AllSQL.COL_MEMO_WIDTH, AllSQL.COL_MEMO_HEIGHT };
+			AllSQL.COL_MEMO_DATE, AllSQL.COL_MEMO_TIME, AllSQL.COL_MEMO_X,
+			AllSQL.COL_MEMO_Y, AllSQL.COL_MEMO_WIDTH, AllSQL.COL_MEMO_HEIGHT,
+			AllSQL.COL_MEMO_RED, AllSQL.COL_MEMO_GREEN, AllSQL.COL_MEMO_BLUE };
 
 	/**
 	 * 생성할때 dbHelper 초기화
@@ -100,6 +100,7 @@ public class MemoDAO {
 		database = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		
+		values.put(AllSQL.COL_MEMO_TITLE, memo.getMemoTitle());
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
 		values.put(AllSQL.COL_MEMO_COLOR, memo.getMemoColor());
 		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
@@ -109,6 +110,10 @@ public class MemoDAO {
 		values.put(AllSQL.COL_MEMO_Y, memo.getY());
 		values.put(AllSQL.COL_MEMO_WIDTH, memo.getWidth());
 		values.put(AllSQL.COL_MEMO_HEIGHT, memo.getHeight());
+		
+		values.put(AllSQL.COL_MEMO_RED, memo.getRed());
+		values.put(AllSQL.COL_MEMO_GREEN, memo.getGreen());
+		values.put(AllSQL.COL_MEMO_BLUE, memo.getBlue());
 		
 		long insertedId = database.insert(AllSQL.TABLE_MEMO_INFO,
 				null, values);
@@ -128,7 +133,8 @@ public class MemoDAO {
 		database = dbHelper.getWritableDatabase();
 		String memoId = memo.getMemoId();
 		ContentValues values = new ContentValues();
-		
+
+		values.put(AllSQL.COL_MEMO_TITLE, memo.getMemoTitle());
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
 		values.put(AllSQL.COL_MEMO_COLOR, memo.getMemoColor());
 		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
@@ -138,6 +144,10 @@ public class MemoDAO {
 		values.put(AllSQL.COL_MEMO_Y, memo.getY());
 		values.put(AllSQL.COL_MEMO_WIDTH, memo.getWidth());
 		values.put(AllSQL.COL_MEMO_HEIGHT, memo.getHeight());
+		
+		values.put(AllSQL.COL_MEMO_RED, memo.getRed());
+		values.put(AllSQL.COL_MEMO_GREEN, memo.getGreen());
+		values.put(AllSQL.COL_MEMO_BLUE, memo.getBlue());
 		
 		int rtn = database.update(AllSQL.TABLE_MEMO_INFO, values,
 				AllSQL.COL_MEMO_ID + " = " + memoId, null);
@@ -182,16 +192,22 @@ public class MemoDAO {
 		
 		//기본정보
 		memo.setMemoId(cursor.getString(0));
-		memo.setMemoContent(cursor.getString(1));
-		memo.setMemoColor(cursor.getInt(2));
-		memo.setMemoDate(cursor.getString(3));
-		memo.setMemoTime(cursor.getString(4));
+		memo.setMemoTitle(cursor.getString(1));
+		memo.setMemoContent(cursor.getString(2));
+		memo.setMemoColor(cursor.getInt(3));
+		memo.setMemoDate(cursor.getString(4));
+		memo.setMemoTime(cursor.getString(5));
 		
 		//위치 크기
-		memo.setX(cursor.getFloat(5));
-		memo.setY(cursor.getFloat(6));
-		memo.setWidth(cursor.getFloat(7));
-		memo.setHeight(cursor.getFloat(8));
+		memo.setX(cursor.getFloat(6));
+		memo.setY(cursor.getFloat(7));
+		memo.setWidth(cursor.getFloat(8));
+		memo.setHeight(cursor.getFloat(9));
+		
+		//색정보
+		memo.setRed(cursor.getFloat(10));
+		memo.setGreen(cursor.getFloat(11));
+		memo.setBlue(cursor.getFloat(12));
 		
 		//좌표설정
 		memo.setVertices();

@@ -25,14 +25,21 @@ import com.nexters.godofmemo.util.Util;
 
 public class MemoActivity extends ActionBarActivity implements OnClickListener{
 
-	EditText short_et;
+	private EditText memoContentET;
+	private EditText memoTitleET;
 	Intent intent; 
 	
 	private final int BACK = 3;
 	
+	private String memoTitle;
 	private String memoContent;
 	private String memoId;
 	private int memoColor;
+	
+	//color
+	private int r;
+	private int g;
+	private int b;
 	
 	//memo background
 	private View memoBg;
@@ -77,7 +84,8 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		memoBg = findViewById(R.id.memo_img_background);
 		setMemoBgSize(dHeight*shortMemoSize/100);
 		
-		short_et = (EditText) findViewById(R.id.short_text);
+		memoTitleET = (EditText) findViewById(R.id.memo_title);
+		memoContentET = (EditText) findViewById(R.id.memo_content);
 		//텍스트 길이에 따른 배경 변화 로직 추가.
 		onTextChanged();
 		
@@ -93,25 +101,32 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		background.setOnClickListener(this);
 		
 		intent = getIntent();
+		memoTitle = intent.getStringExtra("selectedMemoTitle");
 		memoContent = intent.getStringExtra("selectedMemoContent");
 		memoColor = intent.getIntExtra("selectedMemoColor",Memo.MEMO_COLOR_BLUE);
 		memoId = intent.getStringExtra("selectedMemoId");
+		
+		//color
+		r = intent.getIntExtra("selectedMemoR", 100);
+		g = intent.getIntExtra("selectedMemoG", 100);
+		b = intent.getIntExtra("selectedMemoB", 100);
 	
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
-		ImageView trash_can =  (ImageView)findViewById(R.id.trash_can);
-		trash_can.setOnClickListener(this);
+		
+		//finish
 		
 		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
 		if(memoId==null){
 			//입력모드
-			trash_can.setVisibility(View.GONE);
+			findViewById(R.id.btn_del).setVisibility(View.GONE);
 			String memoDate = Util.getDate();
 			String memoTime = Util.getTime();
 			memoTimeTextView.setText(memoDate +" "+ memoTime);
 		}else{
 			//수정모드
-			short_et.setText(memoContent);
+			memoTitleET.setText(memoTitle);
+			memoContentET.setText(memoContent);
 			MemoDAO dao = new MemoDAO(getApplicationContext());
 			Memo memo = dao.getMemoInfo(memoId);
 			memoTimeTextView.setText(memo.getMemoDate() +" "+ memo.getMemoTime());
@@ -128,25 +143,41 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		case R.id.btn_back:
 			moveToBack();
 			break;
-		case R.id.trash_can:
+		case R.id.btn_del:
 			deleteMemo();
 			break;
 		case R.id.memo_color_select_red:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_red);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_red);
 			memoColor = Memo.MEMO_COLOR_RED;
+			
+			//color selected
+			r = 50;
+			g = 100;
+			b = 150;
 			break;
 
 		case R.id.memo_color_select_blue:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_blue);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_blue);
 			memoColor = Memo.MEMO_COLOR_BLUE;
+
+			//color selected
+			r = 150;
+			g = 100;
+			b = 250;
 			break;
 
 		case R.id.memo_color_select_yellow:
 			findViewById(R.id.memo_img_background).setBackgroundResource(R.drawable.memo_yellow);
 			findViewById(R.id.memo_color_selection_area).setBackgroundResource(R.drawable.writememo_colorselect_yellow);
 			memoColor = Memo.MEMO_COLOR_YELLOW;
+			
+
+			//color selected
+			r = 00;
+			g = 100;
+			b = 250;
 			break;
 		case R.id.memo_activiy_background:
 			InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -156,12 +187,20 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	}
 	
 	private void createMemo() {
-		String short_txt = short_et.getText().toString();
-		intent.putExtra("short_txt", short_txt);
+		String memoTitle = memoTitleET.getText().toString();
+		String memoContent = memoContentET.getText().toString();
+		intent.putExtra("memoTitle", memoTitle);
+		intent.putExtra("memoContent", memoContent);
 		// if this case is when you tab create button, memoId's value is null.
 		// and maybe you don't use it.
 		intent.putExtra("selectedMemoId", memoId);
 		intent.putExtra("selectedMemoColor", memoColor);
+		
+		//color
+		intent.putExtra("selectedMemoR", r);
+		intent.putExtra("selectedMemoG", g);
+		intent.putExtra("selectedMemoB", b);
+		
 		setResult(RESULT_OK, intent);
 		finish();
 	}
@@ -190,7 +229,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 	}
 	
 	private void onTextChanged(){
-		short_et.addTextChangedListener(new TextWatcher() {
+		memoContentET.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 				int textLength = s.length();
 
@@ -225,9 +264,9 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener{
 		super.onPostCreate(savedInstanceState);
 		//입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
 		if(memoId==null){
-			((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 입력");
+			//((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 입력");
 		}else{
-			((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 수정");
+			//((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 수정");
 		}
 		/*
 		Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/telegrafico.ttf");
