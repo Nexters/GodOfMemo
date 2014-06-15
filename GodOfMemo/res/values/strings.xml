@@ -13,5 +13,8 @@
     <string name="title_activity_group">GroupActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
+    <string name="title_activity_first_tutorial_fragment">FirstTutorialFragment</string>
+    <string name="title_activity_second_tutorial_fragment">SecondTutorialFragment</string>
 
 </resources>

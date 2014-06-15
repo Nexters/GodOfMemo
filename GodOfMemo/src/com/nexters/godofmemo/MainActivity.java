@@ -70,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		//쓰기버튼에 클릭이벤트를 등록한다 
 		findViewById(R.id.action_write).setOnClickListener(this);
 		findViewById(R.id.action_group).setOnClickListener(this);
+		findViewById(R.id.memoBoardTitle).setOnClickListener(this);
 
 
 		// Check if the system supports OpenGL ES 2.0.
@@ -353,6 +354,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			intent = new Intent(this, GroupActivity.class);
 			startActivityForResult(intent, CREATE_GROUP_RESULT);
 			break;
+		
+		case R.id.memoBoardTitle:
+			intent = new Intent(this, TutorialActivity.class);
+			startActivity(intent);
+			
 		}
 		
 	}
