@@ -12,8 +12,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.nexters.godofmemo.frg.FirstTutorialFragment;
-import com.nexters.godofmemo.frg.ScreenSlidePageFragment;
+import com.nexters.godofmemo.frg.FourthTutorialFragment;
 import com.nexters.godofmemo.frg.SecondTutorialFragment;
+import com.nexters.godofmemo.frg.ThirdTutorialFragment;
 import com.nexters.godofmemo.util.Font;
 
 public class TutorialActivity extends FragmentActivity {
@@ -78,22 +79,19 @@ public class TutorialActivity extends FragmentActivity {
     		switch (position) {
 
     		case 0:
-    			return new ScreenSlidePageFragment();
-
-    		case 1:
     			return new FirstTutorialFragment();
     			
-    		case 2:
+    		case 1:
     			return new SecondTutorialFragment();
     			
-    		case 3:
-    			return new ScreenSlidePageFragment();
+    		case 2:
+    			return new ThirdTutorialFragment();
     			
-    		case 4:
-    			finish();
+    		case 3:
+    			return new FourthTutorialFragment();
 
     		default:
-    			return new ScreenSlidePageFragment();
+    			return new FourthTutorialFragment();
 
     		}
             

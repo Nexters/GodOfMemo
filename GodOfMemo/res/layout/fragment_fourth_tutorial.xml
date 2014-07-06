@@ -5,10 +5,10 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/image_tutorial2"
+        android:id="@+id/image_tutorial4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/tutorial2"
+        android:background="@drawable/tutorial4"
         android:orientation="vertical" />
 
 </LinearLayout>
