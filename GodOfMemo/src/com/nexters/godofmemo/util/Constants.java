@@ -30,4 +30,7 @@ public class Constants {
 	//그룹관련 변수
 	public static final float GROUP_DEFAULT_SIZE = 0.8f;
 
+	// 뒤로가기 확인.
+	public final static int BACK = 3;
+
 }

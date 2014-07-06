@@ -10,10 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,14 +23,17 @@ import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.data.ColorDB;
 import com.nexters.godofmemo.object.Color;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.Util;
 import com.nexters.godofmemo.view.ColorSelectionView;
 
 public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
+	// layout objects
 	private EditText memoContentET;
 	private EditText memoTitleET;
-	Intent intent;
+	private TextView memoTimeTextView;
+	private View background; // 배경.
 
 	// memo color picker
 	LinearLayout memoColorPicker;
@@ -41,26 +41,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	List<ColorSelectionView> memoColorSelectionViewList = new ArrayList<ColorSelectionView>();
 	List<ColorSelectionView> bgColorSelectionViewList = new ArrayList<ColorSelectionView>();
 
-	private final int BACK = 3;
-
-	private String memoTitle;
-	private String memoContent;
-	private String memoId;
-	private int memoColor;
+	// 수정할 메모!!
+	private Memo memo;
 
 	// color
 	private int r;
 	private int g;
 	private int b;
-
-	// memo background
-	private View background;
-
-	//
-	int dWidth = 0;
-	int dHeight = 0;
-	//
-	private TextView memoTimeTextView;
 
 	// 설정 저장소
 	SharedPreferences pref;
@@ -68,8 +55,6 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// 저장소 초기화
 		pref = getSharedPreferences("memo", Context.MODE_PRIVATE);
@@ -82,85 +67,198 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		// memo size
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		dWidth = metrics.widthPixels;
-		dHeight = metrics.heightPixels;
-
-		// width
+		int dWidth = metrics.widthPixels;
 		dWidth = dWidth * 8 / 10;
 
 		// memo backgroudn control
-
 		memoTitleET = (EditText) findViewById(R.id.memo_title);
 		memoContentET = (EditText) findViewById(R.id.memo_content);
+		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
 
 		// memo color picker
 		memoColorPicker = (LinearLayout) findViewById(R.id.memo_color_picker);
 		bgColorPicker = (LinearLayout) findViewById(R.id.bg_color_picker);
 		initColorPicker();
 
-		// 텍스트 길이에 따른 배경 변화 로직 추가.
-		onTextChanged();
-
-		// memo time
-		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
-
 		// background touchevent
 		background = findViewById(R.id.memo_activiy_background);
 		background.setOnClickListener(this);
 		initBackground();
 
-		intent = getIntent();
-		memoTitle = intent.getStringExtra("selectedMemoTitle");
-		memoContent = intent.getStringExtra("selectedMemoContent");
-		//memoColor = intent.getIntExtra("selectedMemoColor",Memo.MEMO_COLOR_BLUE);
-		memoId = intent.getStringExtra("selectedMemoId");
-
-		// color
-		r = intent.getIntExtra("selectedMemoR", 100);
-		g = intent.getIntExtra("selectedMemoG", 100);
-		b = intent.getIntExtra("selectedMemoB", 100);
-
+		// 이벤트설정.
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 
 		// layout 크기 설정.
 		setLayoutSize();
 
-		// finish
-
-		// 입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
-		if (memoId == null) {
-			// 입력모드
-			findViewById(R.id.btn_del).setVisibility(View.GONE);
-			String memoDate = Util.getDate();
-			String memoTime = Util.getTime();
-			memoTimeTextView.setText(memoDate + " " + memoTime);
+		// 입력, 수정모드
+		memo = getIntent().getParcelableExtra("memo");
+		if (memo != null) {
+			initMemoInfo(memo); // 기존메모 수정.
 		} else {
-			// 수정모드
-			memoTitleET.setText(memoTitle);
-			memoContentET.setText(memoContent);
-			MemoDAO dao = new MemoDAO(getApplicationContext());
-			Memo memo = dao.getMemoInfo(memoId);
-			memoTimeTextView.setText(memo.getMemoDate() + " "
-					+ memo.getMemoTime());
+			initNewMemo(); // 신규메모
 		}
 	}
 
-	private void setLayoutSize() {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.btn_finish:
+			saveMemo(); // 메모생성!!
+			break;
+		case R.id.btn_back:
+			moveToBack(); // 뒤로가기
+			break;
+		case R.id.btn_del:
+			deleteMemo(); // 메모 삭제.
+			break;
+		case R.id.memo_activiy_background: // 배경선택시 키보드 내리기.
+			InputMethodManager inputMethodManager = (InputMethodManager) this
+					.getSystemService(Activity.INPUT_METHOD_SERVICE);
+			inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus()
+					.getWindowToken(), 0);
+			break;
+		}
+
+		// color picker 선택 시
+		if (v instanceof ColorSelectionView) {
+			onClickColorPicker(v);
+		}
+	}
+
+	/**
+	 * 색상선택 선택시.
+	 *
+	 * @param v
+	 */
+	private void onClickColorPicker(View v) {
+		if (((ColorSelectionView) v).getType() == 0) {
+			// memo
+
+			// set non selection state on every view
+			for (ColorSelectionView csv : memoColorSelectionViewList) {
+				if (csv.isSelected()) {
+					csv.setSelected(false);
+					csv.invalidate();
+				}
+			}
+
+			// set current selected view
+			v.setSelected(true);
+			v.invalidate();
+
+			// 메모색 설정.
+			setMemoColor(((ColorSelectionView) v).getColor());
+
+		} else if (((ColorSelectionView) v).getType() == 1) {
+			// bg
+			// change background
+			background
+					.setBackgroundColor(((ColorSelectionView) v).getColorBG());
+
+			// save bg color
+			pref.edit()
+					.putInt("bg_color_r",
+							((ColorSelectionView) v).getColor().getR())
+					.commit();
+			pref.edit()
+					.putInt("bg_color_g",
+							((ColorSelectionView) v).getColor().getG())
+					.commit();
+			pref.edit()
+					.putInt("bg_color_b",
+							((ColorSelectionView) v).getColor().getB())
+					.commit();
+
+		}
+
+	}
+
+	/**
+	 * 메모색상설정.
+	 *
+	 * @param color
+	 */
+	private void setMemoColor(Color color) {
+		// color
+		int c = android.graphics.Color.argb(255, color.getR(), color.getG(),
+				color.getB());
+
+		// change memo color
+		memoTitleET.setBackgroundColor(c);
+		memoContentET.setBackgroundColor(c);
+		memoTimeTextView.setBackgroundColor(c);
+
+		// save memo color
+		r = color.getR();
+		g = color.getG();
+		b = color.getB();
+
+	}
+
+	/**
+	 * 신규입력일 때 레이아웃을 초기화한다.
+	 */
+	private void initNewMemo() {
+		findViewById(R.id.btn_del).setVisibility(View.GONE);
+		String memoDate = Util.getDate();
+		String memoTime = Util.getTime();
+		memoTimeTextView.setText(memoDate + " " + memoTime);
+
+		// 메모지색깔 초기화
+		Color color = new Color("8cd39c", 140, 211, 156);
+		setMemoColor(color);
+	}
+
+	/**
+	 * 수정모드일때 메모정보를 불러오고 화면에 설정한다.
+	 *
+	 * @param memo
+	 */
+	private void initMemoInfo(Memo memo) {
+
+		String memoTitle = memo.getMemoTitle();
+		String memoContent = memo.getMemoContent();
+
+		// color
+		r = (int) (memo.getRed() * 255.f);
+		g = (int) (memo.getGreen() * 255.f);
+		b = (int) (memo.getBlue() * 255.f);
+
+		// 색상 설정
+		setMemoColor(new Color("", r, g, b));
+
+		// 수정모드
+		memoTitleET.setText(memoTitle);
+		memoContentET.setText(memoContent);
+
+		memoTimeTextView.setText(memo.getMemoDate() + " " + memo.getMemoTime());
+
+	}
+
+	/**
+	 * 어따쓰는겨???
+	 */
+	public void setLayoutSize() {
 
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		int width = metrics.widthPixels;
 		int height = metrics.heightPixels;
 
 		LinearLayout layoutBody = (LinearLayout) findViewById(R.id.memo_layout_body);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-				height / 4, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER_HORIZONTAL);
+				height / 4, LinearLayout.LayoutParams.MATCH_PARENT,
+				Gravity.CENTER_HORIZONTAL);
 		lp.weight = 1;
 		layoutBody.setOrientation(LinearLayout.VERTICAL);
 		layoutBody.setLayoutParams(lp);
 
 	}
 
+	/**
+	 * 배경설정!
+	 */
 	private void initBackground() {
 
 		int r = pref.getInt("bg_color_r", 255);
@@ -185,13 +283,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 					bgColorPicker);
 		}
 
-		// 그리기
+		// 그리기?
 
 	}
 
 	/**
 	 * memo, bg에 따라 색상 선택 뷰를 넣는다.
-	 * 
+	 *
 	 * @param c
 	 * @param type
 	 * @param list
@@ -219,143 +317,78 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 	}
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.btn_finish:
-			createMemo();
-			break;
-		case R.id.btn_back:
-			moveToBack();
-			break;
-		case R.id.btn_del:
-			deleteMemo();
-			break;
-		case R.id.memo_activiy_background:
-			InputMethodManager inputMethodManager = (InputMethodManager) this
-					.getSystemService(Activity.INPUT_METHOD_SERVICE);
-			inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus()
-					.getWindowToken(), 0);
-			break;
-		}
-
-		// color picker 선택 시
-		if (v instanceof ColorSelectionView) {
-			if (((ColorSelectionView) v).getType() == 0) {
-				// memo
-
-				// set non selection state on every view
-				for (ColorSelectionView csv : memoColorSelectionViewList) {
-					if (csv.isSelected()) {
-						csv.setSelected(false);
-						csv.invalidate();
-					}
-				}
-
-				// set current selected view
-				v.setSelected(true);
-				v.invalidate();
-
-				// change memo color
-				memoTitleET.setBackgroundColor(((ColorSelectionView) v)
-						.getColorI());
-				memoContentET.setBackgroundColor(((ColorSelectionView) v)
-						.getColorI());
-				memoTimeTextView.setBackgroundColor(((ColorSelectionView) v)
-						.getColorI());
-
-				// save memo color
-				r = ((ColorSelectionView) v).getColor().getR();
-				g = ((ColorSelectionView) v).getColor().getG();
-				b = ((ColorSelectionView) v).getColor().getB();
-
-			} else if (((ColorSelectionView) v).getType() == 1) {
-				// bg
-				// change background
-				background.setBackgroundColor(((ColorSelectionView) v)
-						.getColorBG());
-
-				// save bg color
-				pref.edit()
-						.putInt("bg_color_r",
-								((ColorSelectionView) v).getColor().getR())
-						.commit();
-				pref.edit()
-						.putInt("bg_color_g",
-								((ColorSelectionView) v).getColor().getG())
-						.commit();
-				pref.edit()
-						.putInt("bg_color_b",
-								((ColorSelectionView) v).getColor().getB())
-						.commit();
-
-			}
-		}
-	}
-
-	private void createMemo() {
+	/**
+	 * 메모저장 or 수정.!!
+	 */
+	private void saveMemo() {
+		// 메모작성내용
 		String memoTitle = memoTitleET.getText().toString();
 		String memoContent = memoContentET.getText().toString();
-		intent.putExtra("memoTitle", memoTitle);
-		intent.putExtra("memoContent", memoContent);
-		// if this case is when you tab create button, memoId's value is null.
-		// and maybe you don't use it.
-		intent.putExtra("selectedMemoId", memoId);
-		intent.putExtra("selectedMemoColor", memoColor);
+		boolean isNew = false;
 
-		// color
-		intent.putExtra("selectedMemoR", r);
-		intent.putExtra("selectedMemoG", g);
-		intent.putExtra("selectedMemoB", b);
+		// 넘겨줄 메모객체 생성.
+		if (memo == null) {
+			memo = new Memo();
+			isNew = true;
+		}
+		memo.setMemoTitle(memoTitle);
+		memo.setMemoContent(memoContent);
+		memo.setMemoDate(Util.getDate());
+		memo.setMemoTime(Util.getTime());
+		memo.setRed(r / 255f);
+		memo.setGreen(g / 255f);
+		memo.setBlue(b / 255f);
+
+		MemoDAO memoDao = new MemoDAO(getApplicationContext());
+
+		// 신규 or 수정.
+		if (isNew) {
+			// 새로작성한 메모 저장!
+			long memoIdL = memoDao.insertMemo(memo);
+			String memoId = String.valueOf(memoIdL);
+			memo.setMemoId(memoId);
+		} else {
+			// 메모 수정.
+			memoDao.updateMemo(memo);
+		}
+
+		// 소포에 담기.
+		Intent intent = new Intent();
+		intent.putExtra("memo", memo);
 
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 
+	/**
+	 * 메모 ㅅ ㅏㄱ제!!
+	 */
 	private void deleteMemo() {
-		intent.putExtra("selectedMemoId", memoId);
+		MemoDAO memoDao = new MemoDAO(getApplicationContext());
+		memoDao.delMemo(memo);
+
+		// 소포에 담기.
+		Intent intent = new Intent();
 		intent.putExtra("delete", true);
+		intent.putExtra("memo", memo);
+
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 
+	/**
+	 * 뒤로~!
+	 */
 	private void moveToBack() {
-		intent.putExtra("checkBack", BACK);
+		Intent intent = new Intent();
+		intent.putExtra("checkBack", Constants.BACK);
 		setResult(RESULT_OK, intent);
 		finish();
-	}
-
-	private void onTextChanged() {
-		memoContentET.addTextChangedListener(new TextWatcher() {
-			public void afterTextChanged(Editable s) {
-				int textLength = s.length();
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-		});
 	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// 입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
-		if (memoId == null) {
-			// ((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 입력");
-		} else {
-			// ((TextView)findViewById(R.id.memoBoardTitle)).setText("메모 수정");
-		}
-		/*
-		 * Typeface tf = Typeface.createFromAsset(getAssets(),
-		 * "fonts/telegrafico.ttf");
-		 * ((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);
-		 */
 	}
 
 }

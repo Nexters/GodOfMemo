@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.nexters.godofmemo.db.AllDBHelper;
 import com.nexters.godofmemo.db.AllSQL;
@@ -83,7 +84,6 @@ public class MemoDAO {
 		Memo returnedMemo = getMemo(cur); // 반환할 객체
 		cur.close();
 		database.close();
-		//Log.i("memo info",returnedMemo.toString());
 
 		return returnedMemo;
 	}
@@ -207,6 +207,9 @@ public class MemoDAO {
 
 		//좌표설정
 		memo.setVertices();
+
+		//로그
+		Log.i("memomemo", memo.toString());
 
 		return memo;
 	}

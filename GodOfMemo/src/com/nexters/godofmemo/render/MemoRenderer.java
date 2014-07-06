@@ -85,6 +85,7 @@ public class MemoRenderer implements Renderer {
 		background.setVertices();
 
 		for (Memo memo : memoList) {
+			//Log.i("memo", memo.toString());
 			// 텍스쳐를 입힌다.
 			memo.setMemoContentTexture();
 		}

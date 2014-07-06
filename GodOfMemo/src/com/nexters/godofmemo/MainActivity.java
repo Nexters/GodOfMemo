@@ -33,21 +33,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	public static final int UPDATE_MEMO_RESULT = 1;
 	public static final int CREATE_GROUP_RESULT = 2;
 	public static final int UPDATE_GROUP_RESULT = 3;
-	private String memoTitle;
-	private String memoContent;
 	private String memoId;
-	private int memoColor;
 	private String groupId;
 	private String groupTitle;
-	private int groupColor;
 	private float groupSize;
 	private MemoDAO memoDao;
 	private GroupDAO groupDao;
-
-	// memo color rgb
-	private int memoColorR;
-	private int memoColorG;
-	private int memoColorB;
 
 	// group color rgb
 	private int groupColorR;
@@ -140,179 +131,191 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	}
 
 	@Override
+	public void onClick(View v) {
+		Intent intent;
+		switch (v.getId()) {
+		case R.id.action_write:
+			// 메모작성!
+			intent = new Intent(this, MemoActivity.class);
+			startActivityForResult(intent, CREATE_MEMO_RESULT);
+			break;
+
+		case R.id.action_group:
+			// 그룹생성!
+			intent = new Intent(this, GroupActivity.class);
+			startActivityForResult(intent, CREATE_GROUP_RESULT);
+			break;
+
+		case R.id.memoBoardTitle:
+			// 튜토리얼
+			intent = new Intent(this, TutorialActivity.class);
+			startActivity(intent);
+
+		}
+
+	}
+
+	/**
+	 * 메모작성 화면이나 그룹작성 화면에 다녀온 후 실행함.
+	 */
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		memoDao = new MemoDAO(getApplicationContext());
-		groupDao = new GroupDAO(getApplicationContext());
-		long groupIdL;
-		long curr;
-		long memoIdL;
 		// 비정상종료면?
-		if (resultCode != Activity.RESULT_OK)
+		// 뒤로가기 버튼을 눌렀는지 체크
+		if (resultCode != Activity.RESULT_OK
+				|| data.getIntExtra("checkBack", 0) != 0) {
 			return;
+		}
 
 		// 또 다른 액티비티를 사용하고 나서 결과 값으로 생성화면과 수정화면을 구분한다.
 		switch (requestCode) {
 		case CREATE_MEMO_RESULT:
-			// 뒤로가기 버튼을 눌렀는지 체크
-			if (data.getIntExtra("checkBack", 0) != 0)
-				return;
-			memoTitle = data.getStringExtra("memoTitle");
-			memoContent = data.getStringExtra("memoContent");
-			// memoColor = data.getIntExtra("selectedMemoColor",
-			// Memo.MEMO_COLOR_BLUE);
-			System.out.println("MainActivity: " + memoColor);
-
-			// memo color
-			memoColorR = data.getIntExtra("selectedMemoR", 255);
-			memoColorG = data.getIntExtra("selectedMemoG", 255);
-			memoColorB = data.getIntExtra("selectedMemoB", 255);
-
-			// TODO 새 메모 체크하기
-			// 메모를 저장한다.
-			Memo newMemo = new Memo();
-			newMemo.setMemoTitle(memoTitle);
-			newMemo.setMemoContent(memoContent);
-			newMemo.setColor(memoColorR, memoColorG, memoColorB);
-
-			// 위치를 지정하고.
-			MemoHelper.setInitPosition(glSurfaceView, newMemo);
-			newMemo.setVertices(); // 그리기.?
-
-			// 새로 생성한 메모에 아이디를 설정.
-			memoIdL = memoDao.insertMemo(newMemo);
-			memoId = String.valueOf(memoIdL);
-			newMemo.setMemoId(memoId);
-
-			// 새 메모가 생겼을때 토스트
-			String newText = "새 메모!";
-			createToast(newText);
-
-			// 화면에 그릴 목록에 추가
-			glSurfaceView.mr.memoList.add(newMemo);
+			createMemo(data);
 			break;
 
 		case UPDATE_MEMO_RESULT:
-			if (data.getIntExtra("checkBack", 0) != 0)
-				return;
-
-			memoTitle = data.getStringExtra("memoTitle");
-			memoContent = data.getStringExtra("memoContent");
-			memoId = data.getStringExtra("selectedMemoId");
-			// memoColor = data.getIntExtra("selectedMemoColor",
-			// Memo.MEMO_COLOR_BLUE);
-
-			// memo color
-			memoColorR = data.getIntExtra("selectedMemoR", 100);
-			memoColorG = data.getIntExtra("selectedMemoG", 100);
-			memoColorB = data.getIntExtra("selectedMemoB", 100);
-
-			// 휴지통 버튼을 눌렀는지 체크
-			if (data.getBooleanExtra("delete", false)) {
-				Memo deleteMemo = memoDao.getMemoInfo(memoId);
-				memoDao.delMemo(deleteMemo);
-				removeMemo(deleteMemo);
-				createToast("메모 삭제");
-				return;
-			}
-
-			// 수정된 메모 정보를 갱신한다.
-			Memo updateMemo = memoDao.getMemoInfo(memoId);
-			updateMemo.setMemoTitle(memoTitle);
-			updateMemo.setMemoContent(memoContent);
-			// updateMemo.setMemoColor(memoColor);
-
-			// color
-			updateMemo.setColor(memoColorR, memoColorG, memoColorB);
-			memoDao.updateMemo(updateMemo);
-
-			// 새로 그리기 위해.
-			removeMemo(updateMemo);
-			glSurfaceView.mr.memoList.add(updateMemo);
+			updateMemo(data);
 			break;
 
 		case CREATE_GROUP_RESULT:
-			// 뒤로가기 버튼을 눌렀는지 체크
-			if (data.getIntExtra("checkBack", 0) != 0)
-				return;
-			// You need to check whether write code in Group Activity.
-			groupTitle = data.getStringExtra("groupTitle");
-			// groupColor = data.getIntExtra("selectedGroupColor",
-			// Group.GROUP_COLOR_BLUE);
-			groupSize = data.getFloatExtra("groupSize",
-					Constants.GROUP_DEFAULT_SIZE);
-
-			// ccolor
-			groupColorR = data.getIntExtra("selectedGroupR", 100);
-			groupColorG = data.getIntExtra("selectedGroupG", 100);
-			groupColorB = data.getIntExtra("selectedGroupB", 100);
-
-			// TODO 새 메모 체크하기
-			// 메모를 저장한다.
-			System.out.println("MainActivity  " + groupSize);
-			Group newGroup = new Group();
-			newGroup.setColor(groupColorR, groupColorG, groupColorB);
-			// 지금 시간을 구한다
-			curr = System.currentTimeMillis();
-
-			// 새로 생성한 메모에 아이디를 설정.
-			groupIdL = groupDao.insertGroup(newGroup);
-			groupId = String.valueOf(groupIdL);
-			newGroup.setGroupId(groupId);
-
-			// 새 메모가 생겼을때 토스트
-			newText = "새 그룹!";
-			createToast(newText);
-
-			// 화면에 그릴 목록에 추가
-			glSurfaceView.mr.groupList.add(newGroup);
+			createGroup(data);
 			break;
 		// TODO Please write Update logic @Subin
 		case UPDATE_GROUP_RESULT:
-			if (data.getIntExtra("checkBack", 0) != 0)
-				return;
-
-			groupTitle = data.getStringExtra("groupTitle");
-			groupId = data.getStringExtra("selectedGroupId");
-			// groupColor = data.getIntExtra("selectedGroupColor",
-			// Group.GROUP_COLOR_BLUE);
-			groupSize = data.getFloatExtra("groupSize",
-					Constants.GROUP_DEFAULT_SIZE);
-
-			// ccolor
-			groupColorR = data.getIntExtra("selectedGroupR", 100);
-			groupColorG = data.getIntExtra("selectedGroupG", 100);
-			groupColorB = data.getIntExtra("selectedGroupB", 100);
-
-			System.out
-					.println("MainActivity  UPDATE_GROUP_RESULT " + groupSize);
-			// 휴지통 버튼을 눌렀는지 체크
-			if (data.getBooleanExtra("delete", false)) {
-				Group deleteGroup = groupDao.getGroupInfo(groupId);
-				groupDao.delGroup(deleteGroup);
-				removeGroup(deleteGroup);
-				createToast("그룹 삭제");
-				return;
-			}
-
-			// 수정된 메모 정보를 갱신한다.
-			Group updateGroup = groupDao.getGroupInfo(groupId);
-			updateGroup.setGroupTitle(groupTitle);
-			// updateGroup.setGroupColor(groupColor);
-			updateGroup.setColor(groupColorR, groupColorG, groupColorB);
-			updateGroup.setWidth(groupSize);
-			updateGroup.setHeight(groupSize);
-			updateGroup.setVertices();
-			groupDao.updateGroup(updateGroup);
-
-			// 새로 그리기 위해.
-			removeGroup(updateGroup);
-			glSurfaceView.mr.groupList.add(updateGroup);
+			updateGroup(data);
 			break;
 		}
 
 		// the position of objects initialize
 		glSurfaceView.initializePosition();
+	}
+
+	/**
+	 * 그룹 수정
+	 *
+	 * @param data
+	 */
+	private void updateGroup(Intent data) {
+		groupDao = new GroupDAO(getApplicationContext());
+
+		groupTitle = data.getStringExtra("groupTitle");
+		groupId = data.getStringExtra("selectedGroupId");
+		// groupColor = data.getIntExtra("selectedGroupColor",
+		// Group.GROUP_COLOR_BLUE);
+		groupSize = data.getFloatExtra("groupSize",
+				Constants.GROUP_DEFAULT_SIZE);
+
+		// ccolor
+		groupColorR = data.getIntExtra("selectedGroupR", 100);
+		groupColorG = data.getIntExtra("selectedGroupG", 100);
+		groupColorB = data.getIntExtra("selectedGroupB", 100);
+
+		System.out.println("MainActivity  UPDATE_GROUP_RESULT " + groupSize);
+		// 휴지통 버튼을 눌렀는지 체크
+		if (data.getBooleanExtra("delete", false)) {
+			Group deleteGroup = groupDao.getGroupInfo(groupId);
+			groupDao.delGroup(deleteGroup);
+			removeGroup(deleteGroup);
+			createToast("그룹 삭제");
+			return;
+		}
+
+		// 수정된 메모 정보를 갱신한다.
+		Group updateGroup = groupDao.getGroupInfo(groupId);
+		updateGroup.setGroupTitle(groupTitle);
+		// updateGroup.setGroupColor(groupColor);
+		updateGroup.setColor(groupColorR, groupColorG, groupColorB);
+		updateGroup.setWidth(groupSize);
+		updateGroup.setHeight(groupSize);
+		updateGroup.setVertices();
+		groupDao.updateGroup(updateGroup);
+
+		// 새로 그리기 위해.
+		removeGroup(updateGroup);
+		glSurfaceView.mr.groupList.add(updateGroup);
+	}
+
+	/**
+	 * 신규 그룹 생성!!
+	 *
+	 * @param data
+	 */
+	private void createGroup(Intent data) {
+		groupDao = new GroupDAO(getApplicationContext());
+		// You need to check whether write code in Group Activity.
+		groupTitle = data.getStringExtra("groupTitle");
+		// groupColor = data.getIntExtra("selectedGroupColor",
+		// Group.GROUP_COLOR_BLUE);
+		groupSize = data.getFloatExtra("groupSize",
+				Constants.GROUP_DEFAULT_SIZE);
+
+		// ccolor
+		groupColorR = data.getIntExtra("selectedGroupR", 100);
+		groupColorG = data.getIntExtra("selectedGroupG", 100);
+		groupColorB = data.getIntExtra("selectedGroupB", 100);
+
+		// TODO 새 메모 체크하기
+		// 메모를 저장한다.
+		System.out.println("MainActivity  " + groupSize);
+		Group newGroup = new Group();
+		newGroup.setColor(groupColorR, groupColorG, groupColorB);
+
+		// 새로 생성한 메모에 아이디를 설정.
+		long groupIdL = groupDao.insertGroup(newGroup);
+		groupId = String.valueOf(groupIdL);
+		newGroup.setGroupId(groupId);
+
+		// 새 메모가 생겼을때 토스트
+		String newText = "새 그룹!";
+		createToast(newText);
+
+		// 화면에 그릴 목록에 추가
+		glSurfaceView.mr.groupList.add(newGroup);
+
+	}
+
+	/**
+	 * 메모 수정!
+	 *
+	 * @param data
+	 */
+	private void updateMemo(Intent data) {
+		//소포에 담겨온 메모~
+		Memo memo = data.getParcelableExtra("memo");
+
+		// 휴지통 버튼을 눌렀는지 체크 => 메모삭제.
+		if (data.getBooleanExtra("delete", false)) {
+			removeMemo(memo);
+			createToast("메모 삭제");
+			return;
+		}else{
+			// 새로 그리기 위해.
+			removeMemo(memo);
+			memo.setVertices();
+			glSurfaceView.mr.memoList.add(memo);
+		}
+
+	}
+
+	/**
+	 * 메모 생성!!
+	 *
+	 * @param data
+	 */
+	private void createMemo(Intent data) {
+		//소포에 받아온 메모~
+		Memo newMemo = data.getParcelableExtra("memo");
+
+		// 위치를 지정하고.
+		MemoHelper.setInitPosition(glSurfaceView, newMemo);
+
+		// 화면에 그릴 목록에 추가
+		glSurfaceView.mr.memoList.add(newMemo);
+
+		// 새 메모가 생겼을때 토스트
+		String newText = "새 메모!";
+		createToast(newText);
 	}
 
 	/**
@@ -349,33 +352,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	}
 
 	@Override
-	public void onClick(View v) {
-		Intent intent;
-		switch (v.getId()) {
-		case R.id.action_write:
-			intent = new Intent(this, MemoActivity.class);
-			startActivityForResult(intent, CREATE_MEMO_RESULT);
-			break;
-
-		case R.id.action_group:
-			intent = new Intent(this, GroupActivity.class);
-			startActivityForResult(intent, CREATE_GROUP_RESULT);
-			break;
-
-		case R.id.memoBoardTitle:
-			intent = new Intent(this, TutorialActivity.class);
-			startActivity(intent);
-
-		}
-
-	}
-
-	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// Typeface tf = Typeface.createFromAsset(getAssets(),
-		// "fonts/telegrafico.ttf");
-		// ((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);
 	}
 
 }

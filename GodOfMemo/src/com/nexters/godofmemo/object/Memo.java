@@ -144,6 +144,9 @@ public class Memo extends MovableObject implements Parcelable {
 	}
 
 	public String getMemoTitle() {
+		if(memoTitle == null){
+			memoTitle = "메모제목";
+		}
 		return memoTitle;
 	}
 
@@ -208,8 +211,8 @@ public class Memo extends MovableObject implements Parcelable {
 				+ ", memoTitle=" + memoTitle + ", memoContent=" + memoContent
 				+ ", memoDate=" + memoDate + ", memoTime=" + memoTime
 				+ ", groupId=" + groupId + ", x=" + x + ", y=" + y + ", width="
-				+ width + ", height=" + height + ", red=" + red + ", green="
-				+ green + ", blue=" + blue + "]";
+				+ width + ", height=" + height + ", red=" + red*255f + ", green="
+				+ green*255f + ", blue=" + blue*255f + "]";
 	}
 
 	// ######################

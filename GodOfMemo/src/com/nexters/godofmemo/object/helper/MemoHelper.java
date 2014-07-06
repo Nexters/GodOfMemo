@@ -156,55 +156,55 @@ public class MemoHelper {
 		int s = 0;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		// point 2
 		s++;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		// point 3
 		s++;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x + width / 2; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		// point 4
 		s++;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x + width / 2; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		// point 5
 		s++;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		// point 6
 		s++;
 		VERTEX_DATA_COLOR[s * 6 + 0] = x - width / 2; // x
 		VERTEX_DATA_COLOR[s * 6 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 6 + 2] = alpha; // a
-		VERTEX_DATA_COLOR[s * 6 + 3] = red; // r
-		VERTEX_DATA_COLOR[s * 6 + 4] = green; // g
-		VERTEX_DATA_COLOR[s * 6 + 5] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 2] = red; // r
+		VERTEX_DATA_COLOR[s * 6 + 3] = green; // g
+		VERTEX_DATA_COLOR[s * 6 + 4] = blue; // b
+		VERTEX_DATA_COLOR[s * 6 + 5] = alpha; // a
 
 		return new VertexArray(VERTEX_DATA_COLOR);
 	}
@@ -310,5 +310,7 @@ public class MemoHelper {
 
 		memo.setX(nx);
 		memo.setY(ny);
+
+		memo.setVertices();
 	}
 }
