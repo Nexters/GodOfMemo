@@ -194,7 +194,7 @@ public class MemoDAO {
 		memo.setMemoId(cursor.getString(0));
 		memo.setMemoTitle(cursor.getString(1));
 		memo.setMemoContent(cursor.getString(2));
-		memo.setMemoColor(cursor.getInt(3));
+		//memo.setMemoColor(cursor.getInt(3));
 		memo.setMemoDate(cursor.getString(4));
 		memo.setMemoTime(cursor.getString(5));
 		

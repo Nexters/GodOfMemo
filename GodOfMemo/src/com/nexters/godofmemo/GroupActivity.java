@@ -146,8 +146,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// TODO Handling tab event that user select Group!
 		groupId = intent.getStringExtra("selectedGroupId");
 		groupTitle = intent.getStringExtra("selectedGroupTitle");
-		groupColor = intent.getIntExtra("selectedGroupColor",
-				Group.GROUP_COLOR_BLUE);
+		//groupColor = intent.getIntExtra("selectedGroupColor",Group.GROUP_COLOR_BLUE);
 		groupSize = intent.getFloatExtra("selectedGroupSize", initGroupSize);
 
 		r = intent.getIntExtra("selectedGroupColorR", 128);

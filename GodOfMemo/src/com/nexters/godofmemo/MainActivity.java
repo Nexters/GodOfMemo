@@ -159,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			memoTitle = data.getStringExtra("memoTitle");
 			memoContent = data.getStringExtra("memoContent");
-			memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
+			//memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
 			System.out.println("MainActivity: "+memoColor);
 			
 			//memo color
@@ -196,7 +196,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			memoTitle = data.getStringExtra("memoTitle");
 			memoContent = data.getStringExtra("memoContent");
 			memoId = data.getStringExtra("selectedMemoId");
-			memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
+			//memoColor = data.getIntExtra("selectedMemoColor", Memo.MEMO_COLOR_BLUE);
 			
 			//memo color
 			memoColorR = data.getIntExtra("selectedMemoR", 100);
@@ -217,7 +217,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			updateMemo.setProdTime(System.currentTimeMillis());
 			updateMemo.setMemoTitle(memoTitle);
 			updateMemo.setMemoContent(memoContent);
-			updateMemo.setMemoColor(memoColor);
+			//updateMemo.setMemoColor(memoColor);
 			
 			//color
 			updateMemo.setColor(memoColorR, memoColorG, memoColorB);
@@ -233,7 +233,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			if(data.getIntExtra("checkBack",0)!=0) return;
 			// You need to check whether write code in Group Activity.
 			groupTitle = data.getStringExtra("groupTitle");
-			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			//groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 			groupSize = data.getFloatExtra("groupSize", Group.GROUP_DEFAULT_SIZE);
 			
 			//ccolor
@@ -269,7 +269,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			
 			groupTitle = data.getStringExtra("groupTitle");
 			groupId = data.getStringExtra("selectedGroupId");
-			groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
+			//groupColor = data.getIntExtra("selectedGroupColor", Group.GROUP_COLOR_BLUE);
 			groupSize = data.getFloatExtra("groupSize", Group.GROUP_DEFAULT_SIZE);
 			
 			//ccolor
@@ -291,7 +291,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			Group updateGroup = groupDao.getGroupInfo(groupId);
 			updateGroup.setProdTime(System.currentTimeMillis());
 			updateGroup.setGroupTitle(groupTitle);
-			updateGroup.setGroupColor(groupColor);
+			//updateGroup.setGroupColor(groupColor);
 			updateGroup.setColor(groupColorR, groupColorG, groupColorB);
 			updateGroup.setWidth(groupSize);
 			updateGroup.setHeight(groupSize);

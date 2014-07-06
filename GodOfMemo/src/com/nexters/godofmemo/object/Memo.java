@@ -14,6 +14,7 @@ import android.graphics.Paint;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
+import com.nexters.godofmemo.object.helper.MemoHelper;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.BitmapHelper;
@@ -29,15 +30,15 @@ public class Memo {
 
 	private static float[] VERTEX_DATA;
 	private VertexArray vertexArray;
-	
-	//텍스트 입력을 위한 정보
+
+	// 텍스트 입력을 위한 정보
 	private static float[] VERTEX_DATA_TEXT;
 	private VertexArray vertexArrayText;
-	
-	//TODO 최대 줄 개수는 임시값.
-	private static final int maxLine= 3;	
-	
-	//기본정보
+
+	// TODO 최대 줄 개수는 임시값.
+	private static final int maxLine = 7;
+
+	// 기본정보
 	private String memoId;
 	private String memoTitle;
 	private String memoContent;
@@ -45,312 +46,61 @@ public class Memo {
 	private String memoTime;
 	private int memoColor;
 	private String groupId;
-	
-	//위치, 크기정보
+
+	// 위치, 크기정보
 	private float x;
 	private float y;
 	private float width;
 	private float height;
-	
-	//색깔 
-	public static final int MEMO_COLOR_RED=0;
-	public static final int MEMO_COLOR_BLUE=1;
-	public static final int MEMO_COLOR_YELLOW=2;
-	
-	//색깔 동적으로.
+
+	// 색깔 동적으로.
 	private float red;
 	private float green;
 	private float blue;
-	
-	//생성시
-	private long prodTime=0;
-	
-	//텍스쳐 정보
-	public int texture;
-	//글씨 텍스처
+
+	// 생성시
+	private long prodTime = 0;
+
+	// 글씨 텍스처
 	public int textTexture;
-	
-	//텍스쳐 원본
-	public int textureSource;
-	
-	//텍스트를 입력한 비트맵
+	// 텍스트를 입력한 비트맵
 	public Bitmap textBitmap;
-	//비트맵 아이디
+	// 비트맵 아이디
 	public int textBitmapId;
-	
-	//텍스쳐 설정에 필요한 변수
+
+	// 텍스쳐 설정에 필요한 변수
 	private Context context;
 	private VertexArray vertexArrayColor;
-	
-	//텍스트가 들어갈 상자의 비율
-	public static float ratioW = 8f / 10f;
-	public static float ratioH = 6f / 10f;
-	
+
+	// 텍스트가 들어갈 상자의 비율
+	public static float ratioW = 10f / 10f;
+	public static float ratioH = 10f / 10f;
+
 	public static final float ratioMarginTop = 150f / 512f;
 	public static final float ratioMarginBottom = 160f / 512f;
-	public static final float ratioMarginLeft = 15f/512f;
+	public static final float ratioMarginLeft = 15f / 512f;
+
 	/**
 	 * 위치와 크기를 지정한다
 	 */
 	public void setVertices() {
-		//System.out.println("setVertices");
 
-		VERTEX_DATA = new float[24];
+		// 글자저장을 위한 저장...
+		vertexArrayText = MemoHelper.getTextVertices(x, y, width, height,
+				ratioW, ratioH);
 
-		// 중심. 
-		int s = 0;
-		VERTEX_DATA[0] = x; // x
-		VERTEX_DATA[1] = y; // y
-		VERTEX_DATA[2] = 0.5f; // S
-		VERTEX_DATA[3] = 0.5f; // T
-
-		// 왼쪽 아래
-		s++;
-		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA[s * 4 + 2] = 0f; // z
-		VERTEX_DATA[s * 4 + 3] = 1f; // z
-
-		// 오른쪽 아래
-		s++;
-		VERTEX_DATA[s * 4 + 0] = x + width / 2; // x
-		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA[s * 4 + 2] = 1f; // z
-		VERTEX_DATA[s * 4 + 3] = 1f; // z
-
-		// 오른쪽 위에 
-		s++;
-		VERTEX_DATA[s * 4 + 0] = x + width / 2; // x
-		VERTEX_DATA[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA[s * 4 + 2] = 1f; // z
-		VERTEX_DATA[s * 4 + 3] = 0f; // z
-
-		// 왼쪽 위에
-		s++;
-		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA[s * 4 + 2] = 0f; // z
-		VERTEX_DATA[s * 4 + 3] = 0f; // z
-
-		// 왼쪽 아래
-		s++;
-		VERTEX_DATA[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA[s * 4 + 2] = 0f; // z
-		VERTEX_DATA[s * 4 + 3] = 1f; // z
-
-		vertexArray = new VertexArray(VERTEX_DATA);
-		
-		//글자저장을 위한 저장...
-		setTextVertices();
-		
-		//color vertex
-		setColorVertices();
-	}
-	
-	private void setTextVertices(){
-		//System.out.println("setTextVertices");
-		VERTEX_DATA_TEXT = new float[24];
-		
-		float x = this.x;
-		float y = this.y;
-		float width = this.width;
-		float height = this.height;
-		
-		width = width * ratioW;
-		height = height * ratioH;
-
-		// 중심. 
-		int s = 0;
-		VERTEX_DATA_TEXT[0] = x; // x
-		VERTEX_DATA_TEXT[1] = y; // y
-		VERTEX_DATA_TEXT[2] = 0.5f*ratioW; // S
-		VERTEX_DATA_TEXT[3] = 0.5f*ratioH; // T
-
-		// 왼쪽 아래
-		s++;
-		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
-
-		// 오른쪽 아래
-		s++;
-		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
-		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f*ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
-
-		// 오른쪽 위에 
-		s++;
-		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
-		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f*ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f*ratioH; // z
-
-		// 왼쪽 위에
-		s++;
-		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f*ratioH; // z
-
-		// 왼쪽 아래
-		s++;
-		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
-		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f*ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f*ratioH; // z
-
-		vertexArrayText = new VertexArray(VERTEX_DATA_TEXT);
-	}
-	
-	//색깔을 설정한다.
-	public void setColor(int ri, int gi, int bi){
-		//rgb 253, 245, 229
-		//rgb 140, 211, 156
-		red = ri/255.0f;
-		green = gi/255.0f;
-		blue = bi/255.0f;
-	}
-	
-	public void setColorVertices(){
-		
-		float[] VERTEX_DATA_COLOR = new float[30];
-		
-		// Order of coordinates: X, Y, R, G, B
-
-		// point 1
-		int s = 0;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-
-		// point 2
-		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-
-		// point 3
-		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-
-		// point 4
-		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x + width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-		
-		// point 5
-		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y + height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-		
-		// point 6
-		s++;
-		VERTEX_DATA_COLOR[s * 5 + 0] = x - width / 2; // x
-		VERTEX_DATA_COLOR[s * 5 + 1] = y - height / 2; // y
-		VERTEX_DATA_COLOR[s * 5 + 2] = red; // r
-		VERTEX_DATA_COLOR[s * 5 + 3] = green; // g
-		VERTEX_DATA_COLOR[s * 5 + 4] = blue; // b
-		
-		vertexArrayColor = new VertexArray(VERTEX_DATA_COLOR);
+		// color vertex
+		vertexArrayColor = MemoHelper.getColorVertices(x, y, red, green, blue,
+				width, height);
 	}
 
-	// 텍스쳐 설정
-	public void setTexture() {
-		if (textureSource != 0) {
-			// 텍스쳐를 불러보고
-			this.texture = TextureHelper.loadTexture(context, textureSource);
-		} else if (textBitmap != null) {
-			// 비트맵이 있으면 비트맵 텍스쳐를 입힌다.
-			this.texture = TextureHelper.loadBitmpTexture(textBitmap, textBitmapId);
-		}
-		//text texture
-		this.textTexture = TextureHelper.loadTextBitmpTexture(this);
-	}
-	
-	/**
-	 * 텍스트만 그리는 함수
-	 * @param gContext
-	 * @param gResId
-	 * @param gText
-	 * @param string 
-	 * @return
-	 */
-	public static Bitmap drawTextToBitmap(String title, String content) {
-		//TODO 제목과 내용 둘다 제대로 뿌려줘야한다.
-		int width = 512;
-		int height = 512;
-
-		// Read in the resource
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		// Canvas
-		Canvas canvas = new Canvas(bitmap);
-		// new antialised Paint
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		// text color - #3D3D3D
-		paint.setColor(Color.rgb(61, 61, 61));
-		// text size in pixels
-		int textSize = (int) (32);
-		paint.setTextSize(textSize);
-		// text shadow
-		//paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-		
-		//##########
-		//텍스트 여러줄 처리
-		//##########
-		String dividedText = BitmapHelper.getDividedText(title+content);
-		
-		//텍스트를 줄바꿈 단위로 쪼갠다.
-		String[] dividedTextArray = dividedText.split("\n");
-
-		// draw text to the Canvas center
-		// TODO memo에 적합한 로직.
-		int x = (int) (width * ratioW / 2);
-		int y = (int) (height * ratioH / 2);
-
-		int loopCnt = 0;
-		int textOffsetY = 0;
-		int margin = 3;
-		int offset = (textSize + margin)/1;
-		
-		//몇번 포문을 수행할지 결정
-		if(dividedTextArray.length < maxLine){
-			loopCnt = dividedTextArray.length;
-		}else{
-			loopCnt = maxLine;
-		}
-		
-		//시작 높이 위치 정하기
-		textOffsetY = y - (offset/2)*(loopCnt-1) + margin;
-		
-		//폰트 설정
-		paint.setTypeface(Font.getTf());
-		
-		//여러줄 출력하기
-		for(int i=0; i<loopCnt; i++){
-			String text = dividedTextArray[i];
-			int px = x - (text.length() * textSize)/2;
-			int py = textOffsetY + (i*offset);
-			canvas.drawText(text, px, py, paint);
-		}
-		
-		return bitmap;
+	// 색깔을 설정한다.
+	public void setColor(int ri, int gi, int bi) {
+		// rgb 253, 245, 229
+		// rgb 140, 211, 156
+		red = ri / 255.0f;
+		green = gi / 255.0f;
+		blue = bi / 255.0f;
 	}
 
 	/**
@@ -358,64 +108,47 @@ public class Memo {
 	 * 
 	 * @param context
 	 */
-	public Memo(Context context){
+	public Memo(Context context) {
 		this.context = context;
 	}
-	
-	//신규입력시
-	public Memo(Context context, MemoGLView memoGLView , String title, String text) {
+
+	// 신규입력시
+	public Memo(Context context, MemoGLView memoGLView, String title,
+			String text) {
 		this.context = context;
-		//제목과 내용 채우고
+		// 제목과 내용 채우고
 		setMemoTitle(title);
 		setMemoContent(text);
-		
-		//위치와 크기
-		setWidth(0.8f);
-		setHeight(0.8f);
-		
-		float tempX = (memoGLView.mr.width)/2; //폰의 보여지는 width 값 
-		float tempY = (memoGLView.mr.height)/2;
-		
+
+		// 위치와 크기
+		//setWidth(0.8f);
+		//setHeight(0.8f);
+
+		float tempX = (memoGLView.mr.width) / 2; // 폰의 보여지는 width 값
+		float tempY = (memoGLView.mr.height) / 2;
+
 		float nx = memoGLView.getNormalizedX(tempX);
 		float ny = memoGLView.getNormalizedY(tempY);
-		
+
 		setX(nx);
 		setY(ny);
-		
+
 		setVertices();
-		
+
 	}
 
-	public void drawMemo(TextureShaderProgram textureProgram) {
-		//메모지 그리기
-		if(vertexArray == null){
-			//System.out.println("vertexArray null!!!!"+this.getMemoContent());
-		}else{
-			//System.out.println("vertexArray not null....."+this.getMemoContent());
-		}
-		vertexArray.setVertexAttribPointer(0,
-				textureProgram.getPositionAttributeLocation(),
-				POSITION_COMPONENT_COUNT, STRIDE);
-
-		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
-				textureProgram.getTextureCoordinatesAttributeLocation(),
-				TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
-		
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+	// 텍스쳐 설정
+	public void setTexture() {
+		// text texture
+		this.textTexture = TextureHelper.loadTextBitmpTexture(this);
 	}
-	
-    private static final int COLOR_COMPONENT_COUNT = 3;
-    private static final int COLOR_STRIDE = 
-        (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) 
-        * BYTES_PER_FLOAT;
-	
+
+	private static final int COLOR_COMPONENT_COUNT = 3;
+	private static final int COLOR_STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT)
+			* BYTES_PER_FLOAT;
+
 	public void drawMemo(ColorShaderProgram colorProgram) {
-		//메모지 그리기
-		if(vertexArray == null){
-			//System.out.println("vertexArray null!!!!"+this.getMemoContent());
-		}else{
-			//System.out.println("vertexArray not null....."+this.getMemoContent());
-		}
+
 		vertexArrayColor.setVertexAttribPointer(0,
 				colorProgram.getPositionAttributeLocation(),
 				POSITION_COMPONENT_COUNT, COLOR_STRIDE);
@@ -423,12 +156,12 @@ public class Memo {
 		vertexArrayColor.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
 				colorProgram.getColorAttributeLocation(),
 				COLOR_COMPONENT_COUNT, COLOR_STRIDE);
-		
+
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
-	
+
 	public void drawText(TextureShaderProgram textureProgram) {
-	//텍스트에 대한 처리...
+		// 텍스트에 대한 처리...
 		vertexArrayText.setVertexAttribPointer(0,
 				textureProgram.getPositionAttributeLocation(),
 				POSITION_COMPONENT_COUNT, STRIDE);
@@ -436,26 +169,26 @@ public class Memo {
 		vertexArrayText.setVertexAttribPointer(POSITION_COMPONENT_COUNT,
 				textureProgram.getTextureCoordinatesAttributeLocation(),
 				TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
-		
+
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 	}
-	
-	//##############
+
+	// ##############
 	// Getter, Setter
-	//##############
+	// ##############
 
 	public String getMemoId() {
-		if(memoId == null){
+		if (memoId == null) {
 			return "";
-		}else{
+		} else {
 			return memoId;
 		}
 	}
 
 	public void setMemoId(String memoId) {
 		this.memoId = memoId;
-	}	
-	
+	}
+
 	public String getMemoTitle() {
 		return memoTitle;
 	}
@@ -469,9 +202,9 @@ public class Memo {
 	}
 
 	public void setMemoContent(String memoContent) {
-		if(memoContent == null){
+		if (memoContent == null) {
 			memoContent = "test";
-		}		
+		}
 		this.memoContent = memoContent;
 	}
 
@@ -532,7 +265,7 @@ public class Memo {
 	}
 
 	public long getProdTime() {
-		
+
 		return prodTime;
 	}
 
@@ -544,25 +277,7 @@ public class Memo {
 		return memoColor;
 	}
 
-	public void setMemoColor(int memoColor) {
-		this.memoColor = memoColor;
-		//메모내용을 담은 비트맵 생성
-		switch(memoColor){
-		case MEMO_COLOR_BLUE:
-			this.textBitmapId = R.drawable.memo_onboard_blue;
-			break;
-		case MEMO_COLOR_RED:
-			this.textBitmapId = R.drawable.memo_onboard_red;
-			break;
-		case MEMO_COLOR_YELLOW:
-			this.textBitmapId = R.drawable.memo_onboard_yellow;
-			break;
-		}
-		this.textBitmap = BitmapHelper.drawBitmap(context, this.textBitmapId);
-	}
-	
-	
-	//메모 색깔...
+	// 메모 색깔...
 	public float getRed() {
 		return red;
 	}
@@ -589,15 +304,21 @@ public class Memo {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o instanceof Memo){
-			Memo t = (Memo)o;
-			if(this.getMemoId().equals(t.getMemoId())){
+		if (o instanceof Memo) {
+			Memo t = (Memo) o;
+			if (this.getMemoId().equals(t.getMemoId())) {
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-		}else{
+		} else {
 			return super.equals(o);
 		}
+	}
+
+	public static Bitmap drawTextToBitmap(String memoTitle, String memoContent) {
+
+		return MemoHelper.drawTextToBitmap(memoTitle, memoContent, ratioW,
+				ratioH, maxLine);
 	}
 }

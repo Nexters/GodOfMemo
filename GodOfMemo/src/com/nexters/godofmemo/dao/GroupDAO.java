@@ -171,7 +171,7 @@ public class GroupDAO {
 		//basic information
 		group.setGroupId(cursor.getString(0));
 		group.setGroupTitle(cursor.getString(1));
-		group.setGroupColor(cursor.getInt(2));
+		//group.setGroupColor(cursor.getInt(2));
 		group.setGroupSymbolId(cursor.getString(3));
 		group.setGroupDate(cursor.getString(4));
 		group.setGroupTime(cursor.getString(5));

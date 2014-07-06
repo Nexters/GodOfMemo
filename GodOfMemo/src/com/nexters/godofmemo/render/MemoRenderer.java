@@ -85,7 +85,7 @@ public class MemoRenderer implements Renderer {
         background.setColorVertices();
         
         for(Group group: groupList){
-        	group.setTexture();
+        	//group.setTexture();
         }
         
         for(Memo memo: memoList){

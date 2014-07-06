@@ -112,8 +112,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		intent = getIntent();
 		memoTitle = intent.getStringExtra("selectedMemoTitle");
 		memoContent = intent.getStringExtra("selectedMemoContent");
-		memoColor = intent.getIntExtra("selectedMemoColor",
-				Memo.MEMO_COLOR_BLUE);
+		//memoColor = intent.getIntExtra("selectedMemoColor",Memo.MEMO_COLOR_BLUE);
 		memoId = intent.getStringExtra("selectedMemoId");
 
 		// color

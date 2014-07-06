@@ -20,7 +20,7 @@ public class BitmapHelper {
 	private static Map<Integer, Bitmap> bitmapCache = new HashMap<Integer, Bitmap>();
 	
 	//메모 한줄 최대 길이
-	private static final int maxLength = 10;	//TODO 최대길이는 임시값.
+	private static final int maxLength = 15;	//TODO 최대길이는 임시값.
 	//메모 최대 줄 개수
 	
 
