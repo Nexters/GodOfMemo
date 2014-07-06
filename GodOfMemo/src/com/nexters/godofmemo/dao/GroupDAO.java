@@ -96,7 +96,7 @@ public class GroupDAO {
 		ContentValues values = new ContentValues();
 
 		values.put(AllSQL.COL_GROUP_TITLE , group.getGroupTitle());
-		//values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
+		values.put(AllSQL.COL_GROUP_RADIUS, group.getRadius());
 		//values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
 		values.put(AllSQL.COL_GROUP_DATE , group.getGroupDate());
 		values.put(AllSQL.COL_GROUP_TIME , group.getGroupTime());
@@ -127,7 +127,7 @@ public class GroupDAO {
 		ContentValues values = new ContentValues();
 
 		values.put(AllSQL.COL_GROUP_TITLE , group.getGroupTitle());
-		//values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
+		values.put(AllSQL.COL_GROUP_RADIUS, group.getRadius());
 		//values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
 		values.put(AllSQL.COL_GROUP_DATE , group.getGroupDate());
 		values.put(AllSQL.COL_GROUP_TIME , group.getGroupTime());
