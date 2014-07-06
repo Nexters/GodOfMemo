@@ -7,26 +7,25 @@ import static com.nexters.godofmemo.util.Constants.COLOR_STRIDE;
 import static com.nexters.godofmemo.util.Constants.POSITION_COMPONENT_COUNT;
 import static com.nexters.godofmemo.util.Constants.STRIDE;
 import static com.nexters.godofmemo.util.Constants.TEXTURE_COORDINATES_COMPONENT_COUNT;
+import static com.nexters.godofmemo.util.Constants.numPoints;
 
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.object.helper.GroupHelper;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 
-public class Group extends MovableObject {
+public class Group extends MovableObject implements Parcelable {
 
 	// 그룹배경 위치정보 저장.
 	private VertexArray vertexArray;
 	// 그룹제목을 그리기 위한 위치정보 저장.
 	private VertexArray vertexArrayText;
-
-	// Circle 형태로 그릴 때 필요한 변수들.
-	private final int numPoints = 70;
 
 	// 글씨 텍스처
 	public int textTexture; // 렌더러에서 참조.
@@ -36,17 +35,13 @@ public class Group extends MovableObject {
 	// 기본정보
 	// 그룹의 기본 정보
 	private String groupId;
-	private int groupColor; // 일단은 case를 나누는 용도. 단계를 나눌 필요가 없다면 삭제.
 	private String groupTitle;
-	private String groupSymbolId;
 	private HashMap<String, Memo> groupMemoList; // memoId를 key로 Memo를 value로
 													// 정리.
-	// Symbol 에 대한 논의도 필요.
 	private String groupDate;
 	private String groupTime;
 
-	// 크기 기본값
-	private final float radius = 2f;
+	private float radius = 2f;
 
 	// *********************
 	// ##########################
@@ -57,6 +52,15 @@ public class Group extends MovableObject {
 	 * @param context
 	 */
 	public Group() {
+	}
+
+	/**
+	 * Parcelable로 만들어질 때.
+	 *
+	 * @param src
+	 */
+	public Group(Parcel src) {
+		readFromParcel(src);
 	}
 
 	/**
@@ -116,10 +120,6 @@ public class Group extends MovableObject {
 		this.groupId = groupId;
 	}
 
-	public int getGroupColor() {
-		return groupColor;
-	}
-
 	public String getGroupTitle() {
 		return groupTitle;
 	}
@@ -129,14 +129,6 @@ public class Group extends MovableObject {
 			groupTitle = "test";
 		}
 		this.groupTitle = groupTitle;
-	}
-
-	public String getGroupSymbolId() {
-		return groupSymbolId;
-	}
-
-	public void setGroupSymbolId(String groupSymbolId) {
-		this.groupSymbolId = groupSymbolId;
 	}
 
 	public HashMap<String, Memo> getGroupMemoList() {
@@ -163,13 +155,106 @@ public class Group extends MovableObject {
 		this.groupTime = groupTime;
 	}
 
-	public static Bitmap drawTextToBitmap(String groupTitle) {
-
-		return null;
+	public float getRadius() {
+		return radius;
 	}
 
-	// ////////////////////////
-	// //////////////////////////
-	// //////////////////////
+	public void setRadius(float radius) {
+		this.radius = radius;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Group) {
+			Group t = (Group) o;
+			if (this.getGroupId().equals(t.getGroupId())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return super.equals(o);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Group [vertexArray=" + vertexArray + ", vertexArrayText="
+				+ vertexArrayText + ", textTexture=" + textTexture
+				+ ", groupId=" + groupId + ", groupTitle=" + groupTitle
+				+ ", groupMemoList=" + groupMemoList + ", groupDate="
+				+ groupDate + ", groupTime=" + groupTime + ", radius=" + radius
+				+ ", x=" + x + ", y=" + y + ", width=" + width + ", height="
+				+ height + ", red=" + red + ", green=" + green + ", blue="
+				+ blue + "]";
+	}
+
+	// ################
+	// 소포!!!
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+
+		// 기본정보
+		dest.writeString(groupId);
+		dest.writeString(groupTitle);
+
+		dest.writeString(groupDate);
+		dest.writeString(groupTime);
+
+		dest.writeFloat(radius);
+
+		// 위치,크기,색상정보
+		dest.writeFloat(x);
+		dest.writeFloat(y);
+		dest.writeFloat(width);
+		dest.writeFloat(height);
+		dest.writeFloat(red);
+		dest.writeFloat(green);
+		dest.writeFloat(blue);
+
+	}
+
+	/**
+	 * 소포에서 자료를 꺼내온다!
+	 *
+	 * @param in
+	 */
+	private void readFromParcel(Parcel in) {
+		groupId = in.readString();
+		groupTitle = in.readString();
+
+		groupDate = in.readString();
+		groupTime = in.readString();
+
+		radius = in.readFloat();
+
+		x = in.readFloat();
+		y = in.readFloat();
+		width = in.readFloat();
+		height = in.readFloat();
+		red = in.readFloat();
+		green = in.readFloat();
+		blue = in.readFloat();
+
+	}
+
+	public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>() {
+		@Override
+		public Group createFromParcel(Parcel src) {
+			return new Group(src);
+		}
+
+		@Override
+		public Group[] newArray(int size) {
+			return new Group[size];
+		}
+	};
 
 }

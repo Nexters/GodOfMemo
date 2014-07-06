@@ -94,10 +94,10 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		// 입력, 수정모드
 		memo = getIntent().getParcelableExtra("memo");
-		if (memo != null) {
-			initMemoInfo(memo); // 기존메모 수정.
-		} else {
+		if (memo == null) {
 			initNewMemo(); // 신규메모
+		} else {
+			initMemoInfo(memo); // 기존메모 수정.
 		}
 	}
 

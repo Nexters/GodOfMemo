@@ -1,5 +1,9 @@
 package com.nexters.godofmemo;
 
+import static com.nexters.godofmemo.util.Constants.CREATE_GROUP_RESULT;
+import static com.nexters.godofmemo.util.Constants.CREATE_MEMO_RESULT;
+import static com.nexters.godofmemo.util.Constants.UPDATE_GROUP_RESULT;
+import static com.nexters.godofmemo.util.Constants.UPDATE_MEMO_RESULT;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -15,11 +19,10 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.GroupDAO;
-import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.object.helper.GroupHelper;
 import com.nexters.godofmemo.object.helper.MemoHelper;
-import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.Font;
 import com.nexters.godofmemo.view.MemoGLView;
 
@@ -29,21 +32,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	 */
 	private MemoGLView glSurfaceView;
 	private boolean rendererSet = false;
-	public static final int CREATE_MEMO_RESULT = 0;
-	public static final int UPDATE_MEMO_RESULT = 1;
-	public static final int CREATE_GROUP_RESULT = 2;
-	public static final int UPDATE_GROUP_RESULT = 3;
-	private String memoId;
-	private String groupId;
-	private String groupTitle;
-	private float groupSize;
-	private MemoDAO memoDao;
-	private GroupDAO groupDao;
-
-	// group color rgb
-	private int groupColorR;
-	private int groupColorG;
-	private int groupColorB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -197,43 +185,24 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	 * @param data
 	 */
 	private void updateGroup(Intent data) {
-		groupDao = new GroupDAO(getApplicationContext());
+		// 소포에 담겨온 메모~
+		Group group = data.getParcelableExtra("group");
 
-		groupTitle = data.getStringExtra("groupTitle");
-		groupId = data.getStringExtra("selectedGroupId");
-		// groupColor = data.getIntExtra("selectedGroupColor",
-		// Group.GROUP_COLOR_BLUE);
-		groupSize = data.getFloatExtra("groupSize",
-				Constants.GROUP_DEFAULT_SIZE);
+		//TODO parcel에서 그룹이 담고있는 메모정보를 넘기지 못해서 DB에서 다시 호출한다.
+		GroupDAO groupDao = new GroupDAO(getApplicationContext());
+		group = groupDao.getGroupInfo(group.getGroupId());
 
-		// ccolor
-		groupColorR = data.getIntExtra("selectedGroupR", 100);
-		groupColorG = data.getIntExtra("selectedGroupG", 100);
-		groupColorB = data.getIntExtra("selectedGroupB", 100);
-
-		System.out.println("MainActivity  UPDATE_GROUP_RESULT " + groupSize);
 		// 휴지통 버튼을 눌렀는지 체크
 		if (data.getBooleanExtra("delete", false)) {
-			Group deleteGroup = groupDao.getGroupInfo(groupId);
-			groupDao.delGroup(deleteGroup);
-			removeGroup(deleteGroup);
+			removeGroup(group);
 			createToast("그룹 삭제");
-			return;
+		} else {
+			// 새로 그리기 위해.
+			removeGroup(group);
+			group.setVertices();
+			glSurfaceView.mr.groupList.add(group);
 		}
 
-		// 수정된 메모 정보를 갱신한다.
-		Group updateGroup = groupDao.getGroupInfo(groupId);
-		updateGroup.setGroupTitle(groupTitle);
-		// updateGroup.setGroupColor(groupColor);
-		updateGroup.setColor(groupColorR, groupColorG, groupColorB);
-		updateGroup.setWidth(groupSize);
-		updateGroup.setHeight(groupSize);
-		updateGroup.setVertices();
-		groupDao.updateGroup(updateGroup);
-
-		// 새로 그리기 위해.
-		removeGroup(updateGroup);
-		glSurfaceView.mr.groupList.add(updateGroup);
 	}
 
 	/**
@@ -242,29 +211,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	 * @param data
 	 */
 	private void createGroup(Intent data) {
-		groupDao = new GroupDAO(getApplicationContext());
-		// You need to check whether write code in Group Activity.
-		groupTitle = data.getStringExtra("groupTitle");
-		// groupColor = data.getIntExtra("selectedGroupColor",
-		// Group.GROUP_COLOR_BLUE);
-		groupSize = data.getFloatExtra("groupSize",
-				Constants.GROUP_DEFAULT_SIZE);
+		// 소포에 담겨온 메모~
+		Group newGroup = data.getParcelableExtra("group");
 
-		// ccolor
-		groupColorR = data.getIntExtra("selectedGroupR", 100);
-		groupColorG = data.getIntExtra("selectedGroupG", 100);
-		groupColorB = data.getIntExtra("selectedGroupB", 100);
-
-		// TODO 새 메모 체크하기
-		// 메모를 저장한다.
-		System.out.println("MainActivity  " + groupSize);
-		Group newGroup = new Group();
-		newGroup.setColor(groupColorR, groupColorG, groupColorB);
-
-		// 새로 생성한 메모에 아이디를 설정.
-		long groupIdL = groupDao.insertGroup(newGroup);
-		groupId = String.valueOf(groupIdL);
-		newGroup.setGroupId(groupId);
+		// 위치를 지정하고.
+		GroupHelper.setInitPosition(glSurfaceView, newGroup);
 
 		// 새 메모가 생겼을때 토스트
 		String newText = "새 그룹!";
@@ -281,7 +232,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	 * @param data
 	 */
 	private void updateMemo(Intent data) {
-		//소포에 담겨온 메모~
+		// 소포에 담겨온 메모~
 		Memo memo = data.getParcelableExtra("memo");
 
 		// 휴지통 버튼을 눌렀는지 체크 => 메모삭제.
@@ -289,7 +240,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 			removeMemo(memo);
 			createToast("메모 삭제");
 			return;
-		}else{
+		} else {
 			// 새로 그리기 위해.
 			removeMemo(memo);
 			memo.setVertices();
@@ -304,7 +255,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	 * @param data
 	 */
 	private void createMemo(Intent data) {
-		//소포에 받아온 메모~
+		// 소포에 받아온 메모~
 		Memo newMemo = data.getParcelableExtra("memo");
 
 		// 위치를 지정하고.

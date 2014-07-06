@@ -11,7 +11,8 @@ import com.nexters.godofmemo.object.Color;
 
 public class ColorSelectionView extends View {
 
-	private Context context;
+	@SuppressWarnings("unused")
+	private final Context context;
 	private Color color;
 	private boolean isSelected = false;
 	private int type = 0; // memo=0, bg=1, group=2;
@@ -81,10 +82,12 @@ public class ColorSelectionView extends View {
 		return c;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return isSelected;
 	}
 
+	@Override
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}

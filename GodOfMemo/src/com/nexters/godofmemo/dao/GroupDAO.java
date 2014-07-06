@@ -26,7 +26,7 @@ public class GroupDAO {
 	private SQLiteDatabase database;
 	private final AllDBHelper dbHelper;
 	private final String[] allColumns = {AllSQL.COL_GROUP_ID,
-			AllSQL.COL_GROUP_TITLE, AllSQL.COL_GROUP_COLOR,
+			AllSQL.COL_GROUP_TITLE, AllSQL.COL_GROUP_RADIUS,
 			AllSQL.COL_GROUP_SYMBOLID, AllSQL.COL_GROUP_DATE,
 			AllSQL.COL_GROUP_TIME, AllSQL.COL_GROUP_X,
 			AllSQL.COL_GROUP_Y, AllSQL.COL_GROUP_WIDTH,
@@ -96,8 +96,8 @@ public class GroupDAO {
 		ContentValues values = new ContentValues();
 
 		values.put(AllSQL.COL_GROUP_TITLE , group.getGroupTitle());
-		values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
-		values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
+		//values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
+		//values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
 		values.put(AllSQL.COL_GROUP_DATE , group.getGroupDate());
 		values.put(AllSQL.COL_GROUP_TIME , group.getGroupTime());
 
@@ -127,8 +127,8 @@ public class GroupDAO {
 		ContentValues values = new ContentValues();
 
 		values.put(AllSQL.COL_GROUP_TITLE , group.getGroupTitle());
-		values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
-		values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
+		//values.put(AllSQL.COL_GROUP_COLOR , group.getGroupColor());
+		//values.put(AllSQL.COL_GROUP_SYMBOLID , group.getGroupSymbolId());
 		values.put(AllSQL.COL_GROUP_DATE , group.getGroupDate());
 		values.put(AllSQL.COL_GROUP_TIME , group.getGroupTime());
 
@@ -171,8 +171,8 @@ public class GroupDAO {
 		//basic information
 		group.setGroupId(cursor.getString(0));
 		group.setGroupTitle(cursor.getString(1));
-		//group.setGroupColor(cursor.getInt(2));
-		group.setGroupSymbolId(cursor.getString(3));
+		group.setRadius(cursor.getFloat(2));
+		//group.setGroupSymbolId(cursor.getString(3));
 		group.setGroupDate(cursor.getString(4));
 		group.setGroupTime(cursor.getString(5));
 

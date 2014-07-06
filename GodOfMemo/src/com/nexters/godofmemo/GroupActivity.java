@@ -1,9 +1,13 @@
 package com.nexters.godofmemo;
 
+import static com.nexters.godofmemo.util.Constants.BACK;
+import static com.nexters.godofmemo.util.Constants.centerPosition;
+import static com.nexters.godofmemo.util.Constants.maxGroupSize;
+import static com.nexters.godofmemo.util.Constants.minGroupSize;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,48 +34,36 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 
+import com.nexters.godofmemo.dao.GroupDAO;
 import com.nexters.godofmemo.data.ColorDB;
 import com.nexters.godofmemo.object.Color;
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.util.Util;
 import com.nexters.godofmemo.view.ColorSelectionView;
 
-@SuppressLint("NewApi")
 public class GroupActivity extends ActionBarActivity implements
 		OnClickListener, OnSeekBarChangeListener {
-	Intent intent;
 
+	// layouts.
 	private SeekBar bar;
-	private TextView seekBarAction;
-	private int width, height;
-	private int changedGroupSize;
-	private int initGroupSize;
-	private View group; // ImageView는 안된다
+	private ImageView groupImg; // ImageView는 안된다
 	private View groupImgArea;
-	private View groupSelectionLayout;
 	private View background;
 	private EditText groupTitleInput;
-
-	private String groupId;
-	private String groupTitle;
-	private int groupColor;
-	private float groupSize;
-
-	private final int BACK = 3;
-
-	// 그룹 영역 크기
-	int dHeight = 0;
-	// 그룹 중심 위치
-	int centerPosition = 50;
-	// 그룹 최소 크기(%)
-	int minGroupSize = 30;
-	// 그룹 최대 크기(%)
-	int maxGroupSize = 80;
+	private ImageView btn_del;
 
 	// memo color picker
-	LinearLayout groupColorPicker;
-	List<ColorSelectionView> groupColorSelectionViewList = new ArrayList<ColorSelectionView>();
+	private LinearLayout groupColorPicker;
+	private final List<ColorSelectionView> groupColorSelectionViewList = new ArrayList<ColorSelectionView>();
+
+	// 수정시 갖고있을 그룹정보.
+	private Group group;
+
+	// 그룹 크기변경을 위한 변수.
+	private int changedGroupSize;
+	private int initGroupSize;
+	private int dHeight;
 
 	// color
 	private int r;
@@ -84,11 +76,24 @@ public class GroupActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Load the layout
-		setContentView(R.layout.activity_group);
 
 		// 저장소 초기화
 		pref = getSharedPreferences("memo", Context.MODE_PRIVATE);
+
+		// 유틸 초기화
+		Util.init(getApplicationContext());
+
+		// 커스텀 액션바
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		getSupportActionBar().setCustomView(R.layout.actionbar_group);
+
+		// Load the layout
+		setContentView(R.layout.activity_group);
+
+		groupImg = (ImageView) findViewById(R.id.group_img);
+		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
+		groupImgArea = findViewById(R.id.group_img_area);
+		btn_del = (ImageView) findViewById(R.id.grp_btn_del);
 
 		// init color picker
 		groupColorPicker = (LinearLayout) findViewById(R.id.group_color_picker);
@@ -99,76 +104,37 @@ public class GroupActivity extends ActionBarActivity implements
 		background.setOnClickListener(this);
 		initBackground();
 
-		// 유틸 초기화
-		Util.init(getApplicationContext());
-
-		group = findViewById(R.id.group_img);
-		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
-		groupImgArea = findViewById(R.id.group_img_area);
-
-		// 커스텀 액션바
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-		getSupportActionBar().setCustomView(R.layout.actionbar_group);
+		// 크기조절막대.
+		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
+		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
 
 		// 그룹 이미지 배경 레이아웃 위치설정?!
-		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		dHeight = metrics.heightPixels;
-		dHeight = dHeight * centerPosition / 100;
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, dHeight);
-		// lp.addRule(RelativeLayout.ABOVE, R.id.seekBar);
-		groupImgArea.setLayoutParams(lp);
+		initGroupImgArea();
 
-		// 레이아웃에서 그룹 크기 초기값
-		initGroupSize = dHeight * minGroupSize / 100;
-		changedGroupSize = initGroupSize;
-		// 그룹이미지를 위치한다
-		Util.setPosition(group, initGroupSize, initGroupSize, 50,
-				centerPosition / 2);
-		// 그룹제목 위치
-		Util.setPosition(groupTitleInput,initGroupSize, initGroupSize,  50, centerPosition / 2);
+		// since we are using this class as the listener the class is "this"
+		// make text label for seekBarAction value
+		// 이벤트설정
+		findViewById(R.id.grp_btn_back).setOnClickListener(this);
+		findViewById(R.id.grp_btn_del).setOnClickListener(this);
+		btn_del.setOnClickListener(this);
 
 		groupTitleInput.bringToFront();
 
-		bar = (SeekBar) findViewById(R.id.seekBar); // make seekbar object
-		bar.setOnSeekBarChangeListener(this); // set seekbar listener.
-		// since we are using this class as the listener the class is "this"
-		// make text label for seekBarAction value
-		findViewById(R.id.grp_btn_back).setOnClickListener(this);
-		findViewById(R.id.grp_btn_del).setOnClickListener(this);
-		ImageView btn_del = (ImageView) findViewById(R.id.grp_btn_del);
-		btn_del.setOnClickListener(this);
-
 		// get Intent
-		intent = getIntent();
+		group = getIntent().getParcelableExtra("group");
+
 		// When you update the group's status.
 		// TODO Handling tab event that user select Group!
-		groupId = intent.getStringExtra("selectedGroupId");
-		groupTitle = intent.getStringExtra("selectedGroupTitle");
-		//groupColor = intent.getIntExtra("selectedGroupColor",Group.GROUP_COLOR_BLUE);
-		groupSize = intent.getFloatExtra("selectedGroupSize", initGroupSize);
 
-		r = intent.getIntExtra("selectedGroupColorR", 128);
-		g = intent.getIntExtra("selectedGroupColorG", 128);
-		b = intent.getIntExtra("selectedGroupColorB", 128);
-
-		// Setting values likes size or color of the group;
-		if (groupId == null) {
-			btn_del.setVisibility(View.INVISIBLE);
+		// 신규입력인가?!
+		if (group == null) {
+			initNewGroup();
 		} else {
-			float dSize = adjustGroupSize(groupSize);
-			// 그룹 크기 조절
-			Util.setPosition(group, (int) dSize, (int) dSize, 50,
-					centerPosition / 2);
-			// set progress of the seekbar
-			int progress = adjustProgress((int) dSize);
-			bar.setProgress(progress);
-			// set groupTitle
-			groupTitleInput.setText(groupTitle);
-
+			// 수정일 때.
+			initGroupInfo();
 		}
 
-		//set click event
+		// set click event
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 	}
 
@@ -176,15 +142,19 @@ public class GroupActivity extends ActionBarActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_finish:
+			// 그룹 생성!!
 			createGroup();
 			break;
 		case R.id.grp_btn_back:
+			// 뒤로가기
 			moveToBack();
 			break;
 		case R.id.grp_btn_del:
+			// 그룹 삭제
 			deleteGroup();
 			break;
 		case R.id.group_activiy_background:
+			// 배경 클릭 시 키보드 숨김.
 			InputMethodManager inputMethodManager = (InputMethodManager) this
 					.getSystemService(Activity.INPUT_METHOD_SERVICE);
 			inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus()
@@ -194,39 +164,144 @@ public class GroupActivity extends ActionBarActivity implements
 
 		// color picker 선택 시
 		if (v instanceof ColorSelectionView) {
-			if (((ColorSelectionView) v).getType() == 2) {
-				// memo
-
-				// set non selection state on every view
-				for (ColorSelectionView csv : groupColorSelectionViewList) {
-					if (csv.isSelected()) {
-						csv.setSelected(false);
-						csv.invalidate();
-					}
-				}
-
-				// set current selected view
-				v.setSelected(true);
-				v.invalidate();
-
-				// change memo color
-				// group.setBackgroundColor(((ColorSelectionView)
-				// v).getColorI());
-				int center = ((ColorSelectionView) v).getColorI();
-				int outline = ((ColorSelectionView) v).getColorBG();
-				Drawable drawable = new BitmapDrawable(getResources(),
-						makeRadGrad(center, outline));
-				//group.setBackground(drawable);
-
-				// save memo color
-				r = ((ColorSelectionView) v).getColor().getR();
-				g = ((ColorSelectionView) v).getColor().getG();
-				b = ((ColorSelectionView) v).getColor().getB();
-
-			}
+			onClickColorPicker(v);
 		}
 	}
 
+	/**
+	 * 수정모드 시 기존 그룹정보 설정.
+	 */
+	private void initGroupInfo() {
+
+		// 그룹 크기 조절
+		float dSize = adjustGroupSize(group.getRadius());
+		Util.setPosition(groupImg, (int) dSize, (int) dSize, 50,
+				centerPosition / 2);
+
+		// set progress of the seekbar
+		int progress = adjustProgress((int) dSize);
+		bar.setProgress(progress);
+
+		// set groupTitle
+		groupTitleInput.setText(group.getGroupTitle());
+
+		//이미지
+		r = (int) (group.getRed() * 255f);
+		g = (int) (group.getGreen() * 255f);
+		b = (int) (group.getBlue() * 255f);
+
+		int center = android.graphics.Color.argb(255, r, g, b);
+		int outline = android.graphics.Color.argb(128, r, g, b);
+
+		setGroupImgColor(center, outline);
+
+	}
+
+	/**
+	 * 그룹 신규 생성시 화면조정.
+	 */
+	private void initNewGroup() {
+		btn_del.setVisibility(View.INVISIBLE);
+
+		// 그룹 크기 조절
+		// TODO 임시값.
+		int dSize = 300;
+		Util.setPosition(groupImg, dSize, dSize, 50, centerPosition / 2);
+		// set progress of the seekbar
+		int progress = adjustProgress(dSize);
+		bar.setProgress(progress);
+
+		//초기색상값.
+		r = 140;
+		g = 211;
+		b = 156;
+
+		//초기 그룹배경 지정!
+		int center = android.graphics.Color.argb(255, r, g, b);
+		int outline = android.graphics.Color.argb(128, r, g, b);
+		setGroupImgColor(center, outline);
+
+	}
+
+	/**
+	 * 그룹영역 위치와 사이즈를 조정한다.
+	 */
+	private void initGroupImgArea() {
+		// 그룹이미지영역 조정.
+		DisplayMetrics metrics = getResources().getDisplayMetrics();
+		dHeight = metrics.heightPixels;
+		dHeight = dHeight * centerPosition / 100;
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, dHeight);
+		groupImgArea.setLayoutParams(lp);
+
+		// 레이아웃에서 그룹 크기 초기값
+		initGroupSize = dHeight * minGroupSize / 100;
+		changedGroupSize = initGroupSize;
+		// 그룹이미지를 위치한다
+		Util.setPosition(groupImg, initGroupSize, initGroupSize, 50,
+				centerPosition / 2);
+		// 그룹제목 위치
+		Util.setPosition(groupTitleInput, initGroupSize, initGroupSize, 50,
+				centerPosition / 2);
+
+	}
+
+	/**
+	 * 색상선택!!!
+	 *
+	 * @param v
+	 */
+	private void onClickColorPicker(View v) {
+
+		if (((ColorSelectionView) v).getType() == 2) {
+			// memo
+
+			// set non selection state on every view
+			for (ColorSelectionView csv : groupColorSelectionViewList) {
+				if (csv.isSelected()) {
+					csv.setSelected(false);
+					csv.invalidate();
+				}
+			}
+
+			// set current selected view
+			v.setSelected(true);
+			v.invalidate();
+
+			// change memo color
+			// group.setBackgroundColor(((ColorSelectionView)
+			// v).getColorI());
+			int center = ((ColorSelectionView) v).getColorI();
+			int outline = ((ColorSelectionView) v).getColorBG();
+			setGroupImgColor(center, outline);
+
+			// save memo color
+			r = ((ColorSelectionView) v).getColor().getR();
+			g = ((ColorSelectionView) v).getColor().getG();
+			b = ((ColorSelectionView) v).getColor().getB();
+
+		}
+
+	}
+
+	/**
+	 * 그룹형상을 그린다.
+	 *
+	 * @param center
+	 * @param outline
+	 */
+	@SuppressWarnings("deprecation")
+	private void setGroupImgColor(int center, int outline) {
+		Drawable drawable = new BitmapDrawable(getResources(), makeRadGrad(
+				center, outline));
+		groupImg.setBackgroundDrawable(drawable);
+
+	}
+
+	/**
+	 * 색상선택 초기화.
+	 */
 	private void initColorPicker() {
 		for (Color c : ColorDB.getInstance().getColorList()) {
 			// group
@@ -236,6 +311,14 @@ public class GroupActivity extends ActionBarActivity implements
 
 	}
 
+	/**
+	 * 색상선택 뷰 하나씩 넣기.
+	 *
+	 * @param c
+	 * @param type
+	 * @param list
+	 * @param layout
+	 */
 	private void addColorSelectionView(Color c, String type,
 			List<ColorSelectionView> list, LinearLayout layout) {
 		ColorSelectionView v = new ColorSelectionView(getApplicationContext(),
@@ -258,6 +341,9 @@ public class GroupActivity extends ActionBarActivity implements
 
 	}
 
+	/**
+	 * 배경 초기화.
+	 */
 	private void initBackground() {
 
 		int r = pref.getInt("bg_color_r", 255);
@@ -269,41 +355,73 @@ public class GroupActivity extends ActionBarActivity implements
 
 	}
 
+	/**
+	 * 그룹 저장. 신규or수정.
+	 */
 	private void createGroup() {
-		// case group create
-		// because group's title and size is common element
-		// key of Extra write group- as prefix.
-		String inputGroupTitle = "";
-		if (groupTitleInput == null) {
-			System.out.println("Didn't get text");
-		} else {
-			inputGroupTitle = groupTitleInput.getText().toString();
+		boolean isNew = false;
+
+		// 그룹에 이것저것 넣기.
+		if (group == null) {
+			// 신규니까.
+			group = new Group();
+			isNew = true;
 		}
-		intent.putExtra("groupTitle", inputGroupTitle);
-		intent.putExtra("groupSize",
-				changeGroupSizeSuitableMain(changedGroupSize));
 
-		// case group update
-		intent.putExtra("selectedGroupId", groupId);
-		intent.putExtra("selectedGroupColor", groupColor);
+		// 그룹제목.
+		String inputGroupTitle = groupTitleInput.getText().toString();
 
-		// color
-		intent.putExtra("selectedGroupColorR", r);
-		intent.putExtra("selectedGroupColorG", g);
-		intent.putExtra("selectedGroupColorB", b);
+		group.setGroupTitle(inputGroupTitle);
+		group.setGroupDate(Util.getDate());
+		group.setGroupTime(Util.getTime());
+		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지?
+		group.setRed(r / 255f);
+		group.setGreen(g / 255f);
+		group.setBlue(b / 255f);
+
+		GroupDAO groupDao = new GroupDAO(getApplicationContext());
+		if (isNew) {
+			// 신규일때.
+			// 새로 생성한 메모에 아이디를 설정.
+			long groupIdL = groupDao.insertGroup(group);
+			String groupId = String.valueOf(groupIdL);
+			group.setGroupId(groupId);
+		} else {
+			// 수정일때
+			// 수정된 그룹 정보를 갱신한다.
+			groupDao.updateGroup(group);
+		}
+
+		// 소포에 담기
+		Intent intent = new Intent();
+		intent.putExtra("group", group);
 
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 
+	/**
+	 * 그룹 삭제..
+	 */
 	private void deleteGroup() {
-		intent.putExtra("selectedGroupId", groupId);
+		// 그룹 삭제.
+		GroupDAO groupDao = new GroupDAO(getApplicationContext());
+		groupDao.delGroup(group);
+
+		// 소포에 담기
+		Intent intent = new Intent();
+		intent.putExtra("group", group);
 		intent.putExtra("delete", true);
+
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 
+	/**
+	 * 뒤로가기.
+	 */
 	private void moveToBack() {
+		Intent intent = new Intent();
 		intent.putExtra("checkBack", BACK);
 		setResult(RESULT_OK, intent);
 		finish();
@@ -359,7 +477,7 @@ public class GroupActivity extends ActionBarActivity implements
 	 * size : 80 min group size : 30
 	 */
 	@Override
-	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
+	public void onProgressChanged(SeekBar sb, int progress, boolean arg2) {
 		// TODO int progress 받아와서 그룹이미지 크기 조정
 		// dHeight * (50 * progress /100 +20) /100
 		// progress / 100 : 진행사항.
@@ -370,7 +488,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// 조정 가능한 최대 크기 = 최대에서 최소 뺀거.
 		System.out.println("onProgressChanged:" + changedGroupSize);
 		if (changedGroupSize > initGroupSize) {
-			Util.setPosition(group, changedGroupSize, changedGroupSize, 50,
+			Util.setPosition(groupImg, changedGroupSize, changedGroupSize, 50,
 					centerPosition / 2);
 		}
 
@@ -389,19 +507,15 @@ public class GroupActivity extends ActionBarActivity implements
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// 입력, 수정모드에 따라 삭제버튼을 보이거나 숨긴다.
-		if (groupId == null) {
-			// ((TextView)findViewById(R.id.memoBoardTitle)).setText("그룹 생성");
-		} else {
-			// ((TextView)findViewById(R.id.memoBoardTitle)).setText("그룹 수정");
-		}
-		/*
-		 * Typeface tf = Typeface.createFromAsset(getAssets(),
-		 * "fonts/telegrafico.ttf");
-		 * ((TextView)findViewById(R.id.memoBoardTitle)).setTypeface(tf);
-		 */
 	}
 
+	/**
+	 * 그라데이션 효과 만들기.
+	 *
+	 * @param centerC
+	 * @param outC
+	 * @return
+	 */
 	private Bitmap makeRadGrad(int centerC, int outC) {
 
 		RadialGradient gradient = new RadialGradient(200, 200, 200, centerC,

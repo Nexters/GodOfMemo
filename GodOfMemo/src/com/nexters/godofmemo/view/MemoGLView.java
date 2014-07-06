@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.GroupActivity;
-import com.nexters.godofmemo.MainActivity;
 import com.nexters.godofmemo.MemoActivity;
 import com.nexters.godofmemo.dao.GroupDAO;
 import com.nexters.godofmemo.object.Group;
@@ -60,7 +59,6 @@ public class MemoGLView extends GLSurfaceView {
         }
 	}
 
-	private static final String TAG = "MemoGLView";
 
 	//터치이벤트 유형
 	static final int NONE = 0;
@@ -185,22 +183,12 @@ public class MemoGLView extends GLSurfaceView {
 						//보기, 수정 화면으로 넘어가기.
 						intent = new Intent(context, MemoActivity.class);
 						intent.putExtra("memo", selectedMemo);
-						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_MEMO_RESULT);
+						((Activity)context).startActivityForResult(intent, Constants.UPDATE_MEMO_RESULT);
 					}else if(selectedGroup!=null){
 						//보기, 수정 화면으로 넘어가기.
 						intent = new Intent(context, GroupActivity.class);
-						intent.putExtra("selectedGroupTitle", selectedGroup.getGroupTitle());
-						intent.putExtra("selectedGroupId", selectedGroup.getGroupId());
-						intent.putExtra("selectedGroupColor", selectedGroup.getGroupColor());
-						intent.putExtra("selectedGroupSize", selectedGroup.getWidth());
-
-
-						//color
-						intent.putExtra("selectedGroupR", selectedGroup.getRed()*255);
-						intent.putExtra("selectedGroupG", selectedGroup.getGreen()*255);
-						intent.putExtra("selectedGroupB", selectedGroup.getBlue()*255);
-
-						((Activity)context).startActivityForResult(intent, MainActivity.UPDATE_GROUP_RESULT);
+						intent.putExtra("group", selectedGroup);
+						((Activity)context).startActivityForResult(intent, Constants.UPDATE_GROUP_RESULT);
 					}
 					tabMode= TAB;
 				}

@@ -1,6 +1,7 @@
 package com.nexters.godofmemo.object.helper;
 
 import static com.nexters.godofmemo.util.Constants.FLOATS_PER_VERTEX;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,19 +10,20 @@ import android.graphics.Paint;
 import android.util.FloatMath;
 
 import com.nexters.godofmemo.data.VertexArray;
+import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.util.BitmapHelper;
 import com.nexters.godofmemo.util.Font;
 import com.nexters.godofmemo.util.TextureHelper;
+import com.nexters.godofmemo.view.MemoGLView;
 
 public class GroupHelper {
 
+	@SuppressWarnings("unused")
 	private int texture;
+	@SuppressWarnings("unused")
 	private int textTexture;
 
-	public GroupHelper() {
-		// TODO Auto-generated constructor stub
-	}
-
+	@SuppressLint("FloatMath")
 	public static VertexArray getGroupVertices(int numPoints, float x, float y, float red, float green,
 			float blue, float radius) {
 
@@ -200,8 +202,7 @@ public class GroupHelper {
 	 * @param maxLine
 	 * @return
 	 */
-	public static Bitmap drawTextToBitmap(String gText, int ratioW, int ratioH,
-			int maxLine) {
+	public static Bitmap drawTextToBitmap(String gText) {
 
 		int width = 512;
 		int height = 512;
@@ -241,6 +242,7 @@ public class GroupHelper {
 		int offsetY = (textSize + marginY) / 1;
 
 		// 몇번 포문을 수행할지 결정
+		int maxLine = 3;
 		if (dividedTextArray.length < maxLine) {
 			loopCnt = dividedTextArray.length;
 		} else {
@@ -279,5 +281,26 @@ public class GroupHelper {
 					textBitmapId);
 			this.textTexture = TextureHelper.loadTextBitmpTexture(this);
 		}
+	}
+
+
+
+	/**
+	 * 초기 위치를 설정한다.
+	 * @param memoGLView
+	 * @param memo
+	 */
+	public static void setInitPosition(MemoGLView memoGLView, Group group) {
+		// 새로 생성될 위치.
+		float tempX = (memoGLView.mr.width) / 2; // 폰의 보여지는 width 값
+		float tempY = (memoGLView.mr.height) / 2;
+
+		float nx = memoGLView.getNormalizedX(tempX);
+		float ny = memoGLView.getNormalizedY(tempY);
+
+		group.setX(nx);
+		group.setY(ny);
+
+		group.setVertices();
 	}
 }

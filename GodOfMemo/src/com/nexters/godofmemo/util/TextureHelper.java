@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.object.helper.GroupHelper;
 import com.nexters.godofmemo.object.helper.MemoHelper;
 
 public class TextureHelper {
@@ -262,7 +263,7 @@ public class TextureHelper {
 			bitmap = MemoHelper.drawTextToBitmap(memo.getMemoTitle(), memo.getMemoContent());
 		}else if (o instanceof Group){
 			Group group = (Group)o;
-			bitmap = Group.drawTextToBitmap(group.getGroupTitle());
+			bitmap = GroupHelper.drawTextToBitmap(group.getGroupTitle());
 		}
 
 		return loadBitmpTexture(bitmap);

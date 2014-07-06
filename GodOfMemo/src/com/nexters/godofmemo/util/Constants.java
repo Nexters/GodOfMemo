@@ -27,10 +27,26 @@ public class Constants {
 	// 메모관련변수.
 	public static final int MEMO_MAX_LINE = 7;
 
-	//그룹관련 변수
-	public static final float GROUP_DEFAULT_SIZE = 0.8f;
-
 	// 뒤로가기 확인.
 	public final static int BACK = 3;
+
+	// 상태
+	public static final int CREATE_MEMO_RESULT = 0;
+	public static final int UPDATE_MEMO_RESULT = 1;
+	public static final int CREATE_GROUP_RESULT = 2;
+	public static final int UPDATE_GROUP_RESULT = 3;
+
+	// 그룹관련 변수
+	public static final float GROUP_DEFAULT_SIZE = 0.8f;
+	// Circle 형태로 그릴 때 필요한 변수들.
+	public static final int numPoints = 70;
+	// 그룹 영역 크기
+	public static final int dHeight = 0;
+	// 그룹 중심 위치
+	public static final int centerPosition = 50;
+	// 그룹 최소 크기(%)
+	public static final int minGroupSize = 30;
+	// 그룹 최대 크기(%)
+	public static final int maxGroupSize = 80;
 
 }
