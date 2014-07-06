@@ -1,16 +1,17 @@
 package com.nexters.godofmemo.object.helper;
 
-import com.nexters.godofmemo.data.VertexArray;
-import com.nexters.godofmemo.util.BitmapHelper;
-import com.nexters.godofmemo.util.Font;
-import com.nexters.godofmemo.util.TextureHelper;
-
+import static com.nexters.godofmemo.util.Constants.FLOATS_PER_VERTEX;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.FloatMath;
+
+import com.nexters.godofmemo.data.VertexArray;
+import com.nexters.godofmemo.util.BitmapHelper;
+import com.nexters.godofmemo.util.Font;
+import com.nexters.godofmemo.util.TextureHelper;
 
 public class GroupHelper {
 
@@ -21,8 +22,7 @@ public class GroupHelper {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static float[] getGroupVertices(int numPoints,
-			int FLOATS_PER_VERTEX, float x, float y, float red, float green,
+	public static VertexArray getGroupVertices(int numPoints, float x, float y, float red, float green,
 			float blue, float radius) {
 
 		int size = sizeOfCircleInVertices(numPoints);
@@ -62,69 +62,66 @@ public class GroupHelper {
 			VERTEX_DATA[offset++] = a; // a
 		}
 
-		return VERTEX_DATA;
+		return new VertexArray(VERTEX_DATA);
 	}
 
-	public static float[] getTextVertices(float x, float y, float width,
-			float height, float ratioW, float ratioH) {
+	public static VertexArray getTextVertices(float x, float y, float width,
+			float height) {
 		// System.out.println("setTextVertices");
 		float[] VERTEX_DATA_TEXT = new float[24];
-
-		width = width * ratioW;
-		height = height * ratioH;
 
 		// 중심.
 		int s = 0;
 		VERTEX_DATA_TEXT[0] = x; // x
 		VERTEX_DATA_TEXT[1] = y; // y
-		VERTEX_DATA_TEXT[2] = 0.5f * ratioW;// S
-		VERTEX_DATA_TEXT[3] = 0.5f * ratioH; // T
+		VERTEX_DATA_TEXT[2] = 0.5f;// S
+		VERTEX_DATA_TEXT[3] = 0.5f; // T
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
 
 		// 오른쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f * ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
 
 		// 오른쪽 위에
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x + width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 1f * ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f * ratioH; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 1f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
 
 		// 왼쪽 위에
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y + height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 0f * ratioH; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 0f; // z
 
 		// 왼쪽 아래
 		s++;
 		VERTEX_DATA_TEXT[s * 4 + 0] = x - width / 2; // x
 		VERTEX_DATA_TEXT[s * 4 + 1] = y - height / 2; // y
-		VERTEX_DATA_TEXT[s * 4 + 2] = 0f * ratioW; // z
-		VERTEX_DATA_TEXT[s * 4 + 3] = 1f * ratioH; // z
+		VERTEX_DATA_TEXT[s * 4 + 2] = 0f; // z
+		VERTEX_DATA_TEXT[s * 4 + 3] = 1f; // z
 
-		return VERTEX_DATA_TEXT;
+		return new VertexArray(VERTEX_DATA_TEXT);
 	}
 
 	// Return size of a circle built out of a triangle fan
 	public static int sizeOfCircleInVertices(int numPoints) {
 		return 1 + (numPoints + 1);
 	}
-	
 
-	public VertexArray setColorVertices(float x, float y, float red, float green, float blue, int width, int height) {
+	public VertexArray setColorVertices(float x, float y, float red,
+			float green, float blue, int width, int height) {
 
 		int ai = 128;
 		float a = ai / 255.0f;
@@ -191,20 +188,20 @@ public class GroupHelper {
 
 		return new VertexArray(VERTEX_DATA_COLOR);
 	}
-	
 
 	/**
 	 * 텍스트만 그리는 함수
-	 * 
+	 *
 	 * @param gContext
 	 * @param gResId
 	 * @param gText
-	 * @param ratioW 
-	 * @param ratioH 
-	 * @param maxLine 
+	 * @param ratioW
+	 * @param ratioH
+	 * @param maxLine
 	 * @return
 	 */
-	public static Bitmap drawTextToBitmap(String gText, int ratioW, int ratioH, int maxLine) {
+	public static Bitmap drawTextToBitmap(String gText, int ratioW, int ratioH,
+			int maxLine) {
 
 		int width = 512;
 		int height = 512;
@@ -219,7 +216,7 @@ public class GroupHelper {
 		// text color - #3D3D3D
 		paint.setColor(Color.rgb(61, 61, 61));
 		// text size in pixels
-		int textSize = (int) (32);
+		int textSize = (32);
 		paint.setTextSize(textSize);
 		// text shadow
 		// paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
@@ -234,8 +231,8 @@ public class GroupHelper {
 
 		// draw text to the Canvas center
 		// TODO group에 적합하도록.
-		int x = (int) (width * ratioW / 2);
-		int y = (int) (height * ratioH / 2);
+		int x = width / 2;
+		int y = height / 2;
 
 		int loopCnt = 0;
 		int textoffsetYY = 0;
@@ -266,12 +263,13 @@ public class GroupHelper {
 
 		return bitmap;
 	}
-	
+
 	//
 	//
 
 	// 텍스쳐 설정
-	public void setTexture(int textureSource, Context context, Bitmap textBitmap, int textBitmapId) {
+	public void setTexture(int textureSource, Context context,
+			Bitmap textBitmap, int textBitmapId) {
 		if (textureSource != 0) {
 			// 텍스쳐를 불러보고
 			this.texture = TextureHelper.loadTexture(context, textureSource);

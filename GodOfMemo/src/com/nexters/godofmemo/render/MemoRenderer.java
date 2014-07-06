@@ -16,6 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.GroupDAO;
@@ -29,166 +30,146 @@ import com.nexters.godofmemo.util.Constants;
 import com.nexters.godofmemo.util.MatrixHelper;
 
 public class MemoRenderer implements Renderer {
-    private final Context context;
+	private final Context context;
 
-    private final float[] projectionMatrix = new float[16];
-    private final float[] modelMatrix = new float[16];
-    private final float[] mvpMatrix = new float[16];
+	private final float[] projectionMatrix = new float[16];
+	private final float[] modelMatrix = new float[16];
+	private final float[] mvpMatrix = new float[16];
 
-    public ConcurrentLinkedQueue<Memo> memoList;
-    public ConcurrentLinkedQueue<Group> groupList;
-    private Background background;
-    
-    private TextureShaderProgram textureProgram;
-    private ColorShaderProgram colorProgram;
-    
-    //바라보는 화면 위치를 저장하는 변수
-    public float px = 0f;
-    public float py = 0f;
-    
-    //화면의 높이 너비를 저장
-    public int width;
-    public int height;
-    
-    //줌 배율
-    public float zoom = 3.5f;
-    
-    //fov
-    public float fov = 0.6f;
+	public ConcurrentLinkedQueue<Memo> memoList;
+	public ConcurrentLinkedQueue<Group> groupList;
+	private final Background background;
 
-    public MemoRenderer(Context context) {
-        this.context = context;
-        
-        
-        MemoDAO memoDao = new MemoDAO(context);
-        memoList = memoDao.getMemoList();
-        
-        GroupDAO groupDao = new GroupDAO(context);
-        groupList = groupDao.getGroupList();
-//		memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
-//		memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
-//		memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
-        
-        //배경화면
-        background = new Background(context, 0, 0, Constants.DOT_BACKGROUND_SIZE, Constants.DOT_BACKGROUND_SIZE, R.drawable.background);
-        
-        //TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
-        
-       
-    }
+	private TextureShaderProgram textureProgram;
+	private ColorShaderProgram colorProgram;
 
-    @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        
-        background.setTexture();
-        background.setColorVertices();
-        
-        for(Group group: groupList){
-        	//group.setTexture();
-        }
-        
-        for(Memo memo: memoList){
-            // 텍스쳐를 입힌다.
-        	memo.setTexture();
-        }
-        
-        textureProgram = new TextureShaderProgram(context);
-        colorProgram = new ColorShaderProgram(context);
-    }
+	// 바라보는 화면 위치를 저장하는 변수
+	public float px = 0f;
+	public float py = 0f;
 
-    @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-    	////System.out.println(width);
-    	////System.out.println(height);
-    	//높이 너비 저장
-    	this.width = width;
-    	this.height = height;
-    	
-    	////System.out.println(Constants.actionbarHeight);
-    	
-        // Set the OpenGL viewport to fill the entire surface.
-        glViewport(0, 0, width, height);
+	// 화면의 높이 너비를 저장
+	public int width;
+	public int height;
 
-        MatrixHelper.perspectiveM(projectionMatrix, fov*100, (float) width/ (float) height, 1f, Constants.SCREEN_SIZE);
+	// 줌 배율
+	public float zoom = 3.5f;
 
-        setIdentityM(modelMatrix, 0);
-        translateM(modelMatrix, 0, 0f, 0f, -zoom);
-        //rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
+	// fov
+	public float fov = 0.6f;
 
-        //final float[] temp = new float[16];
-        multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
-        //System.arraycopy(temp, 0, projectionMatrix, 0, temp.length);               
-    }
+	public MemoRenderer(Context context) {
+		this.context = context;
 
-    @Override
-    public void onDrawFrame(GL10 glUnused) {
-        // Clear the rendering surface.
-        glClear(GL_COLOR_BUFFER_BIT);
+		MemoDAO memoDao = new MemoDAO(context);
+		memoList = memoDao.getMemoList();
 
-        //########################
-        //배경 그리기
-        
-        //카메라이동
-        setLookAtM(modelMatrix, 0, 
-        		px, py, zoom,
-        		px, py, 0, 
-        		0f, 1.0f, 0.0f);
-        multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
-        
-        //textureProgram.useProgram();
-        //textureProgram.setUniforms(mvpMatrix, background.texture);
-        //background.bindData(textureProgram);
-        
-        colorProgram.useProgram();
-    	colorProgram.setUniforms(mvpMatrix);
-        background.bindData(colorProgram);
-        background.draw();
-        
-        		//그룹들을 그린다
-        for(Group group: groupList){
-            // Draw the memo.
-            //textureProgram.useProgram();
-            //textureProgram.setUniforms(mvpMatrix, group.texture);
-        	colorProgram.useProgram();
-         	colorProgram.setUniforms(mvpMatrix);
-            group.drawGroup(colorProgram);
+		GroupDAO groupDao = new GroupDAO(context);
+		groupList = groupDao.getGroupList();
+		// memoList.add(new Memo(context, 0f, 0f, 0.6f, 0.6f, "test1"));
+		// memoList.add(new Memo(context, 0.3f, -0.5f, 0.8f, 0.8f, "test2"));
+		// memoList.add(new Memo(context, -0.6f, -1.0f, 0.5f, 0.5f, "test3"));
 
-            textureProgram.setUniforms(mvpMatrix, group.textTexture);
-            group.drawTitle(textureProgram);
-        }
-        
-        long maxMemoTime = 0;
-        Memo maxMemo;
-        for(Memo memo: memoList){
-        	//새 메모 검사
-        	//여러 메모중에 최신 메모를 찾는다
-        	long memoTime = memo.getProdTime();
-        	if (maxMemoTime < memoTime){
-        		maxMemoTime = memoTime;
-        		maxMemo = memo;
-        	}
-        	//TODO 만약 최신 메모가 생성된지 3초가 안되었으면 알려주기 
-        	
-        }
-        
+		// 배경화면
+		background = new Background(context, 0, 0,
+				Constants.DOT_BACKGROUND_SIZE, Constants.DOT_BACKGROUND_SIZE,
+				R.drawable.background);
 
-        //메모들을 그린다
-        for(Memo memo: memoList){
-        	//System.out.println("메모들 아이디는 요거 >> " + memo.getMemoId());
-            // Draw the memo.
-            //textureProgram.useProgram();
-            //textureProgram.setUniforms(mvpMatrix, memo.texture);
-            //memo.drawMemo(textureProgram);
-        	
-        	colorProgram.useProgram();
-        	colorProgram.setUniforms(mvpMatrix);
-        	memo.drawMemo(colorProgram);
+		// TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
 
-        	textureProgram.useProgram();
-            textureProgram.setUniforms(mvpMatrix, memo.textTexture);
-            memo.drawText(textureProgram);
-            
-        }
-    }
+	}
+
+	@Override
+	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+		background.setVertices();
+
+		for (Memo memo : memoList) {
+			// 텍스쳐를 입힌다.
+			memo.setMemoContentTexture();
+		}
+
+		textureProgram = new TextureShaderProgram(context);
+		colorProgram = new ColorShaderProgram(context);
+	}
+
+	@Override
+	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+		// //System.out.println(width);
+		// //System.out.println(height);
+		// 높이 너비 저장
+		this.width = width;
+		this.height = height;
+
+		// //System.out.println(Constants.actionbarHeight);
+
+		// Set the OpenGL viewport to fill the entire surface.
+		glViewport(0, 0, width, height);
+
+		MatrixHelper.perspectiveM(projectionMatrix, fov * 100, (float) width
+				/ (float) height, 1f, Constants.SCREEN_SIZE);
+
+		setIdentityM(modelMatrix, 0);
+		translateM(modelMatrix, 0, 0f, 0f, -zoom);
+		// rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
+
+		// final float[] temp = new float[16];
+		multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
+		// System.arraycopy(temp, 0, projectionMatrix, 0, temp.length);
+	}
+
+	@Override
+	public void onDrawFrame(GL10 glUnused) {
+		// Clear the rendering surface.
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// ########################
+		// 배경 그리기
+
+		// 카메라이동
+		setLookAtM(modelMatrix, 0, px, py, zoom, px, py, 0, 0f, 1.0f, 0.0f);
+		multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelMatrix, 0);
+
+		// textureProgram.useProgram();
+		// textureProgram.setUniforms(mvpMatrix, background.texture);
+		// background.bindData(textureProgram);
+
+		colorProgram.useProgram();
+		colorProgram.setUniforms(mvpMatrix);
+		background.draw(colorProgram);
+
+		// 그룹들을 그린다
+		for (Group group : groupList) {
+			// Draw the memo.
+			// textureProgram.useProgram();
+			// textureProgram.setUniforms(mvpMatrix, group.texture);
+
+			colorProgram.useProgram();
+			colorProgram.setUniforms(mvpMatrix);
+			group.drawGroup(colorProgram);
+
+			textureProgram.useProgram();
+			textureProgram.setUniforms(mvpMatrix, group.textTexture);
+			group.drawTitle(textureProgram);
+
+			//group.drawGroup(colorProgram, textureProgram);
+		}
+
+		// 메모들을 그린다
+		for (Memo memo : memoList) {
+			Log.i("memo",memo.toString());
+
+			// 메모지를 그리기 위한 색상 프로그램.
+			colorProgram.useProgram();
+			colorProgram.setUniforms(mvpMatrix);
+			memo.drawMemo(colorProgram);
+
+			// 메모내용을 그리기 위한 텍스쳐 프로그램.
+			textureProgram.useProgram();
+			textureProgram.setUniforms(mvpMatrix, memo.textTexture);
+			memo.drawText(textureProgram);
+
+
+		}
+	}
 }

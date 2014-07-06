@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.object.helper.MemoHelper;
 
 public class TextureHelper {
 	private static final String TAG = "TextureHelper";
@@ -37,7 +38,7 @@ public class TextureHelper {
 	/**
 	 * Loads a texture from a resource ID, returning the OpenGL ID for that
 	 * texture. Returns 0 if the load failed.
-	 * 
+	 *
 	 * @param context
 	 * @param resourceId
 	 * @return
@@ -58,7 +59,7 @@ public class TextureHelper {
 
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다.
-	 * 
+	 *
 	 * @param bitmap
 	 * @return
 	 */
@@ -73,7 +74,7 @@ public class TextureHelper {
 
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다. 캐쉬사용.
-	 * 
+	 *
 	 * @param bitmap
 	 * @param id
 	 * @return
@@ -125,7 +126,7 @@ public class TextureHelper {
 		 * bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth,
 		 * bitmapHeight); for(int i=0; i<pixels.length; i++){ ib.put(pixels[i]
 		 * << 8 | pixels[i] >>> 24); }
-		 * 
+		 *
 		 * byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4]; for ( int y
 		 * = 0; y < bitmapHeight; y++ ) for ( int x = 0; x < bitmapWidth; x++ )
 		 * { int pixel = bitmap.getPixel(x, y); buffer[(y * bitmapWidth + x) * 4
@@ -133,7 +134,7 @@ public class TextureHelper {
 		 * + 1] = (byte)((pixel >> 8) & 0xFF); buffer[(y * bitmapWidth + x) * 4
 		 * + 2] = (byte)((pixel >> 0) & 0xFF); buffer[(y * bitmapWidth + x) * 4
 		 * + 3] = (byte)((pixel >> 24) & 0xFF); }
-		 * 
+		 *
 		 * ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth *
 		 * bitmapHeight * 4); byteBuffer.put(buffer).position(0);
 		 */
@@ -185,7 +186,7 @@ public class TextureHelper {
 
 	/**
 	 * 알파정보 없는 텍스쳐를 불러온다.
-	 * 
+	 *
 	 * @param bitmap
 	 * @return
 	 */
@@ -248,7 +249,7 @@ public class TextureHelper {
 
 	/**
 	 * 텍스트 텍스쳐
-	 * 
+	 *
 	 * @param text
 	 * @return
 	 */
@@ -258,12 +259,12 @@ public class TextureHelper {
 		if(o instanceof Memo){
 			Memo memo = (Memo)o;
 			// 꼭 static 써야 하나?
-			bitmap = Memo.drawTextToBitmap(memo.getMemoTitle(), memo.getMemoContent());
+			bitmap = MemoHelper.drawTextToBitmap(memo.getMemoTitle(), memo.getMemoContent());
 		}else if (o instanceof Group){
 			Group group = (Group)o;
 			bitmap = Group.drawTextToBitmap(group.getGroupTitle());
 		}
-		
-		return loadBitmpTextureNoAlpha(bitmap);
+
+		return loadBitmpTexture(bitmap);
 	}
 }

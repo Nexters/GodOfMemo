@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.nexters.godofmemo.data.ColorDB;
 import com.nexters.godofmemo.object.Color;
-import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.util.Util;
 import com.nexters.godofmemo.view.ColorSelectionView;
 
@@ -168,11 +167,12 @@ public class GroupActivity extends ActionBarActivity implements
 			groupTitleInput.setText(groupTitle);
 
 		}
-		
+
 		//set click event
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 	}
 
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_finish:
@@ -216,7 +216,7 @@ public class GroupActivity extends ActionBarActivity implements
 				int outline = ((ColorSelectionView) v).getColorBG();
 				Drawable drawable = new BitmapDrawable(getResources(),
 						makeRadGrad(center, outline));
-				group.setBackground(drawable);
+				//group.setBackground(drawable);
 
 				// save memo color
 				r = ((ColorSelectionView) v).getColor().getR();
@@ -311,7 +311,7 @@ public class GroupActivity extends ActionBarActivity implements
 
 	/**
 	 * group size로 넘어오는 값을 MainActivity에 맞게 계산.
-	 * 
+	 *
 	 * @param groupSize2
 	 * @return
 	 */
@@ -325,7 +325,7 @@ public class GroupActivity extends ActionBarActivity implements
 	/**
 	 * Adjust group size to Group Activity layout max group size : 2 max result
 	 * : 448 <= as adjusting size to group layout
-	 * 
+	 *
 	 * @param groupSize
 	 * @return
 	 */
@@ -342,7 +342,7 @@ public class GroupActivity extends ActionBarActivity implements
 	 * in onProgressChanged method, there is expression how to calculate group
 	 * size. this method is calculating progress value using above expression.
 	 * max progress : 100 max group size : 80 min group size : 30
-	 * 
+	 *
 	 * @param size
 	 * @return
 	 */
@@ -403,7 +403,7 @@ public class GroupActivity extends ActionBarActivity implements
 	}
 
 	private Bitmap makeRadGrad(int centerC, int outC) {
-		
+
 		RadialGradient gradient = new RadialGradient(200, 200, 200, centerC,
 				outC, android.graphics.Shader.TileMode.CLAMP);
 		Paint p = new Paint();
