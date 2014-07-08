@@ -32,12 +32,13 @@
         <EditText
             android:id="@+id/memo_title"
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
+            android:layout_height="15dp"
             android:layout_weight="100"
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
-            android:inputType="textMultiLine"
+            android:text="@string/memo_title"
+            android:inputType="textShortMessage"
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
             android:textColor="@android:color/black"
@@ -54,6 +55,7 @@
             android:inputType="textMultiLine"
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
+            android:text="..."
             android:textColor="@android:color/black"
             android:textSize="17sp" />
 

@@ -361,7 +361,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	}
 
 	/**
-	 * 메모 ㅅ ㅏㄱ제!!
+	 * 메모 삭제!!
 	 */
 	private void deleteMemo() {
 		MemoDAO memoDao = new MemoDAO(getApplicationContext());
