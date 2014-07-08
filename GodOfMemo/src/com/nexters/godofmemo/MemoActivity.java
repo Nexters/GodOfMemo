@@ -58,52 +58,34 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 
 		// 저장소 초기화
 		pref = getSharedPreferences("memo", Context.MODE_PRIVATE);
-
-		// 커스텀 액션바
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-		getSupportActionBar().setCustomView(R.layout.actionbar_memo_edit);
-
+		
+		// 커스텀 액션
+		initCustomActionBar();
 		setContentView(R.layout.activity_memo);
 
 		// memo size
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		int dWidth = metrics.widthPixels;
 		dWidth = dWidth * 8 / 10;
-
-		// memo backgroudn control
-		memoTitleET = (EditText) findViewById(R.id.memo_title);
-		memoContentET = (EditText) findViewById(R.id.memo_content);
-		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
-
-		// memo color picker
-		memoColorPicker = (LinearLayout) findViewById(R.id.memo_color_picker);
-		bgColorPicker = (LinearLayout) findViewById(R.id.bg_color_picker);
+ 
+		initElements();
 		initColorPicker();
-
-		// background touchevent
-		background = findViewById(R.id.memo_activiy_background);
-		background.setOnClickListener(this);
 		initBackground();
-
-		// 이벤트설정.
-		findViewById(R.id.btn_back).setOnClickListener(this);
-		findViewById(R.id.btn_finish).setOnClickListener(this);
-
+		initEvents();
+		
 		// layout 크기 설정.
 		setLayoutSize();
 
 		// 입력, 수정모드
-		memo = getIntent().getParcelableExtra("memo");
-		if (memo == null) {
-			initNewMemo(); // 신규메모
-		} else {
+		if (hasMemoContents()) {
 			initMemoInfo(memo); // 기존메모 수정.
+		} else {
+			initNewMemo(); // 신규메모
 		}
 	}
-
+	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.btn_finish:
 			saveMemo(); // 메모생성!!
@@ -175,6 +157,30 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		}
 
 	}
+	
+	/**
+	 * 화면의 요소들을 초기화.
+	 */
+	private void initElements() {
+		// memo background control
+		memoTitleET = (EditText) findViewById(R.id.memo_title);
+		memoContentET = (EditText) findViewById(R.id.memo_content);
+		memoTimeTextView = (TextView) findViewById(R.id.memo_time);
+
+		// memo color picker
+		memoColorPicker = (LinearLayout) findViewById(R.id.memo_color_picker);
+		bgColorPicker = (LinearLayout) findViewById(R.id.bg_color_picker);
+		
+		// background
+		background = findViewById(R.id.memo_activiy_background);
+	}
+	
+	private void initEvents() {
+		// 이벤트설정.
+		background.setOnClickListener(this);
+		findViewById(R.id.btn_back).setOnClickListener(this);
+		findViewById(R.id.btn_finish).setOnClickListener(this);
+	}
 
 	/**
 	 * 메모색상설정.
@@ -211,7 +217,27 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		Color color = new Color("8cd39c", 140, 211, 156);
 		setMemoColor(color);
 	}
-
+	
+	/**
+	 * 메모 작성 및 수정화면에서 커스텀 액션바를 사용하기 위해 초기화 한다.
+	 */
+	private void initCustomActionBar(){
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		getSupportActionBar().setCustomView(R.layout.actionbar_memo_edit);
+	}
+	
+	/**
+	 * 메모 내용이 있는지 없는지를 판단한다.
+	 * @return
+	 */
+	private boolean hasMemoContents() {
+		memo = getIntent().getParcelableExtra("memo");
+		if(memo==null) {
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * 수정모드일때 메모정보를 불러오고 화면에 설정한다.
 	 *
@@ -242,7 +268,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	 * 어따쓰는겨???
 	 */
 	public void setLayoutSize() {
-
+		
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 		int height = metrics.heightPixels;
 
