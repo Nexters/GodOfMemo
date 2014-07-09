@@ -15,12 +15,9 @@
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/donebtn"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:text="Close"
+        android:text="Done"
         android:textColor="#ffffff" />
 
 </RelativeLayout>

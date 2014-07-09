@@ -58,7 +58,6 @@ public class FullScreenImageAdapter extends PagerAdapter {
         
         imgDisplay.setImageResource(mImages[position]);
         
-        
          
         // close button click event
         btnClose.setOnClickListener(new View.OnClickListener() {            
