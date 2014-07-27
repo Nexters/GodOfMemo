@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.data.ColorDB;
@@ -95,10 +96,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 			moveToBack(); // 뒤로가기
 			break;
 		case R.id.btn_del:
-			//PromptDialog("정말 삭제하시겠습니까?");
-			Toast.makeText(getApplicationContext(), "정말 삭제 하시겠습니까?", 
-					   Toast.LENGTH_LONG).show();
-			deleteMemo(); // 메모 삭제.
+			PromptDialog("지인쫘~로 삭제하시겠습니까???o.O");
 			break;
 		case R.id.memo_activiy_background: // 배경선택시 키보드 내리기.
 			InputMethodManager inputMethodManager = (InputMethodManager) this
@@ -182,6 +180,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	private void initEvents() {
 		// 이벤트설정.
 		background.setOnClickListener(this);
+		findViewById(R.id.btn_del).setOnClickListener(this);
 		findViewById(R.id.btn_back).setOnClickListener(this);
 		findViewById(R.id.btn_finish).setOnClickListener(this);
 	}
@@ -421,12 +420,12 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		super.onPostCreate(savedInstanceState);
 	}
 	
-	/**
+
 	public void PromptDialog(String message) {
 		// Display Alert Dialog
 		AlertDialog.Builder loseBuild = new AlertDialog.Builder(
 				MemoActivity.this);
-		loseBuild.setTitle("Warning");
+		loseBuild.setTitle("확인");
 		loseBuild.setMessage(message);
 		loseBuild.setPositiveButton("삭제",
 				new DialogInterface.OnClickListener() {
@@ -439,10 +438,11 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						//Todo
+						dialog.dismiss();
 					}
 				});
 
 		loseBuild.create().show();
-	} **/
+	}
 
 }

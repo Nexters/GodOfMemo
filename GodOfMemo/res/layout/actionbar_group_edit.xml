@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/logo"/>
+        android:background="@drawable/logo" />
 
     <ImageView
         android:id="@+id/btn_back"
@@ -25,6 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="20dp"
-        android:background="@drawable/btn_del" />
+        android:background="@drawable/backbtn" />
 
 </FrameLayout>
