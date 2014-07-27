@@ -10,14 +10,41 @@
         android:scaleType="fitCenter" />
 
     <Button
-        android:id="@+id/btnClose"
+        android:id="@+id/btnSkip"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:text="Done"
+        android:text="       "
+        android:background="@android:color/transparent"
+        android:textColor="#ffffff" />
+    
+    <Button
+        android:id="@+id/btnFacebook"
+        android:layout_width="120dp"
+        android:layout_height="90dp"
+        android:layout_above="@+id/btnDone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        android:text="         "
+        android:background="@android:color/transparent"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="59dp"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        android:text="       "
+        android:background="@android:color/transparent"
         android:textColor="#ffffff" />
 
 </RelativeLayout>
