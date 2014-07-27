@@ -89,13 +89,13 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.btn_finish:
+		case R.id.btn_done:
 			saveMemo(); // 메모생성!!
 			break;
 		case R.id.btn_back:
 			moveToBack(); // 뒤로가기
 			break;
-		case R.id.btn_del:
+		case R.id.btn_delete:
 			PromptDialog("지인쫘~로 삭제하시겠습니까???o.O");
 			break;
 		case R.id.memo_activiy_background: // 배경선택시 키보드 내리기.
@@ -180,9 +180,9 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	private void initEvents() {
 		// 이벤트설정.
 		background.setOnClickListener(this);
-		findViewById(R.id.btn_del).setOnClickListener(this);
+		findViewById(R.id.btn_delete).setOnClickListener(this);
 		findViewById(R.id.btn_back).setOnClickListener(this);
-		findViewById(R.id.btn_finish).setOnClickListener(this);
+		findViewById(R.id.btn_done).setOnClickListener(this);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	 * 신규입력일 때 레이아웃을 초기화한다.
 	 */
 	private void initNewMemo() {
-		findViewById(R.id.btn_del).setVisibility(View.GONE);
+		findViewById(R.id.btn_delete).setVisibility(View.GONE);
 		String memoDate = Util.getDate();
 		String memoTime = Util.getTime();
 		memoTimeTextView.setText(memoDate + " " + memoTime);

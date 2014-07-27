@@ -112,11 +112,11 @@
             android:layout_weight="50" />
 
         <ImageView
-            android:id="@+id/btn_finish"
+            android:id="@+id/btn_delete"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="135"
-            android:background="@drawable/donebtn" />
+            android:background="@drawable/btn_delete" />
 
         <View
             android:layout_width="fill_parent"
