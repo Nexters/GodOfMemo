@@ -369,6 +369,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 		memo.setGreen(g / 255f);
 		memo.setBlue(b / 255f);
 
+
 		MemoDAO memoDao = new MemoDAO(getApplicationContext());
 
 		// 신규 or 수정.

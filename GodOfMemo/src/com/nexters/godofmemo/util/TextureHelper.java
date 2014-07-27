@@ -19,6 +19,7 @@ import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
@@ -26,6 +27,7 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
+import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.object.helper.GroupHelper;
@@ -39,7 +41,7 @@ public class TextureHelper {
 	/**
 	 * Loads a texture from a resource ID, returning the OpenGL ID for that
 	 * texture. Returns 0 if the load failed.
-	 *
+	 * 
 	 * @param context
 	 * @param resourceId
 	 * @return
@@ -60,7 +62,7 @@ public class TextureHelper {
 
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다.
-	 *
+	 * 
 	 * @param bitmap
 	 * @return
 	 */
@@ -75,7 +77,7 @@ public class TextureHelper {
 
 	/**
 	 * Bitmap에서 텍스쳐를 가져온다. 캐쉬사용.
-	 *
+	 * 
 	 * @param bitmap
 	 * @param id
 	 * @return
@@ -83,6 +85,10 @@ public class TextureHelper {
 	public static int loadBitmpTexture(Bitmap bitmap, int id) {
 		final int[] textureObjectIds = new int[1];
 		glGenTextures(1, textureObjectIds, 0);
+		
+		Log.i("texture", "gen textures!!!");
+		Log.i("texture", String.valueOf(textureObjectIds[0]));
+		
 
 		if (textureObjectIds[0] == 0) {
 			if (LoggerConfig.ON) {
@@ -127,7 +133,7 @@ public class TextureHelper {
 		 * bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth,
 		 * bitmapHeight); for(int i=0; i<pixels.length; i++){ ib.put(pixels[i]
 		 * << 8 | pixels[i] >>> 24); }
-		 *
+		 * 
 		 * byte[] buffer = new byte[bitmapWidth * bitmapHeight * 4]; for ( int y
 		 * = 0; y < bitmapHeight; y++ ) for ( int x = 0; x < bitmapWidth; x++ )
 		 * { int pixel = bitmap.getPixel(x, y); buffer[(y * bitmapWidth + x) * 4
@@ -135,7 +141,7 @@ public class TextureHelper {
 		 * + 1] = (byte)((pixel >> 8) & 0xFF); buffer[(y * bitmapWidth + x) * 4
 		 * + 2] = (byte)((pixel >> 0) & 0xFF); buffer[(y * bitmapWidth + x) * 4
 		 * + 3] = (byte)((pixel >> 24) & 0xFF); }
-		 *
+		 * 
 		 * ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmapWidth *
 		 * bitmapHeight * 4); byteBuffer.put(buffer).position(0);
 		 */
@@ -187,7 +193,7 @@ public class TextureHelper {
 
 	/**
 	 * 알파정보 없는 텍스쳐를 불러온다.
-	 *
+	 * 
 	 * @param bitmap
 	 * @return
 	 */
@@ -250,19 +256,20 @@ public class TextureHelper {
 
 	/**
 	 * 텍스트 텍스쳐
-	 *
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public static int loadTextBitmpTexture(Object o) {
 		Bitmap bitmap = null;
 		// null pointer exception 처리 해야하나?
-		if(o instanceof Memo){
-			Memo memo = (Memo)o;
+		if (o instanceof Memo) {
+			Memo memo = (Memo) o;
 			// 꼭 static 써야 하나?
-			bitmap = MemoHelper.drawTextToBitmap(memo.getMemoTitle(), memo.getMemoContent());
-		}else if (o instanceof Group){
-			Group group = (Group)o;
+			bitmap = MemoHelper.drawTextToBitmap(memo.getMemoTitle(),
+					memo.getMemoContent());
+		} else if (o instanceof Group) {
+			Group group = (Group) o;
 			bitmap = GroupHelper.drawTextToBitmap(group.getGroupTitle());
 		}
 

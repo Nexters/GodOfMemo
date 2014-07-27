@@ -25,6 +25,7 @@ import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Background;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.object.Seen;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
 import com.nexters.godofmemo.util.Constants;
@@ -40,6 +41,7 @@ public class MemoRenderer implements Renderer {
 	public ConcurrentLinkedQueue<Memo> memoList;
 	public ConcurrentLinkedQueue<Group> groupList;
 	private final Background background;
+	private final Seen seen;
 
 	private TextureShaderProgram textureProgram;
 	private ColorShaderProgram colorProgram;
@@ -57,7 +59,7 @@ public class MemoRenderer implements Renderer {
 
 	// fov
 	public float fov = 0.6f;
-	
+
 	// 설정 저장소
 	SharedPreferences pref;
 
@@ -77,33 +79,43 @@ public class MemoRenderer implements Renderer {
 		background = new Background(context, 0, 0,
 				Constants.DOT_BACKGROUND_SIZE, Constants.DOT_BACKGROUND_SIZE,
 				R.drawable.background);
+		
+		//신이
+		seen = new Seen(context);
 
 		// TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
-		
-		//설정.
+
+		// 설정.
 		pref = context.getSharedPreferences("memo", Context.MODE_PRIVATE);
 
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		// glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-		//배경깔기.
+		// 배경깔기.
 		int ri = pref.getInt("bg_color_r", 255);
 		int gi = pref.getInt("bg_color_g", 255);
 		int bi = pref.getInt("bg_color_b", 255);
-		glClearColor(ri,gi,bi, 0.5f);
-		//117, 166, 132
+		glClearColor(ri, gi, bi, 0.5f);
+		// 117, 166, 132
 
+		//배경설정.
 		background.setVertices();
+		
+		//신이 그리기.
+		seen.setSeenTexture(context);
 
 		for (Memo memo : memoList) {
-			//Log.i("memo", memo.toString());
+			// Log.i("memo", memo.toString());
 			// 텍스쳐를 입힌다.
 			memo.setMemoContentTexture();
+			
+			//새 메모를 체크한다!!
+			memo.chkNewStatus(context);
 		}
-		
+
 		for (Group group : groupList) {
 			// 텍스쳐를 입힌다.
 			group.setGroupTitleTexture();
@@ -154,13 +166,22 @@ public class MemoRenderer implements Renderer {
 		// textureProgram.setUniforms(mvpMatrix, background.texture);
 		// background.bindData(textureProgram);
 
+		//배경그리기 
 		colorProgram.useProgram();
 		colorProgram.setUniforms(mvpMatrix);
 		background.draw(colorProgram);
+		
+		//신이 그리기 
+		textureProgram.useProgram();
+		textureProgram.setUniforms(mvpMatrix, seen.seenTexture);
+		seen.draw(textureProgram);
 
+		//Log.i("texture",".seenTexture");
+		//Log.i("texture",String.valueOf(seen.seenTexture));
+		
 		// 그룹들을 그린다
 		for (Group group : groupList) {
-			Log.i("group",group.toString());
+			//Log.i("group", group.toString());
 			// Draw the memo.
 			// textureProgram.useProgram();
 			// textureProgram.setUniforms(mvpMatrix, group.texture);
@@ -169,18 +190,19 @@ public class MemoRenderer implements Renderer {
 			colorProgram.setUniforms(mvpMatrix);
 			group.drawGroup(colorProgram);
 
-			
-			//그룹제목을 그린다.
+			// 그룹제목을 그린다.
 			textureProgram.useProgram();
 			textureProgram.setUniforms(mvpMatrix, group.textTexture);
 			group.drawTitle(textureProgram);
+			//Log.i("texture","group.textTexture");
+			//Log.i("texture",String.valueOf(group.textTexture));
 
-			//group.drawGroup(colorProgram, textureProgram);
+			// group.drawGroup(colorProgram, textureProgram);
 		}
 
 		// 메모들을 그린다
 		for (Memo memo : memoList) {
-			Log.i("memo",memo.toString());
+			//Log.i("memo", memo.toString());
 
 			// 메모지를 그리기 위한 색상 프로그램.
 			colorProgram.useProgram();
@@ -191,7 +213,19 @@ public class MemoRenderer implements Renderer {
 			textureProgram.useProgram();
 			textureProgram.setUniforms(mvpMatrix, memo.textTexture);
 			memo.drawText(textureProgram);
+			//Log.i("texture","memo.textTexture");
+			//Log.i("texture",String.valueOf(memo.textTexture));
 
+			// 새로 작성한 메모 확인해서 그린다.
+			// 시간을 계산한다.
+			if (memo.isNew()) {
+				textureProgram.useProgram();
+				textureProgram.setUniforms(mvpMatrix, memo.borderTexture);
+				memo.drawText(textureProgram);
+				//Log.i("texture","memo.borderTexture");
+				//Log.i("texture",String.valueOf(memo.borderTexture));
+				
+			}
 
 		}
 	}

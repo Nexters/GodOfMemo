@@ -16,7 +16,7 @@ public class MemoHelper {
 
 	/**
 	 * 위치와 크기를 지정한다. 텍스쳐와 사용할때.
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
@@ -74,7 +74,7 @@ public class MemoHelper {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
@@ -132,7 +132,7 @@ public class MemoHelper {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param red
@@ -211,7 +211,7 @@ public class MemoHelper {
 
 	/**
 	 * 텍스트만 그리는 함수
-	 *
+	 * 
 	 * @param ratioW
 	 * @param ratioH
 	 * @param gContext
@@ -222,11 +222,10 @@ public class MemoHelper {
 	 */
 	public static Bitmap drawTextToBitmap(String title, String content) {
 		// TODO 제목과 내용 둘다 제대로 뿌려줘야한다.
-		int width = 512;
-		int height = 512;
+		int size = 384;
 
 		// Read in the resource
-		Bitmap bitmap = Bitmap.createBitmap(width, height,
+		Bitmap bitmap = Bitmap.createBitmap(size, size,
 				Bitmap.Config.ARGB_8888);
 		// Canvas
 		Canvas canvas = new Canvas(bitmap);
@@ -245,12 +244,13 @@ public class MemoHelper {
 		// 텍스트를 줄바꿈 단위로 쪼갠다.
 		String[] dividedTextArray = dividedText.split("\n");
 
-		int textSize = 32;
+		int textSize = size/16;
 		int loopCnt = 0;
 		int textOffsetY = 0;
-		int margin = 30;
-		int leading = 10;
+		int margin = size/16;
+		int leading = size/16/3;
 		int offset = (textSize + leading) / 1;
+		int charPerLine = 8;
 
 		// 몇번 포문을 수행할지 결정
 		if (dividedTextArray.length < MEMO_MAX_LINE) {
@@ -272,15 +272,29 @@ public class MemoHelper {
 
 		// 타이틀을 먼저 그린다..
 		// 타이틀 길이
-		if (title.length() > 7) {
-			title = title.substring(0, 7);
-			title += "..";
+		String title1 = title;
+		String title2 = "";
+		if (title.length() > charPerLine) {
+			title1 = title.substring(0, charPerLine);
+
+			// 두줄일 때 처리한다.
+			if (title.length() > charPerLine * 2) {
+				title2 = title.substring(charPerLine, charPerLine * 2);
+			} else {
+				title2 = title.substring(charPerLine, title.length());
+			}
 		}
 
-		int titleSize = 64;
+		int titleSize = textSize*2;
 		paint.setTextSize(titleSize);
 		textOffsetY = titleSize + margin;
-		canvas.drawText(title, margin, textOffsetY, paint);
+		canvas.drawText(title1, margin, textOffsetY, paint);
+		// 텍스트가 2줄일 때 출력한다.
+		if (!"".equals(title2)) {
+			textOffsetY += titleSize + margin / 2;
+			canvas.drawText(title2, margin, textOffsetY, paint);
+		}
+		// 하단여백.
 		textOffsetY += margin * 2 / 3;
 
 		// 여러줄 출력하기
@@ -297,6 +311,7 @@ public class MemoHelper {
 
 	/**
 	 * 초기 위치를 설정한다.
+	 * 
 	 * @param memoGLView
 	 * @param memo
 	 */

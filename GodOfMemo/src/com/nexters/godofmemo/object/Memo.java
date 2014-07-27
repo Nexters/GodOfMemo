@@ -7,9 +7,17 @@ import static com.nexters.godofmemo.util.Constants.COLOR_STRIDE;
 import static com.nexters.godofmemo.util.Constants.POSITION_COMPONENT_COUNT;
 import static com.nexters.godofmemo.util.Constants.STRIDE;
 import static com.nexters.godofmemo.util.Constants.TEXTURE_COORDINATES_COMPONENT_COUNT;
+
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.object.helper.MemoHelper;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
@@ -27,8 +35,9 @@ public class Memo extends MovableObject implements Parcelable {
 	private VertexArray vertexArrayMemoBg; // 메모지.
 	private VertexArray vertexArrayMemoText; // 글씨.
 
-	// 글씨 텍스처
-	public int textTexture; // 렌더러에서 접근한다.
+	// 텍스처
+	public int textTexture; // 글씨 텍스쳐. 렌더러에서 접근한다.
+	public int borderTexture; // 테두리 텍스쳐. 렌더러에서 접근한다.
 
 	// 메모가 그룹안에 있는지 체크하기 위한 변수들. --문규
 	public static final float ratioMarginTop = 150f / 512f;
@@ -49,6 +58,8 @@ public class Memo extends MovableObject implements Parcelable {
 	// 기본정보 끝.
 	// ******************************
 	// ##########################
+	
+	private boolean isNew = false;
 
 	/**
 	 * 기존에 있던 메모들을 생성할때 사용.
@@ -88,6 +99,14 @@ public class Memo extends MovableObject implements Parcelable {
 	 */
 	public void setMemoContentTexture() {
 		this.textTexture = TextureHelper.loadTextBitmpTexture(this);
+	}
+	
+	/**
+	 *  메모 테두리 텍스쳐를 저장한다.
+	 * @param context 
+	 */
+	public void setBorderTexture(Context context) {
+		this.borderTexture = TextureHelper.loadTexture(context, R.drawable.round);
 	}
 
 	/**
@@ -284,5 +303,66 @@ public class Memo extends MovableObject implements Parcelable {
 			return new Memo[size];
 		}
 	};
+
+	/**
+	 * 시간을 계산해서 새로운 메모여부를 판별한다.
+	 * @param context 
+	 */
+	public void chkNewStatus(Context context) {
+		// isNew
+		if(this.memoDate != null && this.memoTime != null){
+
+			String[] memoDates = this.memoDate.split("\\.");
+			String memoTime = this.memoTime.substring(this.memoTime.indexOf(" "), this.memoTime.length());
+			String dayAndNight = this.memoTime.substring(0, 2);
+			String[] memoTimes = memoTime.split(":");
+			
+			Log.i("isNew", this.memoTitle);
+			Log.i("isNew", this.memoDate);
+			Log.i("isNew", this.memoTime);
+			
+			
+			int year = Integer.parseInt(memoDates[0].trim());
+			int month = Integer.parseInt(memoDates[1].trim());
+			int day = Integer.parseInt(memoDates[2].trim());
+			
+			int hour = Integer.parseInt(memoTimes[0].trim());
+			int minute = Integer.parseInt(memoTimes[1].trim());
+			int second = Integer.parseInt(memoTimes[2].trim());
+			
+			//오전오후 검사
+			if(dayAndNight.equals("오후")){
+				hour += 12;
+			}
+			
+			DateTime made = new DateTime(year, month, day, hour, minute, second);
+			DateTime now = DateTime.now();
+			
+			Interval interval = new Interval(made, now);
+			Duration duration = interval.toDuration();
+			long memoAge = duration.getMillis();
+			
+			Log.i("isNew",String.valueOf(memoAge));
+			
+			//5분 아래면. 
+			if(memoAge < 1000*60*1){
+				this.isNew = true;
+				setBorderTexture(context);
+				Log.i("isNew","isNew!!!");
+			}else{
+				this.isNew = false;
+			}
+			
+		}
+		
+	}
+
+	/**
+	 * 새 메모 판별로직.
+	 * @return
+	 */
+	public boolean isNew() {
+		return isNew;
+	}
 
 }

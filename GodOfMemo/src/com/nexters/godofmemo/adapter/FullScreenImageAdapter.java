@@ -3,6 +3,8 @@ package com.nexters.godofmemo.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -68,8 +70,10 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		//btnDone = (Button) viewLayout5.findViewById(R.id.btnDone);
 
 
-		imgDisplay.setImageResource(mImages[position]);
-
+		//imgDisplay.setImageResource(mImages[position]);
+		Bitmap bm = BitmapFactory.decodeResource(this.activity.getResources(), mImages[position]);
+		imgDisplay.setImageBitmap(bm);
+		
 		//layout.removeAllViews();
 		//layout.addView(View.inflate(activity.getBaseContext(), R.layout.layout_tutorial5, null));
 
