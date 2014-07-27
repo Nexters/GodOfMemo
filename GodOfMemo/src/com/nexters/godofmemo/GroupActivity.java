@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -152,7 +154,7 @@ public class GroupActivity extends ActionBarActivity implements
 			break;
 		case R.id.grp_btn_delete:
 			// 그룹 삭제
-			deleteGroup();
+			PromptDialog("정말로 삭제하시겠습니까?");
 			break;
 		case R.id.group_activiy_background:
 			// 배경 클릭 시 키보드 숨김.
@@ -530,5 +532,28 @@ public class GroupActivity extends ActionBarActivity implements
 		c.drawCircle(200, 200, 200, p);
 
 		return bitmap;
+	}
+	
+	public void PromptDialog(String message) {
+		// Display Alert Dialog
+		AlertDialog.Builder loseBuild = new AlertDialog.Builder(
+				GroupActivity.this);
+		loseBuild.setTitle("확인");
+		loseBuild.setMessage(message);
+		loseBuild.setPositiveButton("삭제",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						deleteGroup();
+					}
+				});
+
+		loseBuild.setNegativeButton("취소",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.dismiss();
+					}
+				});
+
+		loseBuild.create().show();
 	}
 }
