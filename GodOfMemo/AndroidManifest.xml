@@ -27,7 +27,7 @@
         <!-- 스플래쉬 화면 앱을 처음 구동할 때 실행한다. -->
         <activity
             android:name="com.nexters.godofmemo.SplashActivity"
-            android:label="@string/title_activity_splash"
+            android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,11 +52,6 @@
         <activity
             android:name="com.nexters.godofmemo.GroupActivity"
             android:label="@string/title_activity_group" >
-        </activity>
-        <!-- Tutorial activity 튜토리얼 페이지 화면 -->
-        <activity
-            android:name="com.nexters.godofmemo.TutorialActivity"
-            android:label="@string/title_activity_tutorial" >
         </activity>
     </application>
 

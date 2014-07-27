@@ -94,7 +94,7 @@ public class GroupActivity extends ActionBarActivity implements
 		groupImg = (ImageView) findViewById(R.id.group_img);
 		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
 		groupImgArea = findViewById(R.id.group_img_area);
-		btn_del = (ImageView) findViewById(R.id.grp_btn_del);
+		btn_del = (ImageView) findViewById(R.id.grp_btn_delete);
 
 		// init color picker
 		groupColorPicker = (LinearLayout) findViewById(R.id.group_color_picker);
@@ -116,8 +116,8 @@ public class GroupActivity extends ActionBarActivity implements
 		// make text label for seekBarAction value
 		// 이벤트설정
 		findViewById(R.id.grp_btn_back).setOnClickListener(this);
-		findViewById(R.id.grp_btn_del).setOnClickListener(this);
-		btn_del.setOnClickListener(this);
+		findViewById(R.id.grp_btn_delete).setOnClickListener(this);
+		//btn_del.setOnClickListener(this);
 
 		groupTitleInput.bringToFront();
 
@@ -136,13 +136,13 @@ public class GroupActivity extends ActionBarActivity implements
 		}
 
 		// set click event
-		findViewById(R.id.btn_finish).setOnClickListener(this);
+		//findViewById(R.id.grp_btn_done).setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.btn_finish:
+		case R.id.grp_btn_done:
 			// 그룹 생성!!
 			createGroup();
 			break;
@@ -150,7 +150,7 @@ public class GroupActivity extends ActionBarActivity implements
 			// 뒤로가기
 			moveToBack();
 			break;
-		case R.id.grp_btn_del:
+		case R.id.grp_btn_delete:
 			// 그룹 삭제
 			deleteGroup();
 			break;
@@ -408,6 +408,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// 그룹 삭제.
 		GroupDAO groupDao = new GroupDAO(getApplicationContext());
 		groupDao.delGroup(group);
+		//왜 GroupDAO를 또 생성하는거지?
 
 		// 소포에 담기
 		Intent intent = new Intent();
