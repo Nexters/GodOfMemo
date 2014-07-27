@@ -15,6 +15,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 
@@ -56,6 +57,9 @@ public class MemoRenderer implements Renderer {
 
 	// fov
 	public float fov = 0.6f;
+	
+	// 설정 저장소
+	SharedPreferences pref;
 
 	public MemoRenderer(Context context) {
 		this.context = context;
@@ -75,12 +79,22 @@ public class MemoRenderer implements Renderer {
 				R.drawable.background);
 
 		// TODO 마지막 봤던 위치와 확대정도를 저장했다가 다시 보여준다.
+		
+		//설정.
+		pref = context.getSharedPreferences("memo", Context.MODE_PRIVATE);
 
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+		//배경깔기.
+		int ri = pref.getInt("bg_color_r", 255);
+		int gi = pref.getInt("bg_color_g", 255);
+		int bi = pref.getInt("bg_color_b", 255);
+		glClearColor(ri,gi,bi, 0.5f);
+		//117, 166, 132
 
 		background.setVertices();
 
@@ -88,6 +102,11 @@ public class MemoRenderer implements Renderer {
 			//Log.i("memo", memo.toString());
 			// 텍스쳐를 입힌다.
 			memo.setMemoContentTexture();
+		}
+		
+		for (Group group : groupList) {
+			// 텍스쳐를 입힌다.
+			group.setGroupTitleTexture();
 		}
 
 		textureProgram = new TextureShaderProgram(context);
@@ -150,6 +169,8 @@ public class MemoRenderer implements Renderer {
 			colorProgram.setUniforms(mvpMatrix);
 			group.drawGroup(colorProgram);
 
+			
+			//그룹제목을 그린다.
 			textureProgram.useProgram();
 			textureProgram.setUniforms(mvpMatrix, group.textTexture);
 			group.drawTitle(textureProgram);

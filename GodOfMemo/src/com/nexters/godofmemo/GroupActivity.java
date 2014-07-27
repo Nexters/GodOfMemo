@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -435,8 +436,8 @@ public class GroupActivity extends ActionBarActivity implements
 	 */
 	private float changeGroupSizeSuitableMain(float groupSize) {
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
-		float result = ((groupSize * 1.5f) / max);
-		// System.out.println("changeGroupSizeSuitableMain : "+result);
+		float result = ((groupSize * 0.5f) / max);
+		Log.i("debug","changeGroupSizeSuitableMain : "+result);
 		return result;
 	}
 
@@ -452,7 +453,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// System.out.println("before adjust group size :"+groupSize);
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * max) / 1.5f);
-		// System.out.println("adjustGroupSize :"+result);
+		Log.i("debug", "adjustGroupSize :"+result);
 		return result;
 	}
 
@@ -468,7 +469,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// System.out.println("before size adjust progress "+size);
 		int result = (((size * 100 / dHeight) - minGroupSize) * 100)
 				/ (maxGroupSize - minGroupSize);
-		// System.out.println("after adjust progress "+result);
+		Log.i("debug","after adjust progress "+result);
 		return result;
 	}
 
@@ -486,7 +487,7 @@ public class GroupActivity extends ActionBarActivity implements
 				* (((maxGroupSize - minGroupSize) * progress / 100) + minGroupSize)
 				/ 100;
 		// 조정 가능한 최대 크기 = 최대에서 최소 뺀거.
-		System.out.println("onProgressChanged:" + changedGroupSize);
+		Log.i("debug","onProgressChanged:" + changedGroupSize);
 		if (changedGroupSize > initGroupSize) {
 			Util.setPosition(groupImg, changedGroupSize, changedGroupSize, 50,
 					centerPosition / 2);

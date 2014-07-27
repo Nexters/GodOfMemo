@@ -55,8 +55,8 @@ public class Memo extends MovableObject implements Parcelable {
 	 */
 	public Memo() {
 		// 메모 크기지정.
-		this.width = 0.8f;
-		this.height = 0.8f;
+		this.width = 0.4f;
+		this.height = 0.4f;
 	}
 
 	/**

@@ -19,6 +19,7 @@ import com.nexters.godofmemo.data.VertexArray;
 import com.nexters.godofmemo.object.helper.GroupHelper;
 import com.nexters.godofmemo.programs.ColorShaderProgram;
 import com.nexters.godofmemo.programs.TextureShaderProgram;
+import com.nexters.godofmemo.util.TextureHelper;
 
 public class Group extends MovableObject implements Parcelable {
 
@@ -73,8 +74,19 @@ public class Group extends MovableObject implements Parcelable {
 		vertexArray = GroupHelper.getGroupVertices(numPoints, x, y, red, green,
 				blue, radius);
 
+		//글자를 저장할 텍스쳐의 크기는 어느정도로 잡아야 하는가?
+		width = 0.8f;
+		height = 0.8f;
 		// 글자저장을 위한 저장...
 		vertexArrayText = GroupHelper.getTextVertices(x, y, width, height);
+	}
+
+	/**
+	 * 그룹 제목을 그린다.
+	 */
+	public void setGroupTitleTexture() {
+		this.textTexture = TextureHelper.loadTextBitmpTexture(this);
+		
 	}
 
 	public void drawTitle(TextureShaderProgram textureProgram) {

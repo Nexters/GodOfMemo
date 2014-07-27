@@ -7,6 +7,7 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.nexters.godofmemo.GroupActivity;
@@ -77,8 +78,8 @@ public class MemoGLView extends GLSurfaceView {
 	//롱클릭 이벤트 처리를 위한 변수들
 	private final Handler handler = new Handler();
 	private Runnable mLongPressed;
-	private final long longClickTimeLimit = 300;	//얼마동안 누르고 있어야 롱클릭이벤트로 판단할지(ms)
-	private final long clickEventLimit = 200;//얼마까지 클릭으로 판단할지.
+	private final long longClickTimeLimit = 200;	//얼마동안 누르고 있어야 롱클릭이벤트로 판단할지(ms)
+	private final long clickEventLimit = 150;//얼마까지 클릭으로 판단할지.
 
 	//tab 하기 위한 정보
 	private long startMilliSecond;
@@ -352,12 +353,20 @@ public class MemoGLView extends GLSurfaceView {
 	 * @param tempX
 	 * @param tempY
 	 * @param tempZoom
+	 * @param dZ 
 	 * @return
 	 */
 	private boolean isOutOfBoundary(float tempX, float tempY, float tempZoom){
 
 		//허용되는 최대 한계치
-		float margin = Constants.DOT_BACKGROUND_SIZE/5f;
+		float margin;
+		if(mode == ZOOM){
+			margin = Constants.DOT_BACKGROUND_SIZE/5f;
+		}else{
+			margin = Constants.DOT_BACKGROUND_SIZE;
+		}
+				
+				
 
 		float ratioX = 1;
 		float ratioY = 1;
@@ -392,7 +401,9 @@ public class MemoGLView extends GLSurfaceView {
 
 		//자동줌
 		if(mode == ZOOM){
-			float autoMoveDist = 0.08f;
+			//float autoMoveDist = 0.04f;
+			float autoMoveDist = 1/tempZoom/10.0f;
+			Log.i("debug",String.valueOf(autoMoveDist));
 			if(normalizedLeft < leftBoundary){
 				mr.px += autoMoveDist;
 			}
@@ -405,6 +416,9 @@ public class MemoGLView extends GLSurfaceView {
 			if(normalizedBottom < bottomBoundary){
 				mr.py += autoMoveDist;
 			}
+			
+			//줌을 적용한다.
+			mr.zoom = tempZoom;
 		}
 
 		//영역이 초과했는지 확인한다.
