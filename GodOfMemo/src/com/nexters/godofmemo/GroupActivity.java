@@ -117,6 +117,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// 이벤트설정
 		findViewById(R.id.grp_btn_back).setOnClickListener(this);
 		findViewById(R.id.grp_btn_delete).setOnClickListener(this);
+		findViewById(R.id.grp_btn_done).setOnClickListener(this);
 		//btn_del.setOnClickListener(this);
 
 		groupTitleInput.bringToFront();
@@ -136,7 +137,6 @@ public class GroupActivity extends ActionBarActivity implements
 		}
 
 		// set click event
-		//findViewById(R.id.grp_btn_done).setOnClickListener(this);
 	}
 
 	@Override
@@ -408,7 +408,6 @@ public class GroupActivity extends ActionBarActivity implements
 		// 그룹 삭제.
 		GroupDAO groupDao = new GroupDAO(getApplicationContext());
 		groupDao.delGroup(group);
-		//왜 GroupDAO를 또 생성하는거지?
 
 		// 소포에 담기
 		Intent intent = new Intent();
@@ -453,7 +452,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// 1.125
 		// System.out.println("before adjust group size :"+groupSize);
 		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
-		float result = ((groupSize * max) / 1.5f);
+		float result = ((groupSize * max) * 1.5f);
 		Log.i("debug", "adjustGroupSize :"+result);
 		return result;
 	}
@@ -490,7 +489,7 @@ public class GroupActivity extends ActionBarActivity implements
 		// 조정 가능한 최대 크기 = 최대에서 최소 뺀거.
 		Log.i("debug","onProgressChanged:" + changedGroupSize);
 		if (changedGroupSize > initGroupSize) {
-			Util.setPosition(groupImg, changedGroupSize, changedGroupSize, 50,
+			Util.setPosition(groupImg, changedGroupSize*3, changedGroupSize*3, 50,
 					centerPosition / 2);
 		}
 

@@ -84,10 +84,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 			 * not doing anything, the app will crash if the device doesn't
 			 * support OpenGL ES 2.0. If we publish on the market, we should
 			 * also add the following to AndroidManifest.xml:
-			 *
+			 * 
 			 * <uses-feature android:glEsVersion="0x00020000"
 			 * android:required="true" />
-			 *
+			 * 
 			 * This hides our app from those devices which don't support OpenGL
 			 * ES 2.0.
 			 */
@@ -181,33 +181,35 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/**
 	 * 그룹 수정
-	 *
+	 * 
 	 * @param data
 	 */
 	private void updateGroup(Intent data) {
 		// 소포에 담겨온 메모~
 		Group group = data.getParcelableExtra("group");
 
-		//TODO parcel에서 그룹이 담고있는 메모정보를 넘기지 못해서 DB에서 다시 호출한다.
-		GroupDAO groupDao = new GroupDAO(getApplicationContext());
-		group = groupDao.getGroupInfo(group.getGroupId());
-
 		// 휴지통 버튼을 눌렀는지 체크
 		if (data.getBooleanExtra("delete", false)) {
 			removeGroup(group);
 			createToast("그룹 삭제");
 		} else {
+			// TODO parcel에서 그룹이 담고있는 메모정보를 넘기지 못해서 DB에서 다시 호출한다.
+			GroupDAO groupDao = new GroupDAO(getApplicationContext());
+			group = groupDao.getGroupInfo(group.getGroupId());
+			
 			// 새로 그리기 위해.
 			removeGroup(group);
 			group.setVertices();
 			glSurfaceView.mr.groupList.add(group);
 		}
 
+		
+
 	}
 
 	/**
 	 * 신규 그룹 생성!!
-	 *
+	 * 
 	 * @param data
 	 */
 	private void createGroup(Intent data) {
@@ -228,7 +230,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/**
 	 * 메모 수정!
-	 *
+	 * 
 	 * @param data
 	 */
 	private void updateMemo(Intent data) {
@@ -251,7 +253,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/**
 	 * 메모 생성!!
-	 *
+	 * 
 	 * @param data
 	 */
 	private void createMemo(Intent data) {
@@ -293,7 +295,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/**
 	 * 토스트를 굽는다.
-	 *
+	 * 
 	 * @param text
 	 */
 	private void createToast(String text) {
