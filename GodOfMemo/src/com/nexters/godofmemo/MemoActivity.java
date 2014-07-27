@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.data.ColorDB;
@@ -94,6 +95,9 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 			moveToBack(); // 뒤로가기
 			break;
 		case R.id.btn_del:
+			//PromptDialog("정말 삭제하시겠습니까?");
+			Toast.makeText(getApplicationContext(), "정말 삭제 하시겠습니까?", 
+					   Toast.LENGTH_LONG).show();
 			deleteMemo(); // 메모 삭제.
 			break;
 		case R.id.memo_activiy_background: // 배경선택시 키보드 내리기.
@@ -416,5 +420,29 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 	}
+	
+	/**
+	public void PromptDialog(String message) {
+		// Display Alert Dialog
+		AlertDialog.Builder loseBuild = new AlertDialog.Builder(
+				MemoActivity.this);
+		loseBuild.setTitle("Warning");
+		loseBuild.setMessage(message);
+		loseBuild.setPositiveButton("삭제",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						deleteMemo();
+					}
+				});
+
+		loseBuild.setNegativeButton("취소",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						//Todo
+					}
+				});
+
+		loseBuild.create().show();
+	} **/
 
 }
