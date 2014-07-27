@@ -107,12 +107,12 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
-		////////System.out.println("111  "+x +", "+ y);
+		System.out.println("111  "+x +", "+ y);
 
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
     	float ny = getNormalizedY(y);
-    	////////System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
+    	System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
 
     	//이동한 다음의 차이.
     	float movedDistanceX =  0;

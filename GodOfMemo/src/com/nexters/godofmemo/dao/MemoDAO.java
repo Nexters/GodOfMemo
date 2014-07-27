@@ -133,8 +133,8 @@ public class MemoDAO {
 
 		values.put(AllSQL.COL_MEMO_TITLE, memo.getMemoTitle());
 		values.put(AllSQL.COL_MEMO_CONTENT, memo.getMemoContent());
-		values.put(AllSQL.COL_MEMO_DATE, Util.getDate());
-		values.put(AllSQL.COL_MEMO_TIME, Util.getTime());
+		values.put(AllSQL.COL_MEMO_DATE, memo.getMemoDate());
+		values.put(AllSQL.COL_MEMO_TIME, memo.getMemoTime());
 
 		values.put(AllSQL.COL_MEMO_X, memo.getX());
 		values.put(AllSQL.COL_MEMO_Y, memo.getY());
