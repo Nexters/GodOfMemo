@@ -282,7 +282,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 	}
 
 	/**
-	 * ....
+	 * group 삭제 메서드
 	 */
 	private void removeGroup(Group updateGroup) {
 		for (Group group : glSurfaceView.mr.groupList) {
