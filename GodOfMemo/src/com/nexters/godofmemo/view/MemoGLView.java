@@ -194,7 +194,12 @@ public class MemoGLView extends GLSurfaceView {
 					tabMode= TAB;
 				}
 			}
-
+			
+			/**
+			 * 충돌 체크, 관계설정 하는 곳.
+			 * Helper 코드는 남겨 놓았습니다. 
+			 * 잠시동안 충돌관련 애니메이션은 보류.
+			 * 
 			//오브젝트가 이동을 끝내고 주변 오브젝트들 간의 관계를 설정한다.
 			if(selectedMemo != null){
 				System.out.println("before position"+selectedMemo.getX()+", "+selectedMemo.getY());
@@ -209,6 +214,9 @@ public class MemoGLView extends GLSurfaceView {
 				GroupDAO groupDao = new GroupDAO(context);
 				groupDao.updateGroup(selectedGroup);
 			}
+			**/
+			
+			
 			//화면에 그리기
 			requestRender();
 
