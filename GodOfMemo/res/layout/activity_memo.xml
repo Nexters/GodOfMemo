@@ -110,7 +110,7 @@
             android:layout_height="10dp"
             android:layout_weight="50"
             android:padding="10dp"
-            android:text="그룹 색깔"
+            android:text="배경 색깔"
             android:textSize="13sp" />
 
         <HorizontalScrollView
