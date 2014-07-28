@@ -169,7 +169,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		case CREATE_GROUP_RESULT:
 			createGroup(data);
 			break;
-		// TODO Please write Update logic @Subin
 		case UPDATE_GROUP_RESULT:
 			updateGroup(data);
 			break;

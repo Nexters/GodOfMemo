@@ -377,7 +377,7 @@ public class GroupActivity extends ActionBarActivity implements
 		group.setGroupTitle(inputGroupTitle);
 		group.setGroupDate(Util.getDate());
 		group.setGroupTime(Util.getTime());
-		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지?
+		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지? --> suitable to main값을 본래대로 돌려놓는 함수를 써서 int값을 구해야 되지 않을까요?
 		group.setRed(r / 255f);
 		group.setGreen(g / 255f);
 		group.setBlue(b / 255f);

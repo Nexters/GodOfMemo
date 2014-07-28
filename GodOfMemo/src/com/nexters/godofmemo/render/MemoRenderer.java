@@ -17,7 +17,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 
 import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.dao.GroupDAO;
