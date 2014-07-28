@@ -20,9 +20,9 @@
             android:id="@+id/group_name_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:background="@android:color/transparent"
             android:ems="10"
+            android:gravity="center"
             android:hint="그룹이름을 여기에 적으세요"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white" />
@@ -67,10 +67,20 @@
     <!-- done -->
 
     <ImageView
-        android:id="@+id/grp_btn_delete"
+        android:id="@id/grp_btn_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/seekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_finish" />
+
+    <ImageView
+        android:id="@+id/grp_btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grp_btn_done"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp"

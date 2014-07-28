@@ -96,7 +96,7 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 			moveToBack(); // 뒤로가기
 			break;
 		case R.id.btn_delete:
-			PromptDialog("지인쫘~로 삭제하시겠습니까???o.O");
+			PromptDialog("정말 삭제하시겠습니까?");
 			break;
 		case R.id.memo_activiy_background: // 배경선택시 키보드 내리기.
 			InputMethodManager inputMethodManager = (InputMethodManager) this
@@ -247,6 +247,8 @@ public class MemoActivity extends ActionBarActivity implements OnClickListener {
 	 * @param memo
 	 */
 	private void initMemoInfo(Memo memo) {
+		
+		findViewById(R.id.btn_cancel).setVisibility(View.GONE);
 
 		String memoTitle = memo.getMemoTitle();
 		String memoContent = memo.getMemoContent();

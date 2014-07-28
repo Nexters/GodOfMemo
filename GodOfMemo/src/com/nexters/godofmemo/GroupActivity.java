@@ -208,7 +208,7 @@ public class GroupActivity extends ActionBarActivity implements
 
 		// 그룹 크기 조절
 		// TODO 임시값.
-		int dSize = 300;
+		int dSize = 100;
 		Util.setPosition(groupImg, dSize, dSize, 50, centerPosition / 2);
 		// set progress of the seekbar
 		int progress = adjustProgress(dSize);
@@ -377,7 +377,8 @@ public class GroupActivity extends ActionBarActivity implements
 		group.setGroupTitle(inputGroupTitle);
 		group.setGroupDate(Util.getDate());
 		group.setGroupTime(Util.getTime());
-		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지? --> suitable to main값을 본래대로 돌려놓는 함수를 써서 int값을 구해야 되지 않을까요?
+		//group.setRadius(bar.getProgress());
+		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지?
 		group.setRed(r / 255f);
 		group.setGreen(g / 255f);
 		group.setBlue(b / 255f);

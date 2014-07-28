@@ -17,7 +17,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="0" />
 
-  <LinearLayout
+    <LinearLayout
         android:id="@+id/memo_layout_body"
         android:layout_width="40dp"
         android:layout_height="fill_parent"
@@ -52,10 +52,10 @@
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
+            android:hint="@string/memo_contents"
             android:inputType="textMultiLine"
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
-            android:hint="@string/memo_contents"
             android:textColor="@android:color/black"
             android:textSize="17sp" />
 
@@ -71,8 +71,8 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="45" />
-        
+            android:layout_weight="20" />
+
         <TextView
             android:id="@+id/memo_color_picker_headline"
             android:layout_width="fill_parent"
@@ -96,15 +96,12 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        
-
-        
         <View
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="50" />
-        
-                <TextView
+            android:layout_weight="10" />
+
+        <TextView
             android:id="@+id/bg_color_picker_headline"
             android:layout_width="fill_parent"
             android:layout_height="10dp"
@@ -133,11 +130,30 @@
             android:layout_weight="50" />
 
         <ImageView
+            android:id="@id/btn_done"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="80"
+            android:background="@drawable/btn_finish" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="30" />
+
+        <ImageView
             android:id="@+id/btn_delete"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="135"
+            android:layout_weight="80"
             android:background="@drawable/btn_delete" />
+
+        <ImageView
+            android:id="@+id/btn_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="80"
+            android:background="@drawable/btn_cancel" />
 
         <View
             android:layout_width="fill_parent"
