@@ -26,9 +26,9 @@ import com.nexters.godofmemo.util.TextureHelper;
 
 /**
  * 메모!
- *
+ * 
  * @author lifenjoy51
- *
+ * 
  */
 public class Memo extends MovableObject implements Parcelable {
 	// opengl로 그리기 위해 필요한 변수들.
@@ -58,7 +58,7 @@ public class Memo extends MovableObject implements Parcelable {
 	// 기본정보 끝.
 	// ******************************
 	// ##########################
-	
+
 	private boolean isNew = false;
 
 	/**
@@ -66,13 +66,13 @@ public class Memo extends MovableObject implements Parcelable {
 	 */
 	public Memo() {
 		// 메모 크기지정.
-		this.width = 0.4f;
-		this.height = 0.4f;
+		this.width = 0.6f;
+		this.height = 0.6f;
 	}
 
 	/**
 	 * Parcelable로 만들어질 때.
-	 *
+	 * 
 	 * @param src
 	 */
 	public Memo(Parcel src) {
@@ -100,18 +100,20 @@ public class Memo extends MovableObject implements Parcelable {
 	public void setMemoContentTexture() {
 		this.textTexture = TextureHelper.loadTextBitmpTexture(this);
 	}
-	
+
 	/**
-	 *  메모 테두리 텍스쳐를 저장한다.
-	 * @param context 
+	 * 메모 테두리 텍스쳐를 저장한다.
+	 * 
+	 * @param context
 	 */
 	public void setBorderTexture(Context context) {
-		this.borderTexture = TextureHelper.loadTexture(context, R.drawable.round);
+		this.borderTexture = TextureHelper.loadTexture(context,
+				R.drawable.round);
 	}
 
 	/**
 	 * 메모지를 그린다.
-	 *
+	 * 
 	 * @param colorProgram
 	 */
 	public void drawMemo(ColorShaderProgram colorProgram) {
@@ -129,7 +131,7 @@ public class Memo extends MovableObject implements Parcelable {
 
 	/**
 	 * 메모내용을 그린다.
-	 *
+	 * 
 	 * @param textureProgram
 	 */
 	public void drawText(TextureShaderProgram textureProgram) {
@@ -163,7 +165,7 @@ public class Memo extends MovableObject implements Parcelable {
 	}
 
 	public String getMemoTitle() {
-		if(memoTitle == null){
+		if (memoTitle == null) {
 			memoTitle = "메모제목";
 		}
 		return memoTitle;
@@ -230,8 +232,8 @@ public class Memo extends MovableObject implements Parcelable {
 				+ ", memoTitle=" + memoTitle + ", memoContent=" + memoContent
 				+ ", memoDate=" + memoDate + ", memoTime=" + memoTime
 				+ ", groupId=" + groupId + ", x=" + x + ", y=" + y + ", width="
-				+ width + ", height=" + height + ", red=" + red*255f + ", green="
-				+ green*255f + ", blue=" + blue*255f + "]";
+				+ width + ", height=" + height + ", red=" + red * 255f
+				+ ", green=" + green * 255f + ", blue=" + blue * 255f + "]";
 	}
 
 	// ######################
@@ -271,7 +273,7 @@ public class Memo extends MovableObject implements Parcelable {
 
 	/**
 	 * 소포에서 자료를 꺼내온다!
-	 *
+	 * 
 	 * @param in
 	 */
 	private void readFromParcel(Parcel in) {
@@ -306,59 +308,70 @@ public class Memo extends MovableObject implements Parcelable {
 
 	/**
 	 * 시간을 계산해서 새로운 메모여부를 판별한다.
-	 * @param context 
+	 * 
+	 * @param context
 	 */
 	public void chkNewStatus(Context context) {
 		// isNew
-		if(this.memoDate != null && this.memoTime != null){
+		if (this.memoDate != null && this.memoTime != null) {
 
 			String[] memoDates = this.memoDate.split("\\.");
-			String memoTime = this.memoTime.substring(this.memoTime.indexOf(" "), this.memoTime.length());
+			String memoTime = this.memoTime.substring(
+					this.memoTime.indexOf(" "), this.memoTime.length());
 			String dayAndNight = this.memoTime.substring(0, 2);
 			String[] memoTimes = memoTime.split(":");
-			
+
 			Log.i("isNew", this.memoTitle);
 			Log.i("isNew", this.memoDate);
 			Log.i("isNew", this.memoTime);
-			
-			
+
 			int year = Integer.parseInt(memoDates[0].trim());
 			int month = Integer.parseInt(memoDates[1].trim());
 			int day = Integer.parseInt(memoDates[2].trim());
-			
+
 			int hour = Integer.parseInt(memoTimes[0].trim());
 			int minute = Integer.parseInt(memoTimes[1].trim());
 			int second = Integer.parseInt(memoTimes[2].trim());
-			
-			//오전오후 검사
-			if(dayAndNight.equals("오후")){
-				hour += 12;
+
+			// 오전오후 검사
+			if (dayAndNight.equals("오후")) {
+				if(hour!=12){
+					hour += 12;
+				}
 			}
-			
+
+			Log.i("memo",
+					"year : " + String.valueOf(year) + "month : "
+							+ String.valueOf(month) + "day : "
+							+ String.valueOf(day) + "hour : "
+							+ String.valueOf(hour) + "minute : "
+							+ String.valueOf(minute) + "minute : "
+							+ String.valueOf(minute));
 			DateTime made = new DateTime(year, month, day, hour, minute, second);
 			DateTime now = DateTime.now();
-			
+
 			Interval interval = new Interval(made, now);
 			Duration duration = interval.toDuration();
 			long memoAge = duration.getMillis();
-			
-			Log.i("isNew",String.valueOf(memoAge));
-			
-			//5분 아래면. 
-			if(memoAge < 1000*60*1){
+
+			Log.i("isNew", String.valueOf(memoAge));
+
+			// 5분 아래면.
+			if (memoAge < 1000 * 3 * 1) {
 				this.isNew = true;
 				setBorderTexture(context);
-				Log.i("isNew","isNew!!!");
-			}else{
+				Log.i("isNew", "isNew!!!");
+			} else {
 				this.isNew = false;
 			}
-			
+
 		}
-		
+
 	}
 
 	/**
 	 * 새 메모 판별로직.
+	 * 
 	 * @return
 	 */
 	public boolean isNew() {

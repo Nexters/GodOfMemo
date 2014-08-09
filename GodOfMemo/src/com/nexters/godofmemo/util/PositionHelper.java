@@ -73,7 +73,7 @@ public class PositionHelper {
 		while(deque.size()>0){
 			Group group = deque.pollLast();
 
-			if(distanceBetweenCenters(nx, ny, group.getX(), group.getY()) <= group.getRadius()/2){
+			if(distanceBetweenCenters(nx, ny, group.getX(), group.getY()) <= group.getRadius()){
 				//선택됨
 				selectedGroup = group;
 				return selectedGroup;

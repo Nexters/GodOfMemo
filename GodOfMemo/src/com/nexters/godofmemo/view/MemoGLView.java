@@ -317,7 +317,7 @@ public class MemoGLView extends GLSurfaceView {
 
 				float dZ = 0.05f;	//줌가속 변수
 				float min = 1f;	//줌 최대
-				float max = 12f;	//줌 최소
+				float max = 8f;	//줌 최소
 
 				float tempZoom = 0;
 				tempZoom = mr.zoom;

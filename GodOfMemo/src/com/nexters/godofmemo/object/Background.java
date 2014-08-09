@@ -52,10 +52,11 @@ public class Background {
 	 */
 	public void setVertices() {
 
+		//default color...
 		int ai = 128;
-		int ri = pref.getInt("bg_color_r", 255);
-		int gi = pref.getInt("bg_color_g", 255);
-		int bi = pref.getInt("bg_color_b", 255);
+		int ri = pref.getInt("bg_color_r", 241);
+		int gi = pref.getInt("bg_color_g", 202);
+		int bi = pref.getInt("bg_color_b", 125);
 
 		// rgb 253, 245, 229
 		// rgb 140, 211, 156

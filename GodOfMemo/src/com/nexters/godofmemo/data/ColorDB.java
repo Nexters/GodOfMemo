@@ -23,7 +23,7 @@ public class ColorDB {
 		colorList.add(new Color("3c7dce", 60, 125, 206));
 		colorList.add(new Color("d09cd9", 208, 156, 217));
 		colorList.add(new Color("bcc58d", 188, 197, 141));
-		colorList.add(new Color("221f1f", 34, 31, 31));
+		colorList.add(new Color("4ebda2", 78, 189, 162));
 		colorList.add(new Color("aba290", 171, 162, 144));
 	}
 
