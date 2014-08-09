@@ -28,6 +28,7 @@
         <activity
             android:name="com.nexters.godofmemo.SplashActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,25 +40,43 @@
         <!-- Main activity 메모 보드 화면 -->
         <activity
             android:name="com.nexters.godofmemo.MainActivity"
-            android:label="@string/title_activity_board" >
+            android:label="@string/title_activity_board"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Memo activity 메모 신규 입력/수정 화면 -->
         <activity
             android:name="com.nexters.godofmemo.MemoActivity"
-            android:label="@string/title_activity_memo" >
+            android:label="@string/title_activity_memo"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Group activity 메모 신규 입력/수정 화면 -->
         <activity
             android:name="com.nexters.godofmemo.GroupActivity"
-            android:label="@string/title_activity_group" >
+            android:label="@string/title_activity_group"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Tutorial activity 튜토리얼 페이지 화면 -->
         <activity
             android:name="com.nexters.godofmemo.TutorialActivity"
-            android:label="tutorial" >
+            android:label="tutorial"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- Initial Tutorial 페이지 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.InitialTutorialActivity"
+            android:label="init_tutorial"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- Backup 페이지 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.BackupActivity"
+            android:label="backup"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

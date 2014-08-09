@@ -14,12 +14,9 @@ import static android.opengl.GLES20.glTexParameteri;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
@@ -27,16 +24,14 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import com.nexters.godofmemo.R;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
+import com.nexters.godofmemo.object.helper.BitmapCache;
 import com.nexters.godofmemo.object.helper.GroupHelper;
 import com.nexters.godofmemo.object.helper.MemoHelper;
 
 public class TextureHelper {
 	private static final String TAG = "TextureHelper";
-
-	private static Map<Integer, ByteBuffer> bitmapCache = new HashMap<Integer, ByteBuffer>();
 
 	/**
 	 * Loads a texture from a resource ID, returning the OpenGL ID for that
@@ -106,8 +101,8 @@ public class TextureHelper {
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
 
-		if (bitmapCache.containsKey(id)) {
-			byteBuffer = bitmapCache.get(id);
+		if (BitmapCache.getInstance().bitmapCache.containsKey(id)) {
+			byteBuffer = BitmapCache.getInstance().bitmapCache.get(id);
 			// System.out.println("cached!!");
 		} else {
 			byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight
@@ -121,7 +116,7 @@ public class TextureHelper {
 			for (int i = 0; i < pixels.length; i++) {
 				ib.put(pixels[i] << 8 | pixels[i] >>> 24);
 			}
-			bitmapCache.put(id, byteBuffer);
+			BitmapCache.getInstance().bitmapCache.put(id, byteBuffer);
 		}
 
 		// bitmap.recycle();

@@ -91,7 +91,13 @@ public class MemoRenderer implements Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//
+		float rf = 252f/255f;
+		float gf = 236f/255f;
+		float bf = 210f/255f;
+		
+		//set bg color
+		glClearColor(rf, gf, bf, 1.0f);
 
 		// 배경깔기. ->  bug. 
 		//int ri = pref.getInt("bg_color_r", 255);

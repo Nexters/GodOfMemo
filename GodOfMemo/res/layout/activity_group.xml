@@ -19,12 +19,12 @@
         <EditText
             android:id="@+id/group_name_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:background="@android:color/transparent"
             android:ems="8"
-            android:maxLines="4"
             android:gravity="center"
             android:hint="생각의 덩어리를 적어주세요"
+            android:maxLines="2"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/white" />
 
@@ -33,6 +33,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
+    <!-- Seek bar -->
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_above="@+id/group_color_picker_headline"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:max="100"
+        android:progressDrawable="@drawable/slide_bg"
+        android:thumb="@drawable/slide_btn" />
 
     <!-- 색상선택 -->
 
@@ -50,7 +62,7 @@
         android:id="@+id/bg_color_picker_hsv"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_above="@+id/seekBar"
+        android:layout_above="@+id/grp_btn_done"
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp" >
 
@@ -61,19 +73,6 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </HorizontalScrollView>
-
-    <!-- Seek bar -->
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_above="@+id/grp_btn_done"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:max="100"
-        android:progressDrawable="@drawable/slide_bg"
-        android:thumb="@drawable/slide_btn" />
 
     <!-- done -->
 
@@ -100,6 +99,20 @@
         android:layout_marginRight="80dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/btn_delete"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" />
+
+    <ImageView
+        android:id="@+id/grp_btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_cancel"
         android:paddingBottom="20dp"
         android:paddingTop="20dp" />
 

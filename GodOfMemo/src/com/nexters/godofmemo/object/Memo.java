@@ -236,6 +236,42 @@ public class Memo extends MovableObject implements Parcelable {
 				+ ", green=" + green * 255f + ", blue=" + blue * 255f + "]";
 	}
 
+	/**
+	 * used on backup
+	 * 
+	 * @return
+	 */
+	public String toHumanReadableString() {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("메모 번호");
+		sb.append("\t");
+		sb.append(memoId);
+		sb.append("\n");
+
+		sb.append("메모 제목");
+		sb.append("\t");
+		sb.append(memoTitle);
+		sb.append("\n");
+
+		sb.append("메모 내용");
+		sb.append("\t");
+		sb.append(memoContent);
+		sb.append("\n");
+
+		sb.append("메모 날짜 ");
+		sb.append("\t");
+		sb.append(memoDate);
+		sb.append("\n");
+
+		sb.append("메모 시간");
+		sb.append("\t");
+		sb.append(memoTime);
+		sb.append("\n");
+
+		return sb.toString();
+	}
+
 	// ######################
 	// #############
 	// Parcelable
@@ -335,7 +371,7 @@ public class Memo extends MovableObject implements Parcelable {
 
 			// 오전오후 검사
 			if (dayAndNight.equals("오후")) {
-				if(hour!=12){
+				if (hour != 12) {
 					hour += 12;
 				}
 			}

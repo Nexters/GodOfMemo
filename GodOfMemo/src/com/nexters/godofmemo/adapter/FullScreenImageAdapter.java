@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.nexters.godofmemo.BackupActivity;
 import com.nexters.godofmemo.R;
 
 public class FullScreenImageAdapter extends PagerAdapter {
@@ -71,7 +72,15 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
 
 		//imgDisplay.setImageResource(mImages[position]);
-		Bitmap bm = BitmapFactory.decodeResource(this.activity.getResources(), mImages[position]);
+		BitmapFactory.Options option = new BitmapFactory.Options();
+
+		option.inSampleSize = 2;
+
+		option.inPurgeable = true;
+
+		option.inDither = true;
+		
+		Bitmap bm = BitmapFactory.decodeResource(this.activity.getResources(), mImages[position], option);
 		imgDisplay.setImageBitmap(bm);
 		
 		//layout.removeAllViews();
@@ -82,7 +91,10 @@ public class FullScreenImageAdapter extends PagerAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO skip 으로 바꾸기
-					activity.finish();
+					//activity.finish();
+					
+					Intent i = new Intent(activity, BackupActivity.class);
+					activity.startActivity(i);
 				}
 			});
 			

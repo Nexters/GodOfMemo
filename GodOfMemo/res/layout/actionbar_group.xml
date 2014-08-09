@@ -12,7 +12,7 @@
         android:background="@drawable/group_title"/>
 
     <ImageView
-        android:id="@+id/grp_btn_back"
+        android:id="@+id/grp_btn_back_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
@@ -20,7 +20,7 @@
         android:background="@drawable/backbtn" />
 
     <ImageView
-        android:id="@+id/grp_btn_done"
+        android:id="@+id/grp_btn_done_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"

@@ -219,7 +219,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		GroupHelper.setInitPosition(glSurfaceView, newGroup);
 
 		// 새 메모가 생겼을때 토스트
-		String newText = "새 그룹!";
+		String newText = "완료!";
 		createToast(newText);
 
 		// 화면에 그릴 목록에 추가
@@ -266,7 +266,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		glSurfaceView.mr.memoList.add(newMemo);
 
 		// 새 메모가 생겼을때 토스트
-		String newText = "새 메모!";
+		String newText = "완료!";
 		createToast(newText);
 	}
 

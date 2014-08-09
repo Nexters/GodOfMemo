@@ -55,6 +55,7 @@ public class GroupActivity extends ActionBarActivity implements
 	private View background;
 	private EditText groupTitleInput;
 	private ImageView btn_del;
+	private ImageView btn_cancel;
 
 	// memo color picker
 	private LinearLayout groupColorPicker;
@@ -97,6 +98,7 @@ public class GroupActivity extends ActionBarActivity implements
 		groupTitleInput = (EditText) findViewById(R.id.group_name_text);
 		groupImgArea = findViewById(R.id.group_img_area);
 		btn_del = (ImageView) findViewById(R.id.grp_btn_delete);
+		btn_cancel= (ImageView) findViewById(R.id.grp_btn_cancel);
 
 		// init color picker
 		groupColorPicker = (LinearLayout) findViewById(R.id.group_color_picker);
@@ -117,9 +119,11 @@ public class GroupActivity extends ActionBarActivity implements
 		// since we are using this class as the listener the class is "this"
 		// make text label for seekBarAction value
 		// 이벤트설정
-		findViewById(R.id.grp_btn_back).setOnClickListener(this);
+		findViewById(R.id.grp_btn_back_bar).setOnClickListener(this);
+		findViewById(R.id.grp_btn_done_bar).setOnClickListener(this);
 		findViewById(R.id.grp_btn_delete).setOnClickListener(this);
 		findViewById(R.id.grp_btn_done).setOnClickListener(this);
+		findViewById(R.id.grp_btn_cancel).setOnClickListener(this);
 		//btn_del.setOnClickListener(this);
 
 		groupTitleInput.bringToFront();
@@ -148,7 +152,15 @@ public class GroupActivity extends ActionBarActivity implements
 			// 그룹 생성!!
 			createGroup();
 			break;
-		case R.id.grp_btn_back:
+		case R.id.grp_btn_done_bar:
+			// 그룹 생성!!
+			createGroup();
+			break;
+		case R.id.grp_btn_back_bar:
+			// 뒤로가기
+			moveToBack();
+			break;
+		case R.id.grp_btn_cancel:
 			// 뒤로가기
 			moveToBack();
 			break;
@@ -175,6 +187,7 @@ public class GroupActivity extends ActionBarActivity implements
 	 * 수정모드 시 기존 그룹정보 설정.
 	 */
 	private void initGroupInfo() {
+		btn_cancel.setVisibility(View.INVISIBLE);
 
 		// 그룹 크기 조절
 		float dSize = adjustGroupSize(group.getRadius());

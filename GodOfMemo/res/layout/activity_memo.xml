@@ -42,7 +42,9 @@
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
             android:textColor="@android:color/black"
+            android:textColorHint="#F4F4F4"
             android:textSize="24sp" />
+
         <EditText
             android:id="@+id/memo_content"
             android:layout_width="fill_parent"
@@ -56,6 +58,7 @@
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
             android:textColor="@android:color/black"
+            android:textColorHint="#F4F4F4"
             android:textSize="17sp" />
 
         <TextView
@@ -65,7 +68,7 @@
             android:layout_weight="50"
             android:padding="10dp"
             android:text="2014년 02월 15일 오후 02:00"
-            android:textSize="9sp" />
+            android:textSize="13sp" />
 
         <View
             android:layout_width="fill_parent"
@@ -129,7 +132,7 @@
             android:layout_weight="50" />
 
         <ImageView
-            android:id="@id/btn_done"
+            android:id="@+id/btn_done"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="80"

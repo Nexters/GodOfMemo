@@ -204,8 +204,8 @@ public class GroupHelper {
 	 */
 	public static Bitmap drawTextToBitmap(String gText) {
 
-		int width = 512;
-		int height = 512;
+		int width = 384;
+		int height = 384;
 
 		// Read in the resource
 		Bitmap bitmap = Bitmap.createBitmap(width, height,
@@ -217,7 +217,7 @@ public class GroupHelper {
 		// text color - #3D3D3D
 		paint.setColor(Color.rgb(61, 61, 61));
 		// text size in pixels
-		int textSize = (32);
+		int textSize = (64);
 		paint.setTextSize(textSize);
 		// text shadow
 		// paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
