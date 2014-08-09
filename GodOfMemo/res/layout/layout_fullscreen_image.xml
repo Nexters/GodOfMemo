@@ -4,47 +4,48 @@
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/imgDisplay"
+        android:id="@+id/img_display"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerCrop" />
 
-    <Button
-        android:id="@+id/btnSkip"
+    <ImageView
+        android:id="@+id/btn_done"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:text="       "
-        android:background="@android:color/transparent"
-        android:textColor="#ffffff" />
-    
-    <Button
-        android:id="@+id/btnFacebook"
-        android:layout_width="120dp"
-        android:layout_height="90dp"
-        android:layout_above="@+id/btnDone"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:text="         "
-        android:background="@android:color/transparent"
-        android:textColor="#ffffff" />
+        android:src="@drawable/btn_out" />
 
-    <Button
-        android:id="@+id/btnDone"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
+    <ImageView
+        android:id="@+id/btn_credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="59dp"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:text="       "
-        android:background="@android:color/transparent"
-        android:textColor="#ffffff" />
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/btn_credit" />
+
+    <ImageView
+        android:id="@+id/btn_facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/btn_facebook" />
+
+    <ImageView
+        android:id="@+id/btn_backup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/btn_backup" />
 
 </RelativeLayout>

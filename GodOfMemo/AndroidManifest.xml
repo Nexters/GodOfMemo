@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <!-- OPENGL설정 -->
@@ -76,6 +76,13 @@
         <activity
             android:name="com.nexters.godofmemo.BackupActivity"
             android:label="backup"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- Credit 페이지 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.CreditActivity"
+            android:label="credit"
             android:screenOrientation="portrait" >
         </activity>
     </application>

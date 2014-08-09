@@ -28,7 +28,7 @@ public class SplashActivity extends ActionBarActivity {
 
 		// 처음 실행 여부 체크
 		isFirst = pref.getBoolean("isFirst", true);
-		isFirst = true;
+		// isFirst = true; //test
 		if (isFirst) {
 			pref.edit().putBoolean("isFirst", false).commit();
 

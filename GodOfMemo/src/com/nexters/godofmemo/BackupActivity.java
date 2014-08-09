@@ -2,9 +2,9 @@ package com.nexters.godofmemo;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Memo;
 
-public class BackupActivity extends Activity implements OnClickListener {
+public class BackupActivity extends ActionBarActivity implements OnClickListener {
 
 	private EditText email_address;
 	private ImageView send_email;
@@ -22,6 +22,7 @@ public class BackupActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	    getActionBar().hide();
 
 		setContentView(R.layout.activity_backup);
 
@@ -30,6 +31,15 @@ public class BackupActivity extends Activity implements OnClickListener {
 
 		email_address.setOnClickListener(this);
 		send_email.setOnClickListener(this);
+
+		findViewById(R.id.btn_back).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				finish();
+
+			}
+		});
 
 	}
 

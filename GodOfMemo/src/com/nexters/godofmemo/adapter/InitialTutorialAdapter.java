@@ -29,7 +29,8 @@ public class InitialTutorialAdapter extends PagerAdapter {
 		this.activity = tempActivity;
 
 		mImages = new int[] { R.drawable.howtouse_1, R.drawable.howtouse_2,
-				R.drawable.howtouse_3, R.drawable.splash_seen };
+				R.drawable.howtouse_3, R.drawable.splash_seen,
+				R.drawable.splash_seen };
 	}
 
 	@Override
