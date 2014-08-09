@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/logo"/>
+        android:background="@drawable/memo_title"/>
 
     <ImageView
         android:id="@+id/btn_back"

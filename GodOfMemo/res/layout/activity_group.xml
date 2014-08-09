@@ -18,13 +18,14 @@
 
         <EditText
             android:id="@+id/group_name_text"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:ems="10"
+            android:ems="8"
+            android:maxLines="4"
             android:gravity="center"
-            android:hint="그룹이름을 여기에 적으세요"
-            android:textColor="@android:color/white"
+            android:hint="생각의 덩어리를 적어주세요"
+            android:textColor="@android:color/black"
             android:textColorHint="@android:color/white" />
 
         <ImageView
@@ -35,13 +36,23 @@
 
     <!-- 색상선택 -->
 
+    <TextView
+        android:id="@+id/group_color_picker_headline"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:layout_above="@+id/bg_color_picker_hsv"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:text="큰 생각 색깔"
+        android:textSize="13sp" />
+
     <HorizontalScrollView
         android:id="@+id/bg_color_picker_hsv"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/group_img_area"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" >
+        android:layout_height="40dp"
+        android:layout_above="@+id/seekBar"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp" >
 
         <LinearLayout
             android:id="@+id/group_color_picker"
@@ -56,10 +67,10 @@
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bg_color_picker_hsv"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/grp_btn_done"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
         android:max="100"
         android:progressDrawable="@drawable/slide_bg"
         android:thumb="@drawable/slide_btn" />
@@ -68,22 +79,28 @@
 
     <ImageView
         android:id="@id/grp_btn_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_above="@+id/grp_btn_delete"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_finish" />
 
     <ImageView
         android:id="@+id/grp_btn_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/grp_btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/btn_delete" />
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_delete"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp" />
 
 </RelativeLayout>

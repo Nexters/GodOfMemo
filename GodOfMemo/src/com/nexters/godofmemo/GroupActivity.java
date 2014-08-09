@@ -245,7 +245,7 @@ public class GroupActivity extends ActionBarActivity implements
 		Util.setPosition(groupImg, initGroupSize, initGroupSize, 50,
 				centerPosition / 2);
 		// 그룹제목 위치
-		Util.setPosition(groupTitleInput, initGroupSize, initGroupSize, 50,
+		Util.setPosition(groupTitleInput, initGroupSize*3, initGroupSize, 50,
 				centerPosition / 2);
 
 	}

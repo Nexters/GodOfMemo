@@ -53,6 +53,12 @@
             android:name="com.nexters.godofmemo.GroupActivity"
             android:label="@string/title_activity_group" >
         </activity>
+
+        <!-- Tutorial activity 튜토리얼 페이지 화면 -->
+        <activity
+            android:name="com.nexters.godofmemo.TutorialActivity"
+            android:label="tutorial" >
+        </activity>
     </application>
 
 </manifest>

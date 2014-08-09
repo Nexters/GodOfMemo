@@ -54,7 +54,7 @@ public class MemoRenderer implements Renderer {
 	public int height;
 
 	// 줌 배율
-	public float zoom = 3.5f;
+	public float zoom = 8f;
 
 	// fov
 	public float fov = 0.6f;

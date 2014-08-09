@@ -43,7 +43,6 @@
             android:padding="15dp"
             android:textColor="@android:color/black"
             android:textSize="24sp" />
-
         <EditText
             android:id="@+id/memo_content"
             android:layout_width="fill_parent"
@@ -79,7 +78,7 @@
             android:layout_height="10dp"
             android:layout_weight="50"
             android:padding="10dp"
-            android:text="메모 색깔"
+            android:text="생각 색깔"
             android:textSize="13sp" />
 
         <HorizontalScrollView
@@ -107,7 +106,7 @@
             android:layout_height="10dp"
             android:layout_weight="50"
             android:padding="10dp"
-            android:text="배경 색깔"
+            android:text="머릿속 색깔"
             android:textSize="13sp" />
 
         <HorizontalScrollView

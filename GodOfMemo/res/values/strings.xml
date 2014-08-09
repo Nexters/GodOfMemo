@@ -8,8 +8,8 @@
     <string name="title_activity_memo">SplashActivity</string>
     <string name="action_write_finish">메모 끝</string>
     <string name="detailed_message">이 곳을 누르면 더 자세하게 메모를 작성할 수 있습니다.</string>
-    <string name="memo_title">Title</string>
-    <string name="memo_contents">...</string>
+    <string name="memo_title">나의 생각</string>
+    <string name="memo_contents">지금 떠오르는 생각을 적어 보세요!</string>
     <string name="title_activity_board">BoardActivity</string>
     <string name="title_activity_splash">Mind Paper</string>
     <string name="title_activity_group">GroupActivity</string>
