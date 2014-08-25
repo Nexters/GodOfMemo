@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -65,9 +64,8 @@ public class GroupActivity extends ActionBarActivity implements
 	private Group group;
 
 	// 그룹 크기변경을 위한 변수.
-	private int changedGroupSize;
-	private int initGroupSize;
-	private int dHeight;
+	private int pctSize = 50;	//percent.
+	private int groupCircleMaxPixelSize;// circle size.
 
 	// color
 	private int r;
@@ -190,13 +188,20 @@ public class GroupActivity extends ActionBarActivity implements
 		btn_cancel.setVisibility(View.INVISIBLE);
 
 		// 그룹 크기 조절
-		float dSize = adjustGroupSize(group.getRadius());
-		Util.setPosition(groupImg, (int) dSize, (int) dSize, 50,
-				centerPosition / 2);
-
+		double glSize = group.getRadius();
+		
 		// set progress of the seekbar
-		int progress = adjustProgress((int) dSize);
-		bar.setProgress(progress);
+		pctSize = gl2pct(glSize);
+		bar.setProgress(pctSize);
+		
+		// set circle...
+		int pixelSize = pct2pixel(pctSize);
+		Util.setPosition(groupImg, pixelSize, pixelSize, 50,
+				centerPosition / 2);
+		
+		// 그룹제목 위치
+		Util.setPosition(groupTitleInput, groupCircleMaxPixelSize/2, groupCircleMaxPixelSize/2, 50,
+				centerPosition / 2);
 
 		// set groupTitle
 		groupTitleInput.setText(group.getGroupTitle());
@@ -218,15 +223,20 @@ public class GroupActivity extends ActionBarActivity implements
 	 */
 	private void initNewGroup() {
 		btn_del.setVisibility(View.INVISIBLE);
-
+		
+		// 레이아웃에서 그룹 크기 초기값
+		int pixelSize = groupCircleMaxPixelSize * pctSize / 100;	//init pixel...
+		
+		// 그룹이미지를 위치한다
+		Util.setPosition(groupImg, pixelSize, pixelSize, 50,centerPosition / 2);
+		
+		// 그룹제목 위치
+		Util.setPosition(groupTitleInput, groupCircleMaxPixelSize/2, groupCircleMaxPixelSize/2, 50,
+				centerPosition / 2);
+		
 		// 그룹 크기 조절
-		// TODO 임시값.
-		int dSize = 100;
-		Util.setPosition(groupImg, dSize, dSize, 50, centerPosition / 2);
-		// set progress of the seekbar
-		int progress = adjustProgress(dSize);
-		bar.setProgress(progress);
-
+		bar.setProgress(pctSize);
+		
 		//초기색상값.
 		r = 140;
 		g = 211;
@@ -245,22 +255,17 @@ public class GroupActivity extends ActionBarActivity implements
 	private void initGroupImgArea() {
 		// 그룹이미지영역 조정.
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		dHeight = metrics.heightPixels;
-		dHeight = dHeight * centerPosition / 100;
+		groupCircleMaxPixelSize = metrics.heightPixels * centerPosition / 100;	//half of height.
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, dHeight);
+				LayoutParams.MATCH_PARENT, groupCircleMaxPixelSize);
 		groupImgArea.setLayoutParams(lp);
-
+		
 		// 레이아웃에서 그룹 크기 초기값
-		initGroupSize = dHeight * minGroupSize / 100;
-		changedGroupSize = initGroupSize;
+		//initGroupSize = groupCircleMaxRadius * minGroupSize / 100;	//inis size.
 		// 그룹이미지를 위치한다
-		Util.setPosition(groupImg, initGroupSize, initGroupSize, 50,
-				centerPosition / 2);
+		//Util.setPosition(groupImg, initGroupSize, initGroupSize, 50,centerPosition / 2);
 		// 그룹제목 위치
-		Util.setPosition(groupTitleInput, initGroupSize*3, initGroupSize * 2, 50,
-				centerPosition / 2);
-
+		//Util.setPosition(groupTitleInput, initGroupSize*3, initGroupSize * 2, 50, centerPosition / 2);
 	}
 
 	/**
@@ -391,7 +396,8 @@ public class GroupActivity extends ActionBarActivity implements
 		group.setGroupDate(Util.getDate());
 		group.setGroupTime(Util.getTime());
 		//group.setRadius(bar.getProgress());
-		group.setRadius(changeGroupSizeSuitableMain(changedGroupSize)); // TODO 여기 무슨값넣지?
+		
+		group.setRadius(pct2gl(pctSize)); // TODO 여기 무슨값넣지?
 		group.setRed(r / 255f);
 		group.setGreen(g / 255f);
 		group.setBlue(b / 255f);
@@ -450,12 +456,12 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @param groupSize2
 	 * @return
 	 */
-	private float changeGroupSizeSuitableMain(float groupSize) {
-		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
+	/*private float changeGroupSizeSuitableMain(float groupSize) {
+		float max = groupCircleMaxPixelSize * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * 0.5f) / max);
 		Log.i("debug","changeGroupSizeSuitableMain : "+result);
 		return result;
-	}
+	}*/
 
 	/**
 	 * Adjust group size to Group Activity layout max group size : 2 max result
@@ -464,14 +470,14 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @param groupSize
 	 * @return
 	 */
-	private float adjustGroupSize(float groupSize) {
+	/*private float adjustGroupSize(float groupSize) {
 		// 1.125
 		// System.out.println("before adjust group size :"+groupSize);
-		float max = dHeight * centerPosition / 100f * maxGroupSize / 100f;
+		float max = groupCircleMaxPixelSize * centerPosition / 100f * maxGroupSize / 100f;
 		float result = ((groupSize * max) * 1.5f);
 		Log.i("debug", "adjustGroupSize :"+result);
 		return result;
-	}
+	}*/
 
 	/**
 	 * in onProgressChanged method, there is expression how to calculate group
@@ -481,13 +487,13 @@ public class GroupActivity extends ActionBarActivity implements
 	 * @param size
 	 * @return
 	 */
-	private int adjustProgress(int size) {
+	/*private int adjustProgress(int size) {
 		// System.out.println("before size adjust progress "+size);
-		int result = (((size * 100 / dHeight) - minGroupSize) * 100)
+		int result = (((size * 100 / groupCircleMaxPixelSize) - minGroupSize) * 100)
 				/ (maxGroupSize - minGroupSize);
 		Log.i("debug","after adjust progress "+result);
 		return result;
-	}
+	}*/
 
 	/**
 	 * This callback method change Group size fit to progress value max group
@@ -499,15 +505,19 @@ public class GroupActivity extends ActionBarActivity implements
 		// dHeight * (50 * progress /100 +20) /100
 		// progress / 100 : 진행사항.
 		// dHeight * (30) /100
-		changedGroupSize = dHeight
+		/*pctSize = groupCircleMaxRadius
 				* (((maxGroupSize - minGroupSize) * progress / 100) + minGroupSize)
-				/ 100;
-		// 조정 가능한 최대 크기 = 최대에서 최소 뺀거.
-		Log.i("debug","onProgressChanged:" + changedGroupSize);
-		if (changedGroupSize > initGroupSize) {
-			Util.setPosition(groupImg, changedGroupSize*3, changedGroupSize*3, 50,
-					centerPosition / 2);
+				/ 100;*/
+		if(progress < minGroupSize){
+			progress = minGroupSize;
+		}else if (progress> maxGroupSize){
+			progress = maxGroupSize;
+		}else{
+			pctSize = progress;
 		}
+		
+		int pixelSize = pct2pixel(pctSize);
+		Util.setPosition(groupImg, pixelSize, pixelSize, 50, centerPosition / 2);
 
 		groupTitleInput.bringToFront();
 	}
@@ -569,5 +579,17 @@ public class GroupActivity extends ActionBarActivity implements
 				});
 
 		loseBuild.create().show();
+	}
+
+	private int pct2pixel(int pctSize) {
+		return groupCircleMaxPixelSize * pctSize / 100;
+	}
+
+	private float pct2gl(int pctSize) {
+		return pctSize * 1.5f / 100f;	//opengl..
+	}
+
+	private int gl2pct(double glSize) {
+		return (int) (glSize * 100f / 1.5f);
 	}
 }
