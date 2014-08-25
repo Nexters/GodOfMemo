@@ -36,7 +36,7 @@
             android:layout_height="30dp"
             android:padding="2dp"
             android:background="@drawable/email_address"
-            android:text="lifenjoy51@gmail.com" />
+            android:text="" />
     </LinearLayout>
 
     <ImageView
