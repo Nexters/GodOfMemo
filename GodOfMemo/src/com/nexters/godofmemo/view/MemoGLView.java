@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import com.nexters.godofmemo.GroupActivity;
 import com.nexters.godofmemo.MemoActivity;
 import com.nexters.godofmemo.dao.GroupDAO;
+import com.nexters.godofmemo.dao.MemoDAO;
 import com.nexters.godofmemo.object.Group;
 import com.nexters.godofmemo.object.Memo;
 import com.nexters.godofmemo.render.MemoRenderer;
@@ -29,6 +30,10 @@ public class MemoGLView extends GLSurfaceView {
 	public MemoGLView(Context context) {
 		super(context);
 		this.context = context;
+		
+		//initialize dao
+		memoDao = new MemoDAO(context);
+		groupDao = new GroupDAO(context);
 
 		// Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
@@ -100,6 +105,10 @@ public class MemoGLView extends GLSurfaceView {
 	private Group selectedGroup;
     //진동관리
     private final Vibrator vibrator;
+    
+    //dao
+    MemoDAO memoDao;
+    GroupDAO groupDao;
 
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -107,14 +116,14 @@ public class MemoGLView extends GLSurfaceView {
 		//터치한 좌표
 		float x = event.getX();
 		float y = event.getY();
-		System.out.println("111  "+x +", "+ y);
+		//System.out.println("111  "+x +", "+ y);
 
 		//정규화된 좌표
 		float nx = getNormalizedX(x);
     	float ny = getNormalizedY(y);
-    	System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
+    	//System.out.format("point %f %f %f %f \n", nx, ny, mr.px,  mr.py);
 
-    	//이동한 다음의 차이.
+    		//이동한 다음의 차이.
     	float movedDistanceX =  0;
 		float movedDistanceY =  0;
 
@@ -141,7 +150,7 @@ public class MemoGLView extends GLSurfaceView {
 			mode = DRAG;
 
 			//위치표시
-			//////////System.out.format("%f %f \n", x, y);
+			//System.out.format("%f %f \n", x, y);
 
 			break;
 
@@ -169,8 +178,8 @@ public class MemoGLView extends GLSurfaceView {
 
 			float moveLimit = 10f;
 			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
-			////System.out.format("%f %f ",Math.abs(dx), Math.abs(dy));
-			////System.out.println("isMoved : "+isMoved);
+			//System.out.format("%f %f ",Math.abs(dx), Math.abs(dy));
+			//System.out.println("isMoved : "+isMoved);
 
 			//메모를 선택했는지 확인 로직
 			if(!isMoved ){
@@ -193,6 +202,15 @@ public class MemoGLView extends GLSurfaceView {
 					}
 					tabMode= TAB;
 				}
+			}else{
+				//이동했을 때. 이동이 완료되면 이동정보를 저장한다.
+				if(selectedMemo != null){
+					//update
+					memoDao.updateMemo(selectedMemo);
+				}else if(selectedGroup!=null){
+					//update
+					groupDao.updateGroup(selectedGroup);
+				}
 			}
 			
 			/**
@@ -202,9 +220,9 @@ public class MemoGLView extends GLSurfaceView {
 			 * 
 			//오브젝트가 이동을 끝내고 주변 오브젝트들 간의 관계를 설정한다.
 			if(selectedMemo != null){
-				System.out.println("before position"+selectedMemo.getX()+", "+selectedMemo.getY());
+				//System.out.println("before position"+selectedMemo.getX()+", "+selectedMemo.getY());
 				positionHelper.checkMemoCollision(selectedMemo);
-				System.out.println("after position"+selectedMemo.getX()+", "+selectedMemo.getY());
+				//System.out.println("after position"+selectedMemo.getX()+", "+selectedMemo.getY());
 				positionHelper.updateSpecificMemoForSetGroupId(selectedMemo);
 			}
 
@@ -244,7 +262,7 @@ public class MemoGLView extends GLSurfaceView {
 			//한 손가락만 움직일 때
 			if (mode == DRAG) {
 				//Log.d(TAG, "DRAG");
-				//////System.out.println(tabMode);
+				//System.out.println(tabMode);
 				dx = x - pre.x;
 				dy = y - pre.y;
 				pre.set(x,y);
@@ -274,7 +292,8 @@ public class MemoGLView extends GLSurfaceView {
 				}else if(selectedGroup != null && tabMode == LONGTAB){
 					movedDistanceX =  nx -nPre.x;
 					movedDistanceY =  ny -nPre.y;
-					positionHelper.moveMemoInGroup(movedDistanceX, movedDistanceY);
+					//TODO 그룹 안에 있는 메모가 함께 이동하는 기능을 움직이지않게. 
+					//positionHelper.moveMemoInGroup(movedDistanceX, movedDistanceY);
 					//그룹이동
 					positionHelper.moveGroup(selectedGroup, movedDistanceX, movedDistanceY);
 
@@ -302,9 +321,9 @@ public class MemoGLView extends GLSurfaceView {
 						mr.py = tempY;
 					}
 
-					//////System.out.format(" x y %f %f \t", x, y);
-					//////System.out.format(" nx ny %f %f \t", nx, ny);
-					//////System.out.format(" px py %f %f \n", mr.px, mr.py);
+					//System.out.format(" x y %f %f \t", x, y);
+					//System.out.format(" nx ny %f %f \t", nx, ny);
+					//System.out.format(" px py %f %f \n", mr.px, mr.py);
 
 				}
 			} else if (mode == ZOOM) {
@@ -385,14 +404,14 @@ public class MemoGLView extends GLSurfaceView {
 			ratioY = (float) mr.height / mr.width ;
 		}
 
-		//////System.out.format("w h %d %d \n",mr.width, mr.height);
+		//System.out.format("w h %d %d \n",mr.width, mr.height);
 
 		float leftBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
 		float rightBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioX;
 		float topBoundary = +((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
 		float bottomBoundary = -((Constants.DOT_BACKGROUND_SIZE/2) + margin)*ratioY;
 
-		//////System.out.format("boundary %f %f %f %f \n", leftBoundary, rightBoundary, topBoundary, bottomBoundary);
+		//System.out.format("boundary %f %f %f %f \n", leftBoundary, rightBoundary, topBoundary, bottomBoundary);
 
 		//현재 화면의 상태
 		float left = 0 ;
@@ -405,7 +424,7 @@ public class MemoGLView extends GLSurfaceView {
 		float normalizedTop = getNormalizedY(top, tempX, tempY, tempZoom);
 		float normalizedBottom = getNormalizedY(bottom, tempX, tempY, tempZoom);
 
-		//////System.out.format("normalized %f %f %f %f \n", normalizedLeft, normalizedRight, normalizedTop, normalizedBottom);
+		//System.out.format("normalized %f %f %f %f \n", normalizedLeft, normalizedRight, normalizedTop, normalizedBottom);
 
 		//자동줌
 		if(mode == ZOOM){
@@ -435,7 +454,7 @@ public class MemoGLView extends GLSurfaceView {
 		if(normalizedTop > topBoundary) return true;
 		if(normalizedBottom < bottomBoundary) return true;
 
-		//////System.out.println("false!!");
+		//System.out.println("false!!");
 
 		return false;
 	}
@@ -493,7 +512,7 @@ public class MemoGLView extends GLSurfaceView {
 	    	//선택된 원을 확인
 			if(selectedMemo!=null){
 				//선택된걸 상위로
-				System.out.println("long");
+				//System.out.println("long");
 				setLongTab();
 				mr.memoList.remove(selectedMemo);
 				mr.memoList.add(selectedMemo);
@@ -510,7 +529,7 @@ public class MemoGLView extends GLSurfaceView {
 		private void setLongTab(){
 			tabMode=LONGTAB;
 			//선택시 진동
-			System.out.println("long");
+			//System.out.println("long");
 			vibrator.vibrate(100);
 		}
 	}
