@@ -45,6 +45,7 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         android:max="100"
+        
         android:progressDrawable="@drawable/seekbar_progress"
         android:thumb="@drawable/slide_btn" />
 

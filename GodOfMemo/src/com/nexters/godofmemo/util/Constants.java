@@ -45,8 +45,8 @@ public class Constants {
 	// 그룹 중심 위치
 	public static final int centerPosition = 50;
 	// 그룹 최소 크기(%)
-	public static final int minGroupSize = 10;
+	public static final int minGroupSize = 20;
 	// 그룹 최대 크기(%)
-	public static final int maxGroupSize = 20;
+	public static final int maxGroupSize = 80;
 
 }
