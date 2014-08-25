@@ -1,6 +1,10 @@
 package com.nexters.godofmemo.object.helper;
 
 import static com.nexters.godofmemo.util.Constants.FLOATS_PER_VERTEX;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -225,10 +229,11 @@ public class GroupHelper {
 		// ##########
 		// 텍스트 여러줄 처리
 		// ##########
-		String dividedText = BitmapHelper.getDividedText(gText);
 
 		// 텍스트를 줄바꿈 단위로 쪼갠다.
-		String[] dividedTextArray = dividedText.split("\n");
+		List<String> dividedTextList = new ArrayList<String>();
+		dividedTextList = getParts(gText, 6);
+		
 
 		// draw text to the Canvas center
 		// TODO group에 적합하도록.
@@ -242,9 +247,9 @@ public class GroupHelper {
 		int offsetY = (textSize + marginY) / 1;
 
 		// 몇번 포문을 수행할지 결정
-		int maxLine = 3;
-		if (dividedTextArray.length < maxLine) {
-			loopCnt = dividedTextArray.length;
+		int maxLine = 5;
+		if (dividedTextList.size() < maxLine) {
+			loopCnt = dividedTextList.size();
 		} else {
 			loopCnt = maxLine;
 		}
@@ -257,7 +262,7 @@ public class GroupHelper {
 
 		// 여러줄 출력하기
 		for (int i = 0; i < loopCnt; i++) {
-			String text = dividedTextArray[i];
+			String text = dividedTextList.get(i);
 			int px = x - (text.length() * textSize) / 2 + marginX;
 			int py = textoffsetYY + (i * offsetY);
 			canvas.drawText(text, px, py, paint);
@@ -303,4 +308,14 @@ public class GroupHelper {
 
 		group.setVertices();
 	}
+	
+    public static List<String> getParts(String string, int partitionSize) {
+        List<String> parts = new ArrayList<String>();
+        int len = string.length();
+        for (int i=0; i<len; i+=partitionSize)
+        {
+            parts.add(string.substring(i, Math.min(len, i + partitionSize)));
+        }
+        return parts;
+    }
 }
