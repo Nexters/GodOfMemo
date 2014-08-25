@@ -19,11 +19,13 @@
         <EditText
             android:id="@+id/group_name_text"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:background="@android:color/transparent"
             android:ems="8"
+            android:ellipsize="start"
             android:gravity="center"
-            android:hint="생각의 덩어리를 적어주세요"
+            android:hint="@string/group_hint"
             android:maxLines="2"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/white" />

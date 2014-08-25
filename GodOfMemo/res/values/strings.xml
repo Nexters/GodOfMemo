@@ -15,5 +15,6 @@
     <string name="title_activity_group">GroupActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="group_hint">생각의 덩어리를 적어주세요</string>
 
 </resources>
