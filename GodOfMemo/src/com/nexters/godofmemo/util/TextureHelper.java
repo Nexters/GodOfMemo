@@ -69,7 +69,7 @@ public class TextureHelper {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
 			return loadBitmpTexture(bitmap, bitmap.getGenerationId());
 		} else {
-			return loadBitmpTextureNoAlpha(bitmap);
+			return loadBitmpTextureNoCache(bitmap);
 		}
 	}
 
@@ -226,6 +226,102 @@ public class TextureHelper {
 
 		// Load the bitmap into the bound texture.
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+
+		// Note: Following code may cause an error to be reported in the
+		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
+		// Failed to generate texture mipmap levels (error=3)
+		// No OpenGL error will be encountered (glGetError() will return
+		// 0). If this happens, just squash the source image to be
+		// square. It will look the same because of texture coordinates,
+		// and mipmap generation will work.
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// Recycle the bitmap, since its data has been loaded into
+		// OpenGL.
+		// TODO 임시로 막아놓음..
+		// bitmap.recycle();
+
+		// Unbind from the texture.
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		return textureObjectIds[0];
+	}
+
+
+	public static int loadBitmpTextureNoCache(Bitmap bitmap) {
+		final int[] textureObjectIds = new int[1];
+		glGenTextures(1, textureObjectIds, 0);
+
+		if (textureObjectIds[0] == 0) {
+			if (LoggerConfig.ON) {
+				Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			}
+			return 0;
+		}
+
+		if (bitmap == null) {
+			glDeleteTextures(1, textureObjectIds, 0);
+			return 0;
+		}
+
+
+
+		ByteBuffer byteBuffer;
+		int bitmapWidth = bitmap.getWidth();
+		int bitmapHeight = bitmap.getHeight();
+		byteBuffer = ByteBuffer.allocateDirect(bitmapWidth * bitmapHeight
+				* 4);
+		byteBuffer.order(ByteOrder.BIG_ENDIAN);
+		IntBuffer ib = byteBuffer.asIntBuffer();
+
+		int[] pixels = new int[bitmapWidth * bitmapHeight];
+		bitmap.getPixels(pixels, 0, bitmapWidth, 0, 0, bitmapWidth,
+				bitmapHeight);
+		for (int i = 0; i < pixels.length; i++) {
+			ib.put(pixels[i] << 8 | pixels[i] >>> 24);
+		}
+
+		// bitmap.recycle();
+
+		// Bind to the texture in OpenGL
+		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
+
+		// alpha 주기위한 옵션
+		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		GLES20.glEnable(GLES20.GL_BLEND);
+
+		// Set filtering: a default must be set, or the texture will be
+		// black.
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
+				GLES20.GL_REPEAT);
+
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
+				GLES20.GL_REPEAT);
+
+		// Load the bitmap into the bound texture.
+		GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
+				bitmapWidth, bitmapHeight, 0, GLES20.GL_RGBA,
+				GLES20.GL_UNSIGNED_BYTE, byteBuffer);
+
+		/*// Set filtering: a default must be set, or the texture will be
+		// black.
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
+				GLES20.GL_REPEAT);
+
+		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
+				GLES20.GL_REPEAT);
+
+		// Load the bitmap into the bound texture.
+		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);*/
 
 		// Note: Following code may cause an error to be reported in the
 		// ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:

@@ -1,5 +1,8 @@
 package com.nexters.godofmemo.view;
 
+import static com.nexters.godofmemo.util.Constants.ZOOM_MAX;
+import static com.nexters.godofmemo.util.Constants.ZOOM_MIN;
+import static com.nexters.godofmemo.util.Constants.moveLimit;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -166,7 +169,7 @@ public class MemoGLView extends GLSurfaceView {
 			// 화면을 누른 시간을 구한다.
 			dMilliSecond = System.currentTimeMillis() - startMilliSecond;
 
-			float moveLimit = 10f;
+
 			boolean isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
 			////System.out.format("%f %f ",Math.abs(dx), Math.abs(dy));
 			////System.out.println("isMoved : "+isMoved);
@@ -241,7 +244,6 @@ public class MemoGLView extends GLSurfaceView {
 				pre.set(x,y);
 
 				//일정범위 이상 움직였을때는, 롱클릭 이벤트를 해제함
-				moveLimit = 10f;
 				isMoved = (Math.abs(dx)>moveLimit || Math.abs(dy)>moveLimit);
 
 				if(isMoved){
@@ -307,26 +309,24 @@ public class MemoGLView extends GLSurfaceView {
 				float scale = newDist / oldDist;	//확대,축소 여부
 
 				float dZ = 0.05f;	//줌가속 변수
-				float min = 1f;	//줌 최대
-				float max = 12f;	//줌 최소
 
 				float tempZoom = 0;
 				tempZoom = mr.zoom;
 
 				//줌 최대최소 판별 후
-				if (min < mr.zoom  && mr.zoom < max) {
+				if (ZOOM_MIN < mr.zoom  && mr.zoom < ZOOM_MAX) {
 					if(scale > 1){
 						//확대
-						if(min<(mr.zoom-dZ)) tempZoom -= dZ*mr.zoom;
+						if(ZOOM_MIN<(mr.zoom-dZ)) tempZoom -= dZ*mr.zoom;
 					}else{
 						//축소
-						if(max>(mr.zoom+dZ)) tempZoom += dZ*mr.zoom;
+						if(ZOOM_MAX>(mr.zoom+dZ)) tempZoom += dZ*mr.zoom;
 					}
 				} else {
-					if (mr.zoom <= min){
+					if (mr.zoom <= ZOOM_MIN){
 						//최소경계보다 작아지면 확대한다
 						tempZoom += dZ;
-					}else if (mr.zoom >= max){
+					}else if (mr.zoom >= ZOOM_MAX){
 						//최대경계보다 커지면 축소한다
 						tempZoom -= dZ;
 					}
@@ -334,8 +334,11 @@ public class MemoGLView extends GLSurfaceView {
 
 				//화면경계를 검사해서 유효하면 줌을 적용한다
 				if(!isOutOfBoundary(mr.px, mr.py, tempZoom)){
-					mr.zoom = tempZoom;
+					//TODO 임시로 막아둠.
+					//mr.zoom = tempZoom;
 				}
+
+				mr.zoom = tempZoom;
 			}
 
 			//화면에 그리기

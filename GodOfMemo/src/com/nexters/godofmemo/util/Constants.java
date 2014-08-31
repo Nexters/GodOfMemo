@@ -22,7 +22,12 @@ public class Constants {
 	// 배경관련 변수
 	public static final int DOT_SIZE = 100;
 	public static final int DOT_BACKGROUND_SIZE = Constants.DOT_SIZE / 20;
-	public static final int SCREEN_SIZE = 32;
+	public static final int SCREEN_SIZE = 16;
+
+	//화면설정
+	public static final float ZOOM_MIN= 1f;	//줌 최대
+	public static final float ZOOM_MAX = 12f;	//줌 최소
+	public static final float moveLimit = 10f;	//움직임여부 감도
 
 	// 메모관련변수.
 	public static final int MEMO_MAX_LINE = 7;
