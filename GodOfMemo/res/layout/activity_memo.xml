@@ -32,15 +32,17 @@
         <EditText
             android:id="@+id/memo_title"
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
+            android:layout_height="15dp"
             android:layout_weight="100"
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
-            android:inputType="textMultiLine"
+            android:hint="@string/memo_title"
+            android:inputType="textShortMessage"
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
             android:textColor="@android:color/black"
+            android:textColorHint="#F4F4F4"
             android:textSize="24sp" />
 
         <EditText
@@ -51,25 +53,36 @@
             android:background="@android:color/transparent"
             android:ems="4"
             android:gravity="top"
+            android:hint="@string/memo_contents"
             android:inputType="textMultiLine"
             android:lineSpacingExtra="6dp"
             android:padding="15dp"
             android:textColor="@android:color/black"
+            android:textColorHint="#F4F4F4"
             android:textSize="17sp" />
 
         <TextView
             android:id="@+id/memo_time"
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
+            android:layout_height="10dp"
             android:layout_weight="50"
-            android:padding="15dp"
+            android:padding="10dp"
             android:text="2014년 02월 15일 오후 02:00"
-            android:textSize="9sp" />
+            android:textSize="13sp" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="45" />
+            android:layout_weight="20" />
+
+        <TextView
+            android:id="@+id/memo_color_picker_headline"
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:layout_weight="50"
+            android:padding="10dp"
+            android:text="생각 색깔"
+            android:textSize="13sp" />
 
         <HorizontalScrollView
             android:id="@+id/memo_color_picker_hsv"
@@ -88,7 +101,16 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="50" />
+            android:layout_weight="10" />
+
+        <TextView
+            android:id="@+id/bg_color_picker_headline"
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:layout_weight="50"
+            android:padding="10dp"
+            android:text="머릿속 색깔"
+            android:textSize="13sp" />
 
         <HorizontalScrollView
             android:id="@+id/bg_color_picker_hsv"
@@ -110,11 +132,30 @@
             android:layout_weight="50" />
 
         <ImageView
-            android:id="@+id/btn_finish"
+            android:id="@+id/btn_done"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="135"
-            android:background="@drawable/donebtn" />
+            android:layout_weight="80"
+            android:background="@drawable/btn_finish" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="30" />
+
+        <ImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="80"
+            android:background="@drawable/btn_delete" />
+
+        <ImageView
+            android:id="@+id/btn_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="80"
+            android:background="@drawable/btn_cancel" />
 
         <View
             android:layout_width="fill_parent"

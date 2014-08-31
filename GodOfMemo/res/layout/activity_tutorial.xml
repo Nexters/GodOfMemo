@@ -1,5 +1,8 @@
-<android.support.v4.view.ViewPager
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<!-- 투토리얼 액티비트를 스와입하게 만들어주는 ViewPager를 정의 -->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    
+    </android.support.v4.view.ViewPager>

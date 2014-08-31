@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nexters.godofmemo"
+    package="com.nexters.mindpaper"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <!-- OPENGL설정 -->
@@ -20,15 +20,15 @@
 
     <application
         android:allowBackup="true"
-        android:debuggable="true"
         android:icon="@drawable/mindpaper_icon"
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme" >
 
         <!-- 스플래쉬 화면 앱을 처음 구동할 때 실행한다. -->
         <activity
-            android:name="com.nexters.godofmemo.SplashActivity"
-            android:label="@string/title_activity_splash"
+            android:name="com.nexters.mindpaper.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,32 +39,51 @@
 
         <!-- Main activity 메모 보드 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.MainActivity"
-            android:label="@string/title_activity_board" >
+            android:name="com.nexters.mindpaper.MainActivity"
+            android:label="@string/title_activity_board"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Memo activity 메모 신규 입력/수정 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.MemoActivity"
-            android:label="@string/title_activity_memo" >
+            android:name="com.nexters.mindpaper.MemoActivity"
+            android:label="@string/title_activity_memo"
+            android:screenOrientation="portrait" >
         </activity>
 
         <!-- Group activity 메모 신규 입력/수정 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.GroupActivity"
-            android:label="@string/title_activity_group" >
+            android:name="com.nexters.mindpaper.GroupActivity"
+            android:label="@string/title_activity_group"
+            android:screenOrientation="portrait" >
         </activity>
+
+        <!-- Tutorial activity 튜토리얼 페이지 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.TutorialActivity"
-            android:label="@string/title_activity_tutorial" >
+            android:name="com.nexters.mindpaper.TutorialActivity"
+            android:label="tutorial"
+            android:screenOrientation="portrait" >
         </activity>
+
+        <!-- Initial Tutorial 페이지 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.frg.FirstTutorialFragment"
-            android:label="@string/title_activity_first_tutorial_fragment" >
+            android:name="com.nexters.mindpaper.InitialTutorialActivity"
+            android:label="init_tutorial"
+            android:screenOrientation="portrait" >
         </activity>
+
+        <!-- Backup 페이지 화면 -->
         <activity
-            android:name="com.nexters.godofmemo.frg.SecondTutorialFragment"
-            android:label="@string/title_activity_second_tutorial_fragment" >
+            android:name="com.nexters.mindpaper.BackupActivity"
+            android:label="backup"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- Credit 페이지 화면 -->
+        <activity
+            android:name="com.nexters.mindpaper.CreditActivity"
+            android:label="credit"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
